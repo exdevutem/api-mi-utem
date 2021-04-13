@@ -112,7 +112,7 @@ const obtenerHorario = async (req, res, next) => {
         const headerHorario = Array.from(
           horarioTablaEl.querySelectorAll("thead th")
         ).slice(2);
-        const dias = headerHorario.map((dia, i) => dia.textContent);
+        const dias = headerHorario.map((dia, i) => dia.textContent.trim());
 
         let periodos = horarioFilas.map((fila, i) => {
           if (i % 2 == 0) {

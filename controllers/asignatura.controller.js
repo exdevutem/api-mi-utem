@@ -209,7 +209,7 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
         "#TABLA1 > div:nth-child(1) > div > div > div > div > div:nth-child(4) > span";
       const salaSel =
         "#TABLA1 > div:nth-child(1) > div > div:nth-child(2) > div > div > div:nth-child(4) > span";
-      const tipoSalaSel =
+      const seccionSel =
         "#TABLA1 > div:nth-child(1) > div > div:nth-child(3) > div > div > div:nth-child(4) > span";
       const asistenciaSinRegistroSel = "#clas_noreg";
       const asistenciaAsistidaSel = "#clas_asi";
@@ -232,7 +232,7 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
         document.querySelector(intentosSel)?.textContent.trim()
       );
       const sala = document.querySelector(salaSel)?.textContent.trim();
-      const tipoSala = document.querySelector(tipoSalaSel)?.textContent.trim();
+      const seccion = document.querySelector(seccionSel)?.textContent.trim();
 
       let asistenciaSinRegistro = parseInt(
         document.querySelector(asistenciaSinRegistroSel)?.textContent.trim()
@@ -275,7 +275,8 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
         horario,
         intentos,
         sala,
-        tipoSala,
+        tipoSala: "",
+        seccion,
         estudiantes,
         asistencia: {
           total: asistenciaTotal,

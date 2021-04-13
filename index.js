@@ -58,7 +58,7 @@ app.use(morgan("dev"));
 app.get("/", (req, res) => {
   res.json({
     funcionando: true,
-    estado: "API funcionando correctamente",
+    estado: "API funcionando correctamente en el nuevo servidor",
   });
 });
 

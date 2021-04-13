@@ -56,10 +56,10 @@ const obtenerNotas = async (req, res, next) => {
 
                 let notas = filasBody.map(fila => {
                     const columnas = Array.from(fila.querySelectorAll('td'));
-                    const codigo = columnas[1].textContent.split(" ")[0].trim();
+                    const codigo = columnas[1]?.textContent.split(" ")[0].trim();
 
-                    const nombre = columnas[1].textContent.split(" ").slice(1).join(" ").trim();
-                    const tipoHora = columnas[2].textContent;
+                    const nombre = columnas[1]?.textContent.split(" ").slice(1).join(" ").trim();
+                    const tipoHora = columnas[2]?.textContent;
 
                     let estado;
                     let notaExamen;
@@ -71,8 +71,8 @@ const obtenerNotas = async (req, res, next) => {
                         const notaFinalInputEl = columnas[columnas.length - 1].querySelector("input");
                         
                         notaFinal = notaFinalInputEl ? parseFloat(notaFinalInputEl.getAttribute("value").replace(",", ".")) : null;
-                        notaExamen = parseFloat(columnas[columnas.length - 3].textContent.trim().replace(",", "."));
-                        notaPresentacion = parseFloat(columnas[columnas.length - 2].textContent.trim().replace(",", "."));
+                        notaExamen = parseFloat(columnas[columnas.length - 3]?.textContent.trim().replace(",", "."));
+                        notaPresentacion = parseFloat(columnas[columnas.length - 2]?.textContent.trim().replace(",", "."));
                         
                         if (notaFinalInputEl && notaFinalInputEl.classList.contains("input_success")) {
                             estado = "Aprobado";
@@ -87,8 +87,8 @@ const obtenerNotas = async (req, res, next) => {
                             const porcentajeSel = ".z > b";
                             const notaSel = ".z > .x > .y";
 
-                            const porcentaje = parseInt(columnaEvaluacion.querySelector(porcentajeSel).textContent.trim().replace("%", ""));
-                            const nota = parseFloat(columnaEvaluacion.querySelector(notaSel).textContent.trim());
+                            const porcentaje = parseInt(columnaEvaluacion.querySelector(porcentajeSel)?.textContent.trim().replace("%", ""));
+                            const nota = parseFloat(columnaEvaluacion.querySelector(notaSel)?.textContent.trim());
                             
                             if (nota || porcentaje) {
                                 if (true) {
@@ -119,7 +119,7 @@ const obtenerNotas = async (req, res, next) => {
                     }
                 });
                 return {
-                    semestre: Array.from(document.querySelectorAll(semestreSel))[i].textContent.trim(),
+                    semestre: Array.from(document.querySelectorAll(semestreSel))[i]?.textContent.trim(),
                     notas
                 };
             });
