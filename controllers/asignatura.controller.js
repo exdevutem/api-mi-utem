@@ -11,7 +11,7 @@ const obtenerAsignaturas = async (req, res, next) => {
     const tiposUsuarioSel =
       "body > div.page-container > div.header > div:nth-child(2) > div.search-link.d-lg-inline-block.d-none > div > span";
     const estudiantePerfilSel =
-      "body > div.page-container > div.header > div:nth-child(2) > div.search-link.d-lg-inline-block.d-none > div[value='Estudiante']";
+      "body > div.page-container > div.header > div:nth-child(2) > div.search-link.d-lg-inline-block.d-none >div[value='Estudiante']";
     const notasButtonSel = "#btn-mdl-notas";
 
     browser = await puppeteer.launch({
@@ -56,14 +56,14 @@ const obtenerAsignaturas = async (req, res, next) => {
     await page.waitForSelector(notasButtonSel);
 
     const asignaturas = await page.evaluate(() => {
-      const asignaturasSel = "#table_mdl_titulo tbody tr.no-border";
+      const asignaturasSel = ".card-utem #table_mdl_titulo tbody tr.no-border";
 
       const asignaturasEl = Array.from(
         document?.querySelectorAll(asignaturasSel)
       );
 
       const columnasPrimeraFila = Array.from(
-        document?.querySelectorAll("#table_mdl_titulo thead tr td")
+        document?.querySelectorAll(".card-utem #table_mdl_titulo thead tr td")
       );
 
       if (asignaturasEl.length > 0) {
@@ -72,14 +72,14 @@ const obtenerAsignaturas = async (req, res, next) => {
             codigo: a
               .querySelector("td:nth-child(1) > span")
               ?.textContent.split(" - ")[0]
-              .trim(),
+              ?.trim(),
             nombre: a
               .querySelector("td:nth-child(1) > span")
               ?.textContent.split(" - ")[1]
-              .trim(),
+              ?.trim(),
             tipoHora: a
               .querySelector("td:nth-child(2) > span")
-              ?.textContent.trim(),
+              ?.textContent?.trim(),
           };
         });
       } else {
@@ -162,14 +162,14 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
     await page.waitForSelector(notasButtonSel);
 
     const detalleBotonSel = await page.evaluate((codigoAsignatura) => {
-      const asignaturasSel = "#table_mdl_titulo tbody tr";
+      const asignaturasSel = ".card-utem #table_mdl_titulo tbody tr";
 
       const asignaturasEl = Array.from(
         document?.querySelectorAll(asignaturasSel)
       );
 
       const columnasPrimeraFila = Array.from(
-        document?.querySelectorAll("#table_mdl_titulo thead tr td")
+        document?.querySelectorAll(".card-utem #table_mdl_titulo thead tr td")
       );
 
 
@@ -179,7 +179,7 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
           const codigo = asignaturaEl
             .querySelector("td:nth-child(1) > span")
             ?.textContent.split(" - ")[0]
-            .trim();
+            ?.trim();
           if (codigoAsignatura?.toUpperCase() == codigo?.toUpperCase()) {
             const detalleBotonSel =
               "td:nth-child(3) > span";
@@ -216,37 +216,37 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
       const asistenciaTotalSel = "#clas_total";
       const filaEstudianteSel = "#table-estudiantes > tbody > tr";
 
-      const docente = document.querySelector(docenteSel)?.textContent.trim();
+      const docente = document.querySelector(docenteSel)?.textContent?.trim();
       const tipoAsignatura = document
         .querySelector(tipoAsignaturaSel)
-        ?.textContent.trim();
-      const tipoHora = document.querySelector(tipoHoraSel)?.textContent.trim();
+        ?.textContent?.trim();
+      const tipoHora = document.querySelector(tipoHoraSel)?.textContent?.trim();
       const horario = document
         .querySelector(horarioSel)
         ?.textContent.split("/")
-        ?.map((e) => e.trim())
+        ?.map((e) => e?.trim())
         .filter((e) => e && e != "")
         .join(" / ")
-        .trim();
+        ?.trim();
       const intentos = parseInt(
-        document.querySelector(intentosSel)?.textContent.trim()
+        document.querySelector(intentosSel)?.textContent?.trim()
       );
-      const sala = document.querySelector(salaSel)?.textContent.trim();
-      const seccion = document.querySelector(seccionSel)?.textContent.trim();
+      const sala = document.querySelector(salaSel)?.textContent?.trim();
+      const seccion = document.querySelector(seccionSel)?.textContent?.trim();
 
       let asistenciaSinRegistro = parseInt(
-        document.querySelector(asistenciaSinRegistroSel)?.textContent.trim()
+        document.querySelector(asistenciaSinRegistroSel)?.textContent?.trim()
       );
       asistenciaSinRegistro =
         asistenciaSinRegistro >= 0 ? asistenciaSinRegistro : 0;
 
       let asistenciaAsistida = parseInt(
-        document.querySelector(asistenciaAsistidaSel)?.textContent.trim()
+        document.querySelector(asistenciaAsistidaSel)?.textContent?.trim()
       );
       asistenciaAsistida = asistenciaAsistida >= 0 ? asistenciaAsistida : 0;
 
       let asistenciaTotal = parseInt(
-        document.querySelector(asistenciaTotalSel)?.textContent.trim()
+        document.querySelector(asistenciaTotalSel)?.textContent?.trim()
       );
       asistenciaTotal = asistenciaTotal >= 0 ? asistenciaTotal : 0;
 
@@ -257,14 +257,14 @@ const obtenerDetalleAsignatura = async (req, res, next) => {
         const nombres = filaEstudianteEl
           .querySelector("td:nth-child(2)")
           ?.textContent.split(", ")[1]
-          .trim();
+          ?.trim();
         const apellidos = filaEstudianteEl
           .querySelector("td:nth-child(2)")
           ?.textContent.split(", ")[0]
-          .trim();
+          ?.trim();
         const correo = filaEstudianteEl
           .querySelector("td:nth-child(3)")
-          ?.textContent.trim();
+          ?.textContent?.trim();
         return { nombres, apellidos, correo };
       });
 
@@ -363,17 +363,17 @@ const obtenerNotasPorCodigo = async (req, res, next) => {
 
         for (const fila of filasBody) {
           const columnas = Array.from(fila?.querySelectorAll("td"));
-          const codigo = columnas[1]?.textContent.split(" ")[0].trim();
+          const codigo = columnas[1]?.textContent.split(" ")[0]?.trim();
 
           if (codigo?.toUpperCase() == codigoAsignatura?.toUpperCase()) {
             const columnas = Array.from(fila?.querySelectorAll("td"));
-            const codigo = columnas[1]?.textContent.split(" ")[0].trim();
+            const codigo = columnas[1]?.textContent.split(" ")[0]?.trim();
 
             const nombre = columnas[1]?.textContent
               .split(" ")
               .slice(1)
               .join(" ")
-              .trim();
+              ?.trim();
             const tipoHora = columnas[2]?.textContent;
 
             let estado;
@@ -394,12 +394,12 @@ const obtenerNotasPorCodigo = async (req, res, next) => {
                 : null;
               notaExamen = parseFloat(
                 columnas[columnas.length - 3]?.textContent
-                  .trim()
+                  ?.trim()
                   .replace(",", ".")
               );
               notaPresentacion = parseFloat(
                 columnas[columnas.length - 2]?.textContent
-                  .trim()
+                  ?.trim()
                   .replace(",", ".")
               );
 
@@ -426,11 +426,11 @@ const obtenerNotasPorCodigo = async (req, res, next) => {
                   const porcentaje = parseInt(
                     columnaEvaluacion
                       .querySelector(porcentajeSel)
-                      ?.textContent.trim()
+                      ?.textContent?.trim()
                       .replace("%", "")
                   );
                   const nota = parseFloat(
-                    columnaEvaluacion.querySelector(notaSel)?.textContent.trim()
+                    columnaEvaluacion.querySelector(notaSel)?.textContent?.trim()
                   );
 
                   if (nota || porcentaje) {
