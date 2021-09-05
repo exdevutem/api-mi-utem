@@ -429,7 +429,7 @@ const changeMiUtemImage = (cookies, image, browser) => {
       formData.append("picture", file, {filename});
 
       let res = await axios.post(
-        `${process.env.MI_UTEM_URL}//users/do_set_imagen_perfil`,
+        `${process.env.MI_UTEM_URL}/users/do_set_imagen_perfil`,
         formData,
         {
           headers: {

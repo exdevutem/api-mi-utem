@@ -10,7 +10,7 @@ const obtenerNotas = async (req, res, next) => {
     try {
         const semestreSel = "#accordion > .collapse";
 
-        browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox", "--no-zygote"], });
+        browser = await puppeteer.launch({ headless: true, args: ["--no-sandbox", "--disable-setuid-sandbox", "--no-zygote"], });
         const page = await browser.newPage();
 
         await page.setRequestInterception(true);
@@ -44,6 +44,7 @@ const obtenerNotas = async (req, res, next) => {
         const semestres = await page.evaluate(() => {
             const semestreSel = "#accordion > .div-card-notas"
             const tablaNotasSel = "#accordion > .collapse";
+            
 
             const tablasNotas = Array.from(document.querySelectorAll(tablaNotasSel));
 

@@ -60,6 +60,9 @@ MI_UTEM_URL=https://mi.utem.cl
 ACADEMIA_UTEM_URL=https://academia.utem.cl
 PASAPORTE_UTEM_URL=https://pasaporte.utem.cl
 SSO_UTEM_URL=https://sso.utem.cl
+GOOGLE_APPLICATION_CREDENTIALS=./mi-utem-inndev-credentials.json
+FCM_SERVER_KEY=AAAAPEuk7fI:APA91bGG9UrjuLX8kt1DWVwz...
+SISEI_KEY=123456
 ```
 
 | **Variable** | **Descripción** |
@@ -73,6 +76,9 @@ SSO_UTEM_URL=https://sso.utem.cl
 | `PASAPORTE_UTEM_URL` | URL de la página web de Pasaporte.UTEM |
 | `SSO_UTEM_URL` | URL de la página web de SSO.UTEM |
 | `REQ_REF` | Opcional. Valor del parámetro `ref` que se agregará a las consultas a las distintas webs. |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Ubicación del archivo de credenciales del proyecto Firebase. |
+| `FCM_SERVER_KEY` | Llave del servidor de FCM para enviar notificaciones. |
+| `SISEI_KEY` | Llave para que el equipo de SISEI pueda hacer algunas consultas. Puede ser cualquier valor. |
 
 ## Ejecución
 1. Antes de ejecutar el proyecto, se deberán instalar las librerías con el siguiente comando
@@ -83,6 +89,27 @@ npm install
 2. Luego para ejecutar el proyecto con
 ```bash
 npm start
+```
+
+## Consultas
+
+### Enviar notificaciones
+
+Para enviar notificaciones se debe hacer una consulta `PUT` al endpoint `/v1/notas/notificar`. Por ejemplo en caso de apuntar al servidor de SISEI, la consulta sería `PUT https://apiapp.utem.dev/v1/notas/notificar`.
+
+Es importante que en el `body` de la consulta vayan los siguientes valores como un JSON (Para eso se debe agregar el header `Content-Type: application/json`).
+
+```
+PUT /v1/notas/notificar HTTP/1.1
+Content-Type: application/json
+
+{
+    "rut": "19.649.846-K",              // RUT del estudiante que recibio la nota
+    "valor": "5.3",                     // Valor de la nota
+    "codigo": "INFB8026",               // Código de la asignatura
+    "nombre": "PRACTICA PROFESIONAL",   // Nombre de la asignatura
+    "key": "123456"                     // Debe ser la misma que SISEI_KEY en las variables de entorno
+}
 ```
 
 ## Créditos

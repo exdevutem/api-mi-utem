@@ -41,6 +41,27 @@ class MiUtemError extends Error {
         6
     );
 
+    static FIRESTORE_USUARIO_RUT_NO_ENCONTRADO = new MiUtemError(
+        new Error("No se encontró ningún usuario con ese RUT registrado"),
+        "No se encontró ningún usuario con ese RUT registrado",
+        404,
+        7
+    );
+
+    static BAD_REQUEST = new MiUtemError(
+        new Error("Faltan algunos parámetros para la consulta"),
+        "Faltan algunos parámetros para la consulta",
+        400,
+        8
+    );
+
+    static SISEI_KEY_INVALIDA = new MiUtemError(
+        new Error("La llave no coincide"),
+        "La llave configurada en las variables de entorno no coincide",
+        401,
+        9
+    );
+
     constructor(data, message, statusCode, internalCode) {
       super(data);
       this.data = data;

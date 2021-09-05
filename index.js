@@ -13,9 +13,12 @@ const morgan = require("morgan");
 const MiUtemError = require("./utils/errors");
 const http = require('http');
 const https = require('https');
+const admin = require('firebase-admin');
 
 const app = express();
 const { logger } = require("./utils/logger");
+
+admin.initializeApp();
 
 app.use(bodyParser.json({limit: '50mb'}));
 
@@ -52,7 +55,6 @@ app.use(morgan("short", {
 }));
 
 app.use(morgan("dev"));
-
 
 // @ts-ignore
 app.get("/", (req, res) => {
