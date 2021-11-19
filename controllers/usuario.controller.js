@@ -32,6 +32,30 @@ const validarCorreo = (correo) => {
   return re.test(correo)
 };
 
+const tokenMiUtemDesdeApiSisei = (correo, contrasenia) => {
+  return new Promise(async (resolve, reject) => {
+    if (!validarCorreo(correo)){
+      return
+    }
+    usuario = correo.split("@")[0]
+    const params = new URLSearchParams({
+      "username": usuario,
+      "password": contrasenia 
+    })
+    axios.post(`${process.env.SISEI_API}/servicios/autenticacion/login/`, params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+    .then((response) => {
+      resolve(response)
+    })
+    .catch((error) => {
+      reject(error)
+    })
+  })
+};
+
 const tokenMiUtem = (correo, contrasenia, browser) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -235,7 +259,6 @@ const profileFromAcademiaUtem = (correo, contrasenia, browser) => {
         }
   
         let jsonCookies = await page.cookies();
-  
         resolve({
           sesion: jsonCookiesToStringSesion(jsonCookies),
         });
@@ -589,4 +612,4 @@ const doResetPassword = async (req, res, next) => {
 
 
 
-module.exports = { doLoginAndGetProfile, doResetPassword, refreshToken, getProfile, doChangeImage, validarCorreo };
+module.exports = { doLoginAndGetProfile, doResetPassword, refreshToken, getProfile, doChangeImage, validarCorreo, tokenMiUtemDesdeApiSisei };
