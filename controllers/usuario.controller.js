@@ -27,6 +27,11 @@ const USER_AGENT =
 
 const ref = process.env.REQ_REF ? `?ref=${process.env.REQ_REF}` : '';
 
+const validarCorreo = (correo) => {
+  const re = RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}')
+  return re.test(correo)
+};
+
 const tokenMiUtem = (correo, contrasenia, browser) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -86,7 +91,6 @@ const tokenMiUtem = (correo, contrasenia, browser) => {
       }
 
       let jsonCookies = await page.cookies();
-
       resolve({
         sesion: jsonCookiesToStringSesion(jsonCookies),
       });
@@ -585,4 +589,4 @@ const doResetPassword = async (req, res, next) => {
 
 
 
-module.exports = { doLoginAndGetProfile, doResetPassword, refreshToken, getProfile, doChangeImage };
+module.exports = { doLoginAndGetProfile, doResetPassword, refreshToken, getProfile, doChangeImage, validarCorreo };
