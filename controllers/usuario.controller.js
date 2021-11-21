@@ -33,7 +33,7 @@ const validarCorreo = (correo) => {
 };
 
 const tokenMiUtemDesdeApiSisei = (correo, contrasenia) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (!validarCorreo(correo)){
       return
     }
