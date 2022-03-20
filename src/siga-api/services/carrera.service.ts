@@ -16,7 +16,7 @@ export class SigaApiCarreraService {
 
     let carreras: Carrera[] = [];
 
-    if (res.data.response && res.data.response.length) {
+    if (res.data.response?.length) {
       for (const carreraJson of res.data.response) {
         carreras.push({
           id: carreraJson.carrera_id,

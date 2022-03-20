@@ -24,7 +24,7 @@ export class SigaApiAsignaturaService {
 
     let asignaturas: SeccionAsignatura[] = [];
 
-    if (res.data.response && res.data.response.length) {
+    if (res.data.response?.length) {
       for (const asignaturaJson of res.data.response) {
         asignaturas.push({
           id: asignaturaJson.seccion_id,

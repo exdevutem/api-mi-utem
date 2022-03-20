@@ -41,23 +41,26 @@ export class AuthController {
         });
       }
 
+      let genericError: GenericError = GenericError.SIGA_UTEM_ERROR;
       if (sigaToken) {
         const usuarioToken: Usuario = CredentialsUtils.getSigaUser(sigaToken);
 
         const usuario: Usuario = { ...usuarioSiga, ...usuarioToken };
         usuario.token = CredentialsUtils.createToken(sigaToken, cookies);
 
-        if (usuarioSiga.perfiles && usuarioSiga.perfiles.length) {
+        genericError = GenericError.SIN_ROL;
+
+        if (usuarioSiga.perfiles?.length) {
+          genericError = GenericError.NO_ESTUDIANTE;
           if (usuarioSiga.perfiles.includes("Estudiante")) {
+            genericError = null;
             res.status(200).json(usuario);
-          } else {
-            throw GenericError.NO_ESTUDIANTE;
           }
-        } else {
-          throw GenericError.SIN_ROL;
         }
-      } else {
-        throw GenericError.SIGA_UTEM_ERROR;
+      }
+
+      if (genericError == null) {
+        throw genericError;
       }
     } catch (error) {
       next(error);
