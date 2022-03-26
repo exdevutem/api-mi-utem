@@ -28,7 +28,7 @@ export class MiUtemUserService {
 
       await page.setCookie(...cookies);
 
-      await page.goto(`${process.env.MI_UTEM_URL}`, {
+      await page.goto(`${process.env.MI_UTEM_URL}/users/mi_perfil`, {
         waitUntil: "networkidle2",
       });
 
@@ -46,8 +46,7 @@ export class MiUtemUserService {
       const usuario: Usuario = await page.evaluate((miUtemUrl: string) => {
         const tiposUsuarioSel =
           "body > div.page-container > div.header > div:nth-child(2) > div.search-link.d-lg-inline-block.d-none > div > span";
-        const fotoPerfilSel =
-          "body > div.page-container > div.header > div.d-flex.align-items-center > div.dropdown.pull-right > button > span > img";
+        const fotoPerfilSel = "#user_picture";
         const nombreSel =
           "body > div.page-container > div.header > div.d-flex.align-items-center > div.pull-left.p-r-10.fs-14.font-heading.d-lg-block.d-none";
         const perfilSeleccionadoSel =
@@ -62,7 +61,7 @@ export class MiUtemUserService {
 
         const rut = parseInt(
           fotoUrl
-            .replace(`${miUtemUrl}/static/interdocs/fotos/`, "")
+            ?.replace(`${miUtemUrl}/static/interdocs/fotos/`, "")
             .split(".")[0]
         );
 
@@ -70,7 +69,7 @@ export class MiUtemUserService {
           .querySelector(perfilSeleccionadoSel)
           ?.textContent.trim();
         let nombreCompleto = document.querySelector(nombreSel)?.textContent;
-        nombreCompleto = nombreCompleto.replace(perfilSeleccionado, "").trim();
+        nombreCompleto = nombreCompleto?.replace(perfilSeleccionado, "").trim();
 
         const tiposUsuarioEl = Array.from(
           document.querySelectorAll(tiposUsuarioSel)

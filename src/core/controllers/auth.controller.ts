@@ -34,6 +34,8 @@ export class AuthController {
         );
 
         usuarioMiUtem = await MiUtemUserService.getProfile(cookies);
+
+        console.log(usuarioMiUtem);
       } catch (error) {
         console.error(error);
         GenericLogger.log({

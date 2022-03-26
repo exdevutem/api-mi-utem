@@ -11,7 +11,12 @@ export default class MainBrowser {
     puppeteer.use(StealthPlugin());
     puppeteer
       .launch({
-        args: ["--no-sandbox", "--disable-setuid-sandbox", "--no-zygote"],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--no-zygote",
+          "--disk-cache-size=0",
+        ],
         headless: true,
       })
       .then((browser) => {
