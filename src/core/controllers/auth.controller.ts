@@ -35,6 +35,7 @@ export class AuthController {
 
         usuarioMiUtem = await MiUtemUserService.getProfile(cookies);
       } catch (error) {
+        console.error(error);
         GenericLogger.log({
           level: "error",
           message: error.message,
@@ -54,7 +55,13 @@ export class AuthController {
           genericError = GenericError.NO_ESTUDIANTE;
           if (usuarioSiga.perfiles.includes("Estudiante")) {
             genericError = null;
-            res.status(200).json(usuario);
+
+            res.status(200).json({
+              ...usuario,
+              ...{
+                fotoUrl: usuarioMiUtem.fotoUrl,
+              },
+            });
           }
         }
       }

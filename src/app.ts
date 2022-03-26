@@ -1,8 +1,17 @@
-import { initializeApp } from "firebase-admin/app";
+import * as firebaseAdmin from "firebase-admin";
 import MainBrowser from "./infrastructure/browser/browser";
 import Server from "./infrastructure/server/server";
 
-initializeApp();
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert({
+    projectId: process.env.FIREBASE_ADMINSDK_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_ADMINSDK_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_ADMINSDK_PRIVATE_KEY?.replace(
+      /\\n/g,
+      "\n"
+    ),
+  }),
+});
 
 declare global {
   interface String {
