@@ -11,7 +11,7 @@ export class MiUtemAuthService {
     const contraseniaInputSel = "input[name=password]";
     const submitLoginSel = "input[name=login]";
 
-    const page: Page = await browser.newPage();
+    const page: Page = await browser.newPage(true);
 
     try {
       await page.setRequestInterception(true);
@@ -57,7 +57,7 @@ export class MiUtemAuthService {
     } catch (error) {
       throw error;
     } finally {
-      page.close();
+      //page.close();
     }
   }
 }

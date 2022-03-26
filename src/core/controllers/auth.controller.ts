@@ -17,16 +17,24 @@ export class AuthController {
     try {
       const correo: string = req.body.correo;
       const contrasenia: string = req.body.contrasenia;
+
+      let usuarioSiga: Usuario;
+      let sigaToken: string;
+      try {
+        usuarioSiga = await SigaApiAuthService.loginAndGetProfile(
+          correo,
+          contrasenia
+        );
+        sigaToken = usuarioSiga.token;
+      } catch (error) {
+        if (error.response?.status === 401) {
+          throw GenericError.CREDENCIALES_INCORRECTAS;
+        }
+        throw error;
+      }
+
       let cookies: Cookie[];
-
-      const usuarioSiga: Usuario = await SigaApiAuthService.loginAndGetProfile(
-        correo,
-        contrasenia
-      );
-      const sigaToken = usuarioSiga.token;
-
       let usuarioMiUtem: Usuario;
-
       try {
         cookies = await MiUtemAuthService.loginAndGetCookies(
           correo,
@@ -34,8 +42,6 @@ export class AuthController {
         );
 
         usuarioMiUtem = await MiUtemUserService.getProfile(cookies);
-
-        console.log(usuarioMiUtem);
       } catch (error) {
         console.error(error);
         GenericLogger.log({

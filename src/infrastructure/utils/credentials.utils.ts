@@ -95,4 +95,31 @@ export default class CredentialsUtils {
 
     return sessionId + csrfToken + "|" + sigaBearerToken;
   }
+
+  public static get emptyCookies(): SetCookie[] {
+    return [
+      {
+        name: "sessionid",
+        value: "",
+        domain: "mi.utem.cl",
+        path: "/",
+        expires: -1,
+        httpOnly: true,
+        secure: false,
+        session: true,
+        sameSite: "Lax",
+      },
+      {
+        name: "csrftoken",
+        value: "",
+        domain: "mi.utem.cl",
+        path: "/",
+        expires: -1,
+        httpOnly: false,
+        secure: false,
+        session: false,
+        sameSite: "Lax",
+      },
+    ];
+  }
 }

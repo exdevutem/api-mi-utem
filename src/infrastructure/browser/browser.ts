@@ -16,6 +16,7 @@ export default class MainBrowser {
           "--disable-setuid-sandbox",
           "--no-zygote",
           "--disk-cache-size=0",
+          "--incognito",
         ],
         headless: true,
       })
@@ -51,9 +52,15 @@ export default class MainBrowser {
     return process.env.REQ_REF ? `?ref=${process.env.REQ_REF}` : "";
   }
 
-  public async newPage(): Promise<Page> {
+  public async newPage(withNewContext: boolean = false): Promise<Page> {
     if (this.browser) {
-      const page: Page = await this.browser.newPage();
+      let page: Page;
+      if (withNewContext) {
+        const context = await this.browser.createIncognitoBrowserContext();
+        page = await context.newPage();
+      } else {
+        page = await this.browser.newPage();
+      }
       await page.setViewport(MainBrowser.viewPort);
       await page.setUserAgent(MainBrowser.userAgent);
       await page.setJavaScriptEnabled(true);
