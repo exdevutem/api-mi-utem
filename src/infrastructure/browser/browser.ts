@@ -12,7 +12,7 @@ export default class MainBrowser {
     puppeteer
       .launch({
         args: ["--no-sandbox", "--disable-setuid-sandbox", "--no-zygote"],
-        headless: false,
+        headless: true,
       })
       .then((browser) => {
         this.browser = browser;
