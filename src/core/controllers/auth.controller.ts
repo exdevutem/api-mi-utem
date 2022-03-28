@@ -67,7 +67,7 @@ export class AuthController {
             res.status(200).json({
               ...usuario,
               ...{
-                fotoUrl: usuarioMiUtem.fotoUrl,
+                fotoUrl: usuarioMiUtem?.fotoUrl,
               },
             });
           }
