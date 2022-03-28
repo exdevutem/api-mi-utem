@@ -2,9 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { Cookie } from "puppeteer";
 import GenericError from "../../infrastructure/models/error.model";
 import CredentialsUtils from "../../infrastructure/utils/credentials.utils";
-import GenericLogger from "../../infrastructure/utils/logger.utils";
-import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
-import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { SigaApiAuthService } from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
 
@@ -35,7 +32,7 @@ export class AuthController {
 
       let cookies: Cookie[];
       let usuarioMiUtem: Usuario;
-      try {
+      /*       try {
         cookies = await MiUtemAuthService.loginAndGetCookies(
           correo,
           contrasenia
@@ -48,7 +45,7 @@ export class AuthController {
           level: "error",
           message: error.message,
         });
-      }
+      } */
 
       let genericError: GenericError = GenericError.SIGA_UTEM_ERROR;
       if (sigaToken) {

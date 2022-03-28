@@ -26,6 +26,7 @@ String.prototype.toTitleCase = function (): string {
 };
 
 const server = new Server(process.env.PORT ? parseInt(process.env.PORT) : 3000);
-const browser = new MainBrowser();
+let browser: MainBrowser;
+//const browser = new MainBrowser();
 
 export { server, browser };
