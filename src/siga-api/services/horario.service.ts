@@ -42,6 +42,7 @@ export class SigaApiHorarioService {
           seccion: bloque.asignatura_seccion,
           docente: bloque.asignatura_profesor,
           tipoHora: bloque.tipo_hora,
+          sala: bloque.nombre_sala,
         },
         sala: bloque.nombre_sala,
         descripcionSala: bloque.descripcion_sala,
