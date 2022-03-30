@@ -36,13 +36,15 @@ export class SigaApiHorarioService {
 
       horario.horario[bloqueIndex][diaIndex] = {
         asignatura: {
+          id: bloque.seccion_id,
           codigo: bloque.codigo_asignatura,
           nombre: bloque.nombre_asignatura,
           seccion: bloque.asignatura_seccion,
           docente: bloque.asignatura_profesor,
           tipoHora: bloque.tipo_hora,
         },
-        sala: bloque.sala,
+        sala: bloque.nombre_sala,
+        descripcionSala: bloque.descripcion_sala,
       };
     }
 

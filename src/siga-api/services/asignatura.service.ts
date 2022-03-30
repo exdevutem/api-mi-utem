@@ -75,7 +75,7 @@ export class SigaApiAsignaturaService {
         asignaturaJson.notas_parciales.map((nota: any): Evaluacion => {
           return {
             descripcion: nota.descripcion,
-            porcentaje: nota.porcentaje,
+            porcentaje: nota.ponderador,
             nota: nota.nota,
           };
         });

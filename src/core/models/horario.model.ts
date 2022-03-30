@@ -5,6 +5,7 @@ export default interface Horario {
   horario: {
     asignatura: SeccionAsignatura;
     sala?: string;
+    descripcionSala?: string;
   }[][];
   dias?: string[];
   periodos?: any[];
