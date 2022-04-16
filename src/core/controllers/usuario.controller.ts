@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Cookie } from "puppeteer";
 import GenericError from "../../infrastructure/models/error.model";
+import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
 import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { PasaportePasswordService } from "../../pasaporte/services/password.service";
 
@@ -33,11 +34,16 @@ export class UsuarioController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const miUtemCookies: Cookie[] = res.locals.loggedInUser.miUtemCookies;
-      const base64Image: string = req.body.imagen;
+      const correo: string = req.body.correo;
+      const contrasenia: string = req.body.contrasenia;
+      const cookies: Cookie[] = await MiUtemAuthService.loginAndGetCookies(
+        correo,
+        contrasenia
+      );
 
+      const base64Image: string = req.body.imagen;
       const respuesta: any = await MiUtemUserService.changeProfilePicture(
-        miUtemCookies,
+        cookies,
         base64Image
       );
 

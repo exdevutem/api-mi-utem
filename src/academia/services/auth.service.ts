@@ -11,7 +11,7 @@ export class AcademiaUserService {
     const contraseniaInputSel: string = "input[name=password]";
     const submitLoginSel: string = "input[name=login]";
 
-    const page: Page = await browser.newPage();
+    const page: Page = await browser.newPage(true);
 
     try {
       await page.setRequestInterception(true);

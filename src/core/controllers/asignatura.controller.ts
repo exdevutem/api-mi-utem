@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Cookie } from "puppeteer";
 import { MiUtemAsignaturaService } from "../../mi-utem/services/asignatura.service";
+import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
 import { SigaApiAsignaturaService } from "../../siga-api/services/asignatura.service";
 import SeccionAsignatura from "../models/seccion-asignatura.model";
 import Semestre from "../models/semestre.model";
@@ -53,12 +54,18 @@ export class AsignaturaController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const miUtemCookies: Cookie[] = res.locals.loggedInUser.miUtemCookies;
+      const correo: string = req.body.correo;
+      const contrasenia: string = req.body.contrasenia;
+      const cookies: Cookie[] = await MiUtemAuthService.loginAndGetCookies(
+        correo,
+        contrasenia
+      );
+
       const soloAsignaturas: boolean = req.query.soloAsignaturas == "true";
 
       const asignaturasHistoricas: Semestre[] | SeccionAsignatura[] =
         await MiUtemAsignaturaService.getAsignaturasHistoricas(
-          miUtemCookies,
+          cookies,
           soloAsignaturas
         );
 

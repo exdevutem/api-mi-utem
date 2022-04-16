@@ -2,6 +2,7 @@ import { Browser, Page, Viewport } from "puppeteer";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import randomUseragent from "random-useragent";
+import GenericError from "../models/error.model";
 import GenericLogger from "../utils/logger.utils";
 
 export default class MainBrowser {
@@ -67,6 +68,6 @@ export default class MainBrowser {
       await page.setDefaultNavigationTimeout(0);
       return page;
     }
-    throw "El navegador no ha sido inicializado";
+    throw GenericError.BROWSER_NO_INICIALIZADO;
   }
 }

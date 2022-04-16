@@ -107,4 +107,11 @@ export default class GenericError extends Error {
     503,
     13
   );
+
+  static BROWSER_NO_INICIALIZADO = new GenericError(
+    "El navegador no ha sido inicializado",
+    "Por favor intente más tarde",
+    501,
+    14
+  );
 }
