@@ -114,4 +114,11 @@ export default class GenericError extends Error {
     501,
     14
   );
+
+  static PERMISO_NO_ENCONTRADO = new GenericError(
+    "El permiso no existe",
+    "Verifique que el ID del permiso sea correcto",
+    404,
+    15
+  );
 }

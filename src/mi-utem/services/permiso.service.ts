@@ -305,6 +305,16 @@ export class MiUtemPermisoService {
         }
       );
 
+      const dataString = res.data.toString().trim();
+      if (
+        dataString == "" ||
+        dataString == "[]" ||
+        dataString == "{}" ||
+        dataString == "null"
+      ) {
+        throw GenericError.PERMISO_NO_ENCONTRADO;
+      }
+
       const permiso: Permiso = await this.parsePermisoPdf(res.data, {
         withBase64File: true,
       });

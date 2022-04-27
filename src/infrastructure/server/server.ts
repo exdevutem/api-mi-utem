@@ -81,7 +81,7 @@ export default class Server {
           codigoHttp: err.statusCode ? err.statusCode : 500,
           mensaje: err.publicMessage ? err.publicMessage : "Error inesperado",
           codigoInterno: err.internalCode ? err.internalCode : 0,
-          error: err.toString(),
+          error: err.message,
         });
       } else {
         res.statusCode = 500;
