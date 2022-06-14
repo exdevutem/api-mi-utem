@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { BrowserMiddleware } from "../../infrastructure/middlewares/browser.middleware";
 import { CredentialsMiddleware } from "../../infrastructure/middlewares/credentials.middleware";
 import { AsignaturaController } from "../controllers/asignatura.controller";
 import { NotificacionController } from "../controllers/notificacion.controller";
@@ -15,9 +16,9 @@ router.get(
   CredentialsMiddleware.isLoggedIn,
   AsignaturaController.getNotasByAsignatura
 );
-router.get(
+router.post(
   "/asignaturas/historicas",
-  CredentialsMiddleware.isLoggedIn,
+  BrowserMiddleware.requireActiveBrowser,
   AsignaturaController.getHistoricas
 );
 router.post("/notas/notificar", NotificacionController.notificate);

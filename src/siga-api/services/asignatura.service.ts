@@ -72,13 +72,15 @@ export class SigaApiAsignaturaService {
       }
       let notasParciales: Evaluacion[] = [];
       if (asignaturaJson.notas_parciales) {
-        asignaturaJson.notas_parciales.map((nota: any): Evaluacion => {
-          return {
-            descripcion: nota.descripcion,
-            porcentaje: nota.ponderador,
-            nota: nota.nota,
-          };
-        });
+        notasParciales = asignaturaJson.notas_parciales.map(
+          (nota: any): Evaluacion => {
+            return {
+              descripcion: nota.descripcion,
+              porcentaje: nota.ponderador,
+              nota: nota.nota,
+            };
+          }
+        );
       }
 
       asignatura = {
