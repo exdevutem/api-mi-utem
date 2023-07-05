@@ -227,5 +227,8 @@ $RECYCLE.BIN/
 
 nohup.out
 
+### IDEA (JetBrains)
+.idea/
+
 # Custom files
 mi-utem-inndev-credentials.json
