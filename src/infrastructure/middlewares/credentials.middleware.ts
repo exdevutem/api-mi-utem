@@ -5,11 +5,7 @@ import GenericError from "../models/error.model";
 import CredentialsUtils from "../utils/credentials.utils";
 
 export class CredentialsMiddleware {
-    public static async isLoggedIn(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): Promise<void> {
+    public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             let accessToken: string | undefined = req.headers["authorization"];
             if (accessToken) {

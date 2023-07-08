@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import Usuario from "../../core/models/usuario.model";
+import Cookie from "../models/cookie.model";
 
 export default class CredentialsUtils {
     public static getMiUtemCookies(token: string) {
@@ -74,9 +75,9 @@ export default class CredentialsUtils {
         return token.split("|")[1];
     }
 
-    public static createToken(sigaBearerToken: string, miUtemCookies): string {
-        let sessionId: string = miUtemCookies.find((cookie: any) => cookie.name == "sessionid")?.value || "";
-        let csrfToken: string = miUtemCookies.find((cookie: any) => cookie.name == "csrftoken")?.value || "";
+    public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[]): string {
+        let sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
+        let csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
 
         return sessionId + csrfToken + "|" + sigaBearerToken;
     }
