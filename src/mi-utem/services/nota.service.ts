@@ -1,187 +1,60 @@
-import { Page, SetCookie } from "puppeteer";
-import { browser } from "../../app";
 import Evaluacion from "../../core/models/evaluacion.model";
 import SeccionAsignatura from "../../core/models/seccion-asignatura.model";
 import Semestre from "../../core/models/semestre.model";
 import GenericError from "../../infrastructure/models/error.model";
+import Cookie from "../../infrastructure/models/cookie.model";
+import {MiUtemAuthService} from "./auth.service";
+import axios from "axios";
+import * as cheerio from "cheerio";
 
 export class MiUtemNotaService {
-  public static async obtenerSeccionesHistoricas(
-    cookies: SetCookie[],
-    soloNotas: boolean = true
-  ): Promise<SeccionAsignatura[] | Semestre[]> {
-    const page: Page = await browser.newPage();
-    try {
-      const semestreSel = "#accordion > .collapse";
+    public static async obtenerSeccionesHistoricas(cookies: Cookie[], soloNotas: boolean = true): Promise<SeccionAsignatura[] | Semestre[]> {
+        await MiUtemAuthService.cookiesValidas(cookies); // No necesitamos las cookies, solo que sean validas
 
-      await page.setRequestInterception(true);
-      page.on("request", (request) => {
-        if (
-          ["image", "stylesheet", "font", "script", "other", "xhr"].includes(
-            request.resourceType()
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
-
-      await page.setCookie(...cookies);
-
-      await page.goto(
-        `${process.env.MI_UTEM_URL}/academicos/mi-bitacora-notas${ref}`,
-        { waitUntil: "networkidle2" }
-      );
-
-      try {
-        await page.waitForSelector(semestreSel, {
-          timeout: 5000,
-        });
-      } catch (error) {
-        const url: string = await page.url();
-        if (url.startsWith(`${process.env.MI_UTEM_URL}`)) {
-          throw error;
-        } else {
-          throw GenericError.MI_UTEM_EXPIRO;
-        }
-      }
-
-      const semestres = await page.evaluate(() => {
-        const semestreSel = "#accordion > .div-card-notas";
-        const tablaNotasSel = "#accordion > .collapse";
-
-        const tablasNotas = Array.from(
-          document.querySelectorAll(tablaNotasSel)
-        );
-
-        const semestres: Semestre[] = tablasNotas.map((tablaNotas, i) => {
-          const filasHeadSel = "div > div > div > table > thead > tr";
-          const filasHead = Array.from(
-            tablaNotas.querySelectorAll(filasHeadSel)
-          );
-
-          const filasBodySel = "div > div > div > table > tbody > tr";
-          const filasBody = Array.from(
-            tablaNotas.querySelectorAll(filasBodySel)
-          );
-
-          let seccionesConNotas: SeccionAsignatura[] = filasBody.map((fila) => {
-            const columnas: HTMLTableCellElement[] = Array.from(
-              fila.querySelectorAll("td")
-            );
-            const codigo: string = columnas[1]?.textContent
-              .split(" ")[0]
-              .trim();
-
-            const nombre: string = columnas[1]?.textContent
-              .split(" ")
-              .slice(1)
-              .join(" ")
-              .trim();
-            const tipoHora: string = columnas[2]?.textContent;
-
-            let estado: string;
-            let notaExamen: number;
-            let notaPresentacion: number;
-            let notaFinal: number;
-            let notasParciales: Evaluacion[] = [];
-
-            if (filasBody.length >= filasHead.length) {
-              const notaFinalInputEl =
-                columnas[columnas.length - 1].querySelector("input");
-
-              notaFinal = notaFinalInputEl
-                ? parseFloat(
-                    notaFinalInputEl.getAttribute("value").replace(",", ".")
-                  )
-                : null;
-              notaExamen = parseFloat(
-                columnas[columnas.length - 3]?.textContent
-                  .trim()
-                  .replace(",", ".")
-              );
-              notaPresentacion = parseFloat(
-                columnas[columnas.length - 2]?.textContent
-                  .trim()
-                  .replace(",", ".")
-              );
-
-              if (
-                notaFinalInputEl &&
-                notaFinalInputEl.classList.contains("input_success")
-              ) {
-                estado = "Aprobado";
-              } else if (
-                notaFinalInputEl &&
-                notaFinalInputEl.classList.contains("input_danger")
-              ) {
-                estado = "Reprobado";
-              } else {
-                estado = "Inscrito";
-              }
-
-              const columnasEvaluaciones = columnas.slice(3, -3);
-              notasParciales = columnasEvaluaciones.map(
-                (columnaEvaluacion, i) => {
-                  const porcentajeSel = ".z > b";
-                  const notaSel = ".z > .x > .y";
-
-                  const porcentaje = parseInt(
-                    columnaEvaluacion
-                      .querySelector(porcentajeSel)
-                      ?.textContent.trim()
-                      .replace("%", "")
-                  );
-                  const nota = parseFloat(
-                    columnaEvaluacion.querySelector(notaSel)?.textContent.trim()
-                  );
-
-                  if (nota || porcentaje) {
-                    return { porcentaje, nota };
-                  } else {
-                    return null;
-                  }
-                }
-              );
-              notasParciales = notasParciales.filter((n) => n != null);
+        const notas = await axios.get(`${process.env.MI_UTEM_URL}/academicos/mi-bitacora-notas`, { // Obtiene el html de las notas.
+            headers: {
+                Cookie: cookies.map(it => it.raw).join(";"),
             }
+        });
+        const $ = cheerio.load(notas.data) // Carda el html
 
-            return {
-              codigo,
-              nombre,
-              tipoHora,
-              estado,
-              notasParciales,
-              notaExamen,
-              notaPresentacion,
-              notaFinal,
-            };
-          });
-          return {
-            semestre: Array.from(document.querySelectorAll(semestreSel))[
-              i
-            ]?.textContent.trim(),
-            secciones: seccionesConNotas,
-          };
+        const semestres: Semestre[] = [];
+        $('#accordion > .div-card-notas').each((_, el) => {
+            const secciones: SeccionAsignatura[] = []
+            $(`div[id=${$(el).find('div > .card-notas').attr('data-target').replace('#', '')}]`).find('tbody > tr').each((_, columna) => {
+                const notas: Evaluacion[] = []
+                $(columna).find('td:nth-child(n+4):nth-last-child(n+4)').map((_, columna) => {
+                    const porcentaje = parseInt($(columna).find('.z > b').text().trim().replace('%', ''))
+                    const nota = parseFloat($(columna).find('.z > .x > .y').text().trim())
+                    return porcentaje || nota ? { porcentaje, nota } : null
+                }).get().filter(it => it).forEach(it => notas.push(it))
+
+                secciones.push({
+                    codigo: $(columna).find('td:nth-child(2)').text().split(' ')[0].trim().split(' ')[0],
+                    nombre: $(columna).find('td:nth-child(2)').text(),
+                    tipoHora: $(columna).find('td:nth-child(3)').text().trim(),
+                    estado: $(columna).find('td:last-child > input').hasClass('input_success') ? 'Aprobado' : $(columna).find('td:last-child > input').hasClass('input_danger') ? 'Reprobado' : 'Inscrito',
+                    notasParciales: notas,
+                    notaExamen: parseFloat($(columna).find('td:nth-last-child(2)').text().trim().replace(',', '.')),
+                    notaPresentacion: parseFloat($(columna).find('td:nth-last-child(3)').text().trim().replace(',', '.')),
+                    notaFinal: parseFloat($(columna).find('td:nth-last-child(1)').text().trim().replace(',', '.')),
+                });
+            })
+
+            semestres.push({
+                secciones,
+            });
         });
 
-        return semestres;
-      });
 
-      if (soloNotas) {
-        let secciones: SeccionAsignatura[] = [];
-        semestres.map((s) => {
-          secciones = [...secciones, ...s.secciones];
-        });
-        return secciones;
-      } else {
-        return semestres;
-      }
-    } catch (error) {
-      throw error;
-    } finally {
-      page.close();
+        if (soloNotas) {
+            let secciones: SeccionAsignatura[] = [];
+            semestres.map((s) => {
+                secciones = [...secciones, ...s.secciones];
+            });
+            return secciones;
+        } else {
+            return semestres;
+        }
     }
-  }
 }
