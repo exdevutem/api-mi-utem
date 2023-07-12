@@ -1,66 +1,24 @@
-import { Page, Request } from "puppeteer";
-import { browser } from "../../app";
+import axios from "axios";
+import * as cheerio from 'cheerio'
 
 export class PasaportePasswordService {
-  public static async resetPassword(correo: string): Promise<{
-    enviado: boolean;
-    mensaje: string;
-  }> {
-    const correoInputSel: string = "#email";
-    const submitButtonSel: string = "#btnld";
+    public static async resetPassword(correo: string): Promise<{ enviado: boolean, mensaje: string}> {
+        const page = await axios.get(`${process.env.PASAPORTE_UTEM_URL}/reset`)
+        const $ = cheerio.load(page.data);
 
-    const page: Page = await browser.newPage();
+        const csrftoken = $('input[name="csrf_token"]').val()
 
-    try {
-      await page.setRequestInterception(true);
-      page.on("request", (request: Request) => {
-        if (
-          ["image", "stylesheet", "font", "other", "xhr", "script"].includes(
-            request.resourceType()
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
-
-      await page.goto(`${process.env.PASAPORTE_UTEM_URL}/reset`, {
-        waitUntil: "networkidle2",
-      });
-
-      await page.type(correoInputSel, correo);
-      await Promise.all([
-        page.click(submitButtonSel),
-        page.waitForNavigation({ waitUntil: "networkidle2" }),
-      ]);
-
-      const result: {
-        enviado: boolean;
-        mensaje: string;
-      } = await page.evaluate(() => {
-        const alertSel = "body > div > div > div > section > div.alert";
-
-        const alertEl = document.querySelector(alertSel);
-
-        const enviado = alertEl.classList.contains("alert-success");
-        const mensaje = alertEl.textContent
-          .split("\n")
-          .map((e) => e.trim())
-          .join(" ")
-          .trim();
+        try {
+            await axios.post(`${process.env.PASAPORTE_UTEM_URL}/reset`, `email=${correo}&csrf_token=${csrftoken}`, {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            });
+        } catch {} // Ignorar error
 
         return {
-          enviado,
-          mensaje,
-        };
-      });
-
-      return result;
-    } catch (error) {
-      throw error;
-    } finally {
-      page.close();
+            enviado: true,
+            mensaje: 'Si el correo existe obtendrás un link para reiniciar tu contraseña. Revisa tu bandeja de entrada y spam.', // Esto debido a que algunas veces el sitio retorna error 500
+        }
     }
-  }
 }

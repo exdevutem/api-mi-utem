@@ -5,11 +5,7 @@ import Permiso from "../models/permiso.model";
 import Cookie from "../../infrastructure/models/cookie.model";
 
 export class PermisoController {
-    public static async getAll(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): Promise<void> {
+    public static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const correo: string = req.body.correo;
             const contrasenia: string = req.body.contrasenia;

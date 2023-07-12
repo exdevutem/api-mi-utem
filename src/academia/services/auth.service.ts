@@ -22,7 +22,7 @@ export class AcademiaUserService {
             state: uuid(),
         })
 
-        const [loginResponse] = await KeycloakUserService.loginSSO({ uri: oauthUri, esperaRedireccion: true, correo, contrasenia }) // Inicia sesión en sso
+        const [loginResponse] = await KeycloakUserService.loginSSO({ oauthUri, esperaRedireccion: true, correo, contrasenia }) // Inicia sesión en sso
 
         const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
 

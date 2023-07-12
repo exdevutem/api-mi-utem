@@ -65,4 +65,8 @@ export default class Cookie {
 
         return newCookies
     }
+
+    static header(cookies: Cookie[]) {
+        return cookies.map(it => it.raw).join(';')
+    }
 }
