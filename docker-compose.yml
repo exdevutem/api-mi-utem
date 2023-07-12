@@ -1,8 +1,12 @@
 version: "3"
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - 3000:3000
+    app:
+        image: 'node:latest'
+        container_name: 'app'
+        restart: 'always'
+        working_dir: '/app'
+        volumes:
+            - '.:/app'
+        ports:
+            - '${FORWARD_APP_PORT:-3000}:3000'
+        command: 'yarn start'
