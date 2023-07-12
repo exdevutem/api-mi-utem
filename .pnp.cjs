@@ -54,9 +54,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemon", "npm:2.0.22"],\
             ["openid-client", "npm:5.4.2"],\
             ["pdf-parse", "npm:1.1.1"],\
-            ["puppeteer", "npm:20.7.4"],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["puppeteer-extra-plugin-stealth", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:2.11.2"],\
+            ["qs", "npm:6.11.2"],\
             ["random-useragent", "npm:0.5.0"],\
             ["readline", "npm:1.3.0"],\
             ["ts-node", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:10.9.1"],\
@@ -3280,16 +3278,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["@types/debug", [\
-        ["npm:4.1.8", {\
-          "packageLocation": "./.yarn/cache/@types-debug-npm-4.1.8-a04e2ca136-a9a9bb40a1.zip/node_modules/@types/debug/",\
-          "packageDependencies": [\
-            ["@types/debug", "npm:4.1.8"],\
-            ["@types/ms", "npm:0.7.31"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["@types/express", [\
         ["npm:4.17.17", {\
           "packageLocation": "./.yarn/cache/@types-express-npm-4.17.17-46fe8173db-0196dacc27.zip/node_modules/@types/express/",\
@@ -3425,15 +3413,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@types/morgan", "npm:1.9.4"],\
             ["@types/node", "npm:20.4.0"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@types/ms", [\
-        ["npm:0.7.31", {\
-          "packageLocation": "./.yarn/cache/@types-ms-npm-0.7.31-ea3b89342b-daadd354ae.zip/node_modules/@types/ms/",\
-          "packageDependencies": [\
-            ["@types/ms", "npm:0.7.31"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -4763,20 +4742,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["clone-deep", [\
-        ["npm:0.2.4", {\
-          "packageLocation": "./.yarn/cache/clone-deep-npm-0.2.4-ba170bfeb4-bcf9752052.zip/node_modules/clone-deep/",\
-          "packageDependencies": [\
-            ["clone-deep", "npm:0.2.4"],\
-            ["for-own", "npm:0.1.5"],\
-            ["is-plain-object", "npm:2.0.4"],\
-            ["kind-of", "npm:3.2.2"],\
-            ["lazy-cache", "npm:1.0.4"],\
-            ["shallow-clone", "npm:0.1.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["collection-visit", [\
         ["npm:1.0.0", {\
           "packageLocation": "./.yarn/cache/collection-visit-npm-1.0.0-aba2d5defc-15d9658fe6.zip/node_modules/collection-visit/",\
@@ -5364,15 +5329,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/deep-is-npm-0.1.4-88938b5a67-edb65dd0d7.zip/node_modules/deep-is/",\
           "packageDependencies": [\
             ["deep-is", "npm:0.1.4"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["deepmerge", [\
-        ["npm:4.3.1", {\
-          "packageLocation": "./.yarn/cache/deepmerge-npm-4.3.1-4f751a0844-2024c6a980.zip/node_modules/deepmerge/",\
-          "packageDependencies": [\
-            ["deepmerge", "npm:4.3.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -6354,26 +6310,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["for-in", [\
-        ["npm:0.1.8", {\
-          "packageLocation": "./.yarn/cache/for-in-npm-0.1.8-6a0f87e438-f5bdad7811.zip/node_modules/for-in/",\
-          "packageDependencies": [\
-            ["for-in", "npm:0.1.8"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:1.0.2", {\
           "packageLocation": "./.yarn/cache/for-in-npm-1.0.2-37e3d7aae5-09f4ae93ce.zip/node_modules/for-in/",\
           "packageDependencies": [\
-            ["for-in", "npm:1.0.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["for-own", [\
-        ["npm:0.1.5", {\
-          "packageLocation": "./.yarn/cache/for-own-npm-0.1.5-cb55c5cc60-07eb0a2e98.zip/node_modules/for-own/",\
-          "packageDependencies": [\
-            ["for-own", "npm:0.1.5"],\
             ["for-in", "npm:1.0.2"]\
           ],\
           "linkType": "HARD"\
@@ -7823,14 +7762,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["kind-of", [\
-        ["npm:2.0.1", {\
-          "packageLocation": "./.yarn/cache/kind-of-npm-2.0.1-edc403c4d6-043df2943e.zip/node_modules/kind-of/",\
-          "packageDependencies": [\
-            ["kind-of", "npm:2.0.1"],\
-            ["is-buffer", "npm:1.1.6"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:3.2.2", {\
           "packageLocation": "./.yarn/cache/kind-of-npm-3.2.2-7deaffa5f9-e898df8ca2.zip/node_modules/kind-of/",\
           "packageDependencies": [\
@@ -7888,22 +7819,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["labeled-stream-splicer", "npm:2.0.2"],\
             ["inherits", "npm:2.0.4"],\
             ["stream-splicer", "npm:2.0.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["lazy-cache", [\
-        ["npm:0.2.7", {\
-          "packageLocation": "./.yarn/cache/lazy-cache-npm-0.2.7-8dd3e8d6b1-b4538aff20.zip/node_modules/lazy-cache/",\
-          "packageDependencies": [\
-            ["lazy-cache", "npm:0.2.7"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
-        ["npm:1.0.4", {\
-          "packageLocation": "./.yarn/cache/lazy-cache-npm-1.0.4-0e91150466-e6650c22e5.zip/node_modules/lazy-cache/",\
-          "packageDependencies": [\
-            ["lazy-cache", "npm:1.0.4"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -8239,18 +8154,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["merge-deep", [\
-        ["npm:3.0.3", {\
-          "packageLocation": "./.yarn/cache/merge-deep-npm-3.0.3-e96944214b-d2eb367b83.zip/node_modules/merge-deep/",\
-          "packageDependencies": [\
-            ["merge-deep", "npm:3.0.3"],\
-            ["arr-union", "npm:3.1.0"],\
-            ["clone-deep", "npm:0.2.4"],\
-            ["kind-of", "npm:3.2.2"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["merge-descriptors", [\
         ["npm:1.0.1", {\
           "packageLocation": "./.yarn/cache/merge-descriptors-npm-1.0.1-615287aaa8-5abc259d2a.zip/node_modules/merge-descriptors/",\
@@ -8309,9 +8212,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["nodemon", "npm:2.0.22"],\
             ["openid-client", "npm:5.4.2"],\
             ["pdf-parse", "npm:1.1.1"],\
-            ["puppeteer", "npm:20.7.4"],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["puppeteer-extra-plugin-stealth", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:2.11.2"],\
+            ["qs", "npm:6.11.2"],\
             ["random-useragent", "npm:0.5.0"],\
             ["readline", "npm:1.3.0"],\
             ["ts-node", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:10.9.1"],\
@@ -8557,17 +8458,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["mixin-deep", "npm:1.3.2"],\
             ["for-in", "npm:1.0.2"],\
             ["is-extendable", "npm:1.0.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["mixin-object", [\
-        ["npm:2.0.1", {\
-          "packageLocation": "./.yarn/cache/mixin-object-npm-2.0.1-adaa8c630a-7d0eb7c2f0.zip/node_modules/mixin-object/",\
-          "packageDependencies": [\
-            ["mixin-object", "npm:2.0.1"],\
-            ["for-in", "npm:0.1.8"],\
-            ["is-extendable", "npm:0.1.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -9805,153 +9695,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["puppeteer-extra", [\
-        ["npm:3.3.6", {\
-          "packageLocation": "./.yarn/cache/puppeteer-extra-npm-3.3.6-b51c4429e5-d3097a1695.zip/node_modules/puppeteer-extra/",\
-          "packageDependencies": [\
-            ["puppeteer-extra", "npm:3.3.6"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6", {\
-          "packageLocation": "./.yarn/__virtual__/puppeteer-extra-virtual-62a449ce95/0/cache/puppeteer-extra-npm-3.3.6-b51c4429e5-d3097a1695.zip/node_modules/puppeteer-extra/",\
-          "packageDependencies": [\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["@types/debug", "npm:4.1.8"],\
-            ["@types/puppeteer", "npm:7.0.4"],\
-            ["@types/puppeteer-core", null],\
-            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.4"],\
-            ["deepmerge", "npm:4.3.1"],\
-            ["puppeteer", "npm:20.7.4"],\
-            ["puppeteer-core", null]\
-          ],\
-          "packagePeers": [\
-            "@types/puppeteer-core",\
-            "@types/puppeteer",\
-            "puppeteer-core",\
-            "puppeteer"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["puppeteer-extra-plugin", [\
-        ["npm:3.2.3", {\
-          "packageLocation": "./.yarn/cache/puppeteer-extra-plugin-npm-3.2.3-9b25dc26f6-18c2780a15.zip/node_modules/puppeteer-extra-plugin/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin", "npm:3.2.3"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:3.2.3", {\
-          "packageLocation": "./.yarn/__virtual__/puppeteer-extra-plugin-virtual-c523e8b996/0/cache/puppeteer-extra-plugin-npm-3.2.3-9b25dc26f6-18c2780a15.zip/node_modules/puppeteer-extra-plugin/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:3.2.3"],\
-            ["@types/debug", "npm:4.1.8"],\
-            ["@types/playwright-extra", null],\
-            ["@types/puppeteer-extra", null],\
-            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.4"],\
-            ["merge-deep", "npm:3.0.3"],\
-            ["playwright-extra", null],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"]\
-          ],\
-          "packagePeers": [\
-            "@types/playwright-extra",\
-            "@types/puppeteer-extra",\
-            "playwright-extra",\
-            "puppeteer-extra"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["puppeteer-extra-plugin-stealth", [\
-        ["npm:2.11.2", {\
-          "packageLocation": "./.yarn/cache/puppeteer-extra-plugin-stealth-npm-2.11.2-5c9b50bdf9-13ab2b906c.zip/node_modules/puppeteer-extra-plugin-stealth/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-stealth", "npm:2.11.2"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:2.11.2", {\
-          "packageLocation": "./.yarn/__virtual__/puppeteer-extra-plugin-stealth-virtual-ea37c40502/0/cache/puppeteer-extra-plugin-stealth-npm-2.11.2-5c9b50bdf9-13ab2b906c.zip/node_modules/puppeteer-extra-plugin-stealth/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-stealth", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:2.11.2"],\
-            ["@types/playwright-extra", null],\
-            ["@types/puppeteer-extra", null],\
-            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.4"],\
-            ["playwright-extra", null],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["puppeteer-extra-plugin", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:3.2.3"],\
-            ["puppeteer-extra-plugin-user-preferences", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:2.4.1"]\
-          ],\
-          "packagePeers": [\
-            "@types/playwright-extra",\
-            "@types/puppeteer-extra",\
-            "playwright-extra",\
-            "puppeteer-extra"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["puppeteer-extra-plugin-user-data-dir", [\
-        ["npm:2.4.1", {\
-          "packageLocation": "./.yarn/cache/puppeteer-extra-plugin-user-data-dir-npm-2.4.1-dfb6c781e0-f360b3bb22.zip/node_modules/puppeteer-extra-plugin-user-data-dir/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-user-data-dir", "npm:2.4.1"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:a875c3cf0e5075ac5fe08ff144f2cb6f1cd69b398d044b39ba53470e3d5505ec43a2e04d8c7c4be16176e10d1105f2bb055fb4069a44f4ea05a07804e9881aa7#npm:2.4.1", {\
-          "packageLocation": "./.yarn/__virtual__/puppeteer-extra-plugin-user-data-dir-virtual-747ab9c91e/0/cache/puppeteer-extra-plugin-user-data-dir-npm-2.4.1-dfb6c781e0-f360b3bb22.zip/node_modules/puppeteer-extra-plugin-user-data-dir/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-user-data-dir", "virtual:a875c3cf0e5075ac5fe08ff144f2cb6f1cd69b398d044b39ba53470e3d5505ec43a2e04d8c7c4be16176e10d1105f2bb055fb4069a44f4ea05a07804e9881aa7#npm:2.4.1"],\
-            ["@types/playwright-extra", null],\
-            ["@types/puppeteer-extra", null],\
-            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.4"],\
-            ["fs-extra", "npm:10.1.0"],\
-            ["playwright-extra", null],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["puppeteer-extra-plugin", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:3.2.3"],\
-            ["rimraf", "npm:3.0.2"]\
-          ],\
-          "packagePeers": [\
-            "@types/playwright-extra",\
-            "@types/puppeteer-extra",\
-            "playwright-extra",\
-            "puppeteer-extra"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["puppeteer-extra-plugin-user-preferences", [\
-        ["npm:2.4.1", {\
-          "packageLocation": "./.yarn/cache/puppeteer-extra-plugin-user-preferences-npm-2.4.1-4d65467f44-e0e50145d1.zip/node_modules/puppeteer-extra-plugin-user-preferences/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-user-preferences", "npm:2.4.1"]\
-          ],\
-          "linkType": "SOFT"\
-        }],\
-        ["virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:2.4.1", {\
-          "packageLocation": "./.yarn/__virtual__/puppeteer-extra-plugin-user-preferences-virtual-a875c3cf0e/0/cache/puppeteer-extra-plugin-user-preferences-npm-2.4.1-4d65467f44-e0e50145d1.zip/node_modules/puppeteer-extra-plugin-user-preferences/",\
-          "packageDependencies": [\
-            ["puppeteer-extra-plugin-user-preferences", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:2.4.1"],\
-            ["@types/playwright-extra", null],\
-            ["@types/puppeteer-extra", null],\
-            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.4"],\
-            ["deepmerge", "npm:4.3.1"],\
-            ["playwright-extra", null],\
-            ["puppeteer-extra", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:3.3.6"],\
-            ["puppeteer-extra-plugin", "virtual:ea37c40502fcae813cc21b2b0e9662a62ed1cd37f6e1a74688c6588da2d549c73de3d97678d5b53a8694c98f3ace661808643e33e163cf4ad4066f076d6b1c07#npm:3.2.3"],\
-            ["puppeteer-extra-plugin-user-data-dir", "virtual:a875c3cf0e5075ac5fe08ff144f2cb6f1cd69b398d044b39ba53470e3d5505ec43a2e04d8c7c4be16176e10d1105f2bb055fb4069a44f4ea05a07804e9881aa7#npm:2.4.1"]\
-          ],\
-          "packagePeers": [\
-            "@types/playwright-extra",\
-            "@types/puppeteer-extra",\
-            "playwright-extra",\
-            "puppeteer-extra"\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
       ["purgecss", [\
         ["npm:4.1.3", {\
           "packageLocation": "./.yarn/cache/purgecss-npm-4.1.3-9099a5bb50-508613f904.zip/node_modules/purgecss/",\
@@ -10563,19 +10306,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["sha.js", "npm:2.4.11"],\
             ["inherits", "npm:2.0.4"],\
             ["safe-buffer", "npm:5.2.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["shallow-clone", [\
-        ["npm:0.1.2", {\
-          "packageLocation": "./.yarn/cache/shallow-clone-npm-0.1.2-a6ddd26af6-cc4c85c6e4.zip/node_modules/shallow-clone/",\
-          "packageDependencies": [\
-            ["shallow-clone", "npm:0.1.2"],\
-            ["is-extendable", "npm:0.1.1"],\
-            ["kind-of", "npm:2.0.1"],\
-            ["lazy-cache", "npm:0.2.7"],\
-            ["mixin-object", "npm:2.0.1"]\
           ],\
           "linkType": "HARD"\
         }]\
