@@ -10,7 +10,7 @@ export class AcademiaUserService {
         const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/utem`)
         const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
             client_id: 'academiaClient',
-            client_secret: '36a42b74-eff1-40c4-b530-e5fd06332895',
+            client_secret: ${process.env.ACADEMIA_CLIENT_SECRET},
         });
 
         let oauthUri = client.authorizationUrl({ // Genera el link de autorización sso
