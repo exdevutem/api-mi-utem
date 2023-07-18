@@ -114,24 +114,6 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
-### yarn ###
-# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
-
-.yarn/*
-.yarn/install-state.gz
-.yarn/unplugged
-!.yarn/cache
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-!yarn.lock
-!.yarnrc.yml
-
-# Yarn Integrity file
-.yarn-integrity
-
 # dotenv environment variables file
 .env
 .env.test
@@ -244,6 +226,25 @@ nohup.out
 
 ### IDEA (JetBrains)
 .idea/
+
+### yarn ###
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+
+.yarn/*
+.yarn/install-state.gz
+.yarn/unplugged
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+!yarn.lock
+!.yarnrc.yml
+# Yarn PnP (cached zip files)
+.yarn/cache
+
+# Yarn Integrity file
+.yarn-integrity
 
 # Custom files
 mi-utem-inndev-credentials.json
