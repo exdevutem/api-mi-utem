@@ -3,8 +3,8 @@ import GenericError from "../../infrastructure/models/error.model";
 import CredentialsUtils from "../../infrastructure/utils/credentials.utils";
 import {SigaApiAuthService} from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
-// import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
-// import {MiUtemUserService} from "../../mi-utem/services/user.service";
+import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
+import {MiUtemUserService} from "../../mi-utem/services/user.service";
 import Cookie from "../../infrastructure/models/cookie.model";
 
 export class AuthController {
@@ -16,9 +16,9 @@ export class AuthController {
       const usuarioSiga = await SigaApiAuthService.loginAndGetProfile(correo, contrasenia);
       const sigaToken = usuarioSiga.token
 
-      let cookies: Cookie[] = []// = await MiUtemAuthService.loginAndGetCookies(correo, contrasenia)
+      let cookies: Cookie[] = await MiUtemAuthService.loginAndGetCookies(correo, contrasenia)
 
-      let usuarioMiUtem: Usuario// = await MiUtemUserService.getProfile(cookies)
+      let usuarioMiUtem: Usuario = await MiUtemUserService.getProfile(cookies)
 
       if (!sigaToken) {
         throw GenericError.SIGA_UTEM_ERROR
