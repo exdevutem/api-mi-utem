@@ -5,13 +5,10 @@ import Cookie from "../../infrastructure/models/cookie.model";
 import {MiUtemAuthService} from "./auth.service";
 import axios from "axios";
 import * as cheerio from "cheerio";
-import GenericLogger from "../../infrastructure/utils/logger.utils";
 
 export class MiUtemNotaService {
     public static async obtenerSeccionesHistoricas(cookies: Cookie[], soloNotas: boolean = true): Promise<SeccionAsignatura[] | Semestre[]> {
         await MiUtemAuthService.cookiesValidas(cookies); // No necesitamos las cookies, solo que sean válidas
-
-        GenericLogger.log({ message: 'Using cheerio!'})
 
         const notas = await axios.get(`${process.env.MI_UTEM_URL}/academicos/mi-bitacora-notas`, { // Obtiene el html de las notas.
             headers: {
