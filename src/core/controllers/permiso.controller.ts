@@ -1,15 +1,11 @@
-import { NextFunction, Request, Response } from "express";
-import { Cookie } from "puppeteer";
-import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
-import { MiUtemPermisoService } from "../../mi-utem/services/permiso.service";
+import {NextFunction, Request, Response} from "express";
+import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
+import {MiUtemPermisoService} from "../../mi-utem/services/permiso.service";
 import Permiso from "../models/permiso.model";
+import Cookie from "../../infrastructure/models/cookie.model";
 
 export class PermisoController {
-  public static async getAll(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const correo: string = req.body.correo;
       const contrasenia: string = req.body.contrasenia;
@@ -28,11 +24,7 @@ export class PermisoController {
     }
   }
 
-  public static async getOne(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async getOne(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const correo: string = req.body.correo;
       const contrasenia: string = req.body.contrasenia;

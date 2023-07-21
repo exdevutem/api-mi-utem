@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
-import { Cookie, SetCookie } from "puppeteer";
 import Usuario from "../../core/models/usuario.model";
+import Cookie from "../models/cookie.model";
 
 export default class CredentialsUtils {
-  public static getMiUtemCookies(token: string): SetCookie[] {
+  public static getMiUtemCookies(token: string) {
     const cookies: string = token.split("|")[0];
     const sessionId: string = cookies.slice(0, 32);
     const csrfToken: string = cookies.slice(32);
@@ -75,28 +75,14 @@ export default class CredentialsUtils {
     return token.split("|")[1];
   }
 
-  public static createToken(
-    sigaBearerToken: string,
-    miUtemCookies: Cookie[]
-  ): string {
-    let sessionId: string = "";
-    let csrfToken: string = "";
-
-    if (miUtemCookies) {
-      for (const cookie of miUtemCookies) {
-        if (cookie.name == "sessionid") {
-          sessionId = cookie.value;
-        }
-        if (cookie.name == "csrftoken") {
-          csrfToken = cookie.value;
-        }
-      }
-    }
+  public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[]): string {
+    let sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
+    let csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
 
     return sessionId + csrfToken + "|" + sigaBearerToken;
   }
 
-  public static get emptyCookies(): SetCookie[] {
+  public static get emptyCookies(): object {
     return [
       {
         name: "sessionid",

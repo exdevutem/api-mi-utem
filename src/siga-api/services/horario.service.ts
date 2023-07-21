@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from "axios";
 import qs from "qs";
 import Horario from "../../core/models/horario.model";
 

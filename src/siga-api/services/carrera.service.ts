@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from "axios";
 import qs from "qs";
 import Carrera from "../../core/models/carrera.model";
 
@@ -7,7 +7,7 @@ export class SigaApiCarreraService {
     const uri: string = "/estudiante/carreras/";
     const url: string = `${process.env.SIGA_API_URL}${uri}`;
 
-    let res: AxiosResponse = await axios.post(url, qs.stringify({ token }), {
+    let res: AxiosResponse = await axios.post(url, qs.stringify({token}), {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Host: "siga.utem.cl",

@@ -1,336 +1,78 @@
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from "axios";
 import FormData from "form-data";
 import moment from "moment";
 import pdf from "pdf-parse";
-import { Page, Request, SetCookie } from "puppeteer";
-import { browser } from "../../app";
 import Permiso from "../../core/models/permiso.model";
 import GenericError from "../../infrastructure/models/error.model";
+import Cookie from "../../infrastructure/models/cookie.model";
+import {MiUtemAuthService} from "./auth.service";
 
 export class MiUtemPermisoService {
-  public static async getSolicitudesDisponibles(
-    cookies: SetCookie[]
-  ): Promise<Permiso[]> {
-    const page: Page = await browser.newPage();
-    try {
-      const csrfmiddlewaretokenInputSel: string =
-        "input[name='csrfmiddlewaretoken']";
 
-      await page.setRequestInterception(true);
-      page.on("request", (request: Request) => {
-        if (
-          ["image", "stylesheet", "font", "other", "xhr", "script"].includes(
-            request.resourceType()
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
+  public static async getPermisos(cookies: Cookie[]): Promise<Permiso[]> {
+    const [sessionId, csrfToken] = await MiUtemAuthService.cookiesValidas(cookies);
 
-      await page.setCookie(...cookies);
-      await page.goto(`${process.env.MI_UTEM_URL}`, {
-        waitUntil: "networkidle2",
-      });
+    const formData = new FormData();
+    formData.append("csrfmiddlewaretoken", csrfToken);
+    formData.append("tipo_envio", "4");
 
-      try {
-        await page.waitForSelector(csrfmiddlewaretokenInputSel, {
-          timeout: 5000,
-        });
-      } catch (error) {
-        const url = await page.url();
-        if (url.startsWith(`${process.env.MI_UTEM_URL}`)) {
-          throw error;
-        } else {
-          throw GenericError.MI_UTEM_EXPIRO;
-        }
+    let res: AxiosResponse = await axios.post(`${process.env.MI_UTEM_URL}/solicitudes/solicitudes_ingreso`, formData, {
+      headers: {
+        ...formData.getHeaders(),
+        ...{
+          "X-Requested-With": "XMLHttpRequest",
+          Host: "mi.utem.cl",
+          Cookie: `MIUTEM=miutem1; csrftoken=${csrfToken}; sessionid=${sessionId}`,
+        },
       }
+    });
 
-      const csrfmiddlewaretoken: string = await page.evaluate(() => {
-        const csrfmiddlewaretokenInputSel = "input[name='csrfmiddlewaretoken']";
+    const permisosJson: any[] = res.data.data;
 
-        const csrfmiddlewaretoken = document
-          .querySelector(csrfmiddlewaretokenInputSel)
-          .getAttribute("value");
-
-        return csrfmiddlewaretoken;
-      });
-
-      const sessionId: string = cookies.find(
-        (e) => e.name == "sessionid"
-      ).value;
-      const csrfToken: string = cookies.find(
-        (e) => e.name == "csrftoken"
-      ).value;
-
-      const formData = new FormData();
-      formData.append("csrfmiddlewaretoken", csrfmiddlewaretoken);
-      formData.append("tipo_envio", "1");
-
-      let res: AxiosResponse = await axios.post(
-        `${process.env.MI_UTEM_URL}/solicitudes/solicitudes_ingreso`,
-        formData,
-        {
-          headers: {
-            ...formData.getHeaders(),
-            ...{
-              "X-Requested-With": "XMLHttpRequest",
-              Host: "mi.utem.cl",
-              Cookie: `MIUTEM=miutem1; csrftoken=${csrfToken}; sessionid=${sessionId}`,
-            },
-          },
-        }
-      );
-
-      const html = res.data.html;
-
-      page.setContent(html);
-
-      const permisos: any[] = await page.evaluate(() => {
-        const permisoDivSel: string = "#btn-mdl-notas";
-        const permisosEl: Element[] = Array.from(
-          document.querySelectorAll(permisoDivSel)
-        );
-        return permisosEl.map((permisoEl: Element) => {
-          const tituloSel: string = "div:nth-child(1) > div > span";
-          const descripcionSel: string = "div:nth-child(2) > div > span";
-          const buttonSel: string = "button";
-
-          const titulo: string = permisoEl
-            .querySelector(tituloSel)
-            .textContent.trim();
-          const descripcion: string = permisoEl
-            .querySelector(descripcionSel)
-            .textContent.trim();
-
-          const id: string =
-            permisoEl.querySelector(buttonSel)?.getAttribute("token") ?? null;
-
-          return {
-            id,
-            titulo,
-            descripcion,
-            solicitado: id != null,
-          };
-        });
-      });
-
-      return permisos;
-    } catch (error) {
-      throw error;
-    } finally {
-      page.close();
-    }
+    return permisosJson.map((permisoJson: any) => {
+      return {
+        id: permisoJson.btn_descarga.split("token=")[1].split("=")[0] + "=",
+        perfil: permisoJson.tipo,
+        motivo: permisoJson.motivo,
+        campus: permisoJson.campus != "-" ? permisoJson.campus.toTitleCase() : null,
+        dependencia: permisoJson.edificio != "-" ? permisoJson.edificio.toTitleCase() : null,
+        jornada: permisoJson.jornada,
+        fechaSolicitud: moment(permisoJson.fecha_solicitud, "DD-MM-YYYY").toDate(),
+      };
+    });
   }
 
-  public static async getPermisos(cookies: SetCookie[]): Promise<Permiso[]> {
-    const page: Page = await browser.newPage();
-    try {
-      const csrfmiddlewaretokenInputSel: string =
-        "input[name='csrfmiddlewaretoken']";
+  public static async getDetallePermiso(cookies: Cookie[], permisoId: string): Promise<Permiso> {
+    const [sessionId, csrfToken] = await MiUtemAuthService.cookiesValidas(cookies);
 
-      await page.setRequestInterception(true);
-      page.on("request", (request: Request) => {
-        if (
-          ["image", "stylesheet", "font", "other", "xhr", "script"].includes(
-            request.resourceType()
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
+    const formData = new FormData();
+    formData.append("csrfmiddlewaretoken", csrfToken);
+    formData.append("tipo_envio", "5");
+    formData.append("solicitud", permisoId);
 
-      await page.setCookie(...cookies);
-      await page.goto(`${process.env.MI_UTEM_URL}`, {
-        waitUntil: "networkidle2",
-      });
+    let res: AxiosResponse = await axios.post(`${process.env.MI_UTEM_URL}/solicitudes/solicitudes_ingreso`, formData, {
+      responseType: "arraybuffer",
+      headers: {
+        ...formData.getHeaders(),
+        ...{
+          "X-Requested-With": "XMLHttpRequest",
+          Host: "mi.utem.cl",
+          Cookie: `MIUTEM=miutem1; csrftoken=${csrfToken}; sessionid=${sessionId}`,
+        },
+      },
+    });
 
-      try {
-        await page.waitForSelector(csrfmiddlewaretokenInputSel, {
-          timeout: 5000,
-        });
-      } catch (error) {
-        const url = await page.url();
-        if (url.startsWith(`${process.env.MI_UTEM_URL}`)) {
-          throw error;
-        } else {
-          throw GenericError.MI_UTEM_EXPIRO;
-        }
-      }
-
-      const csrfmiddlewaretoken: string = await page.evaluate(() => {
-        const csrfmiddlewaretokenInputSel = "input[name='csrfmiddlewaretoken']";
-
-        const csrfmiddlewaretoken = document
-          .querySelector(csrfmiddlewaretokenInputSel)
-          .getAttribute("value");
-
-        return csrfmiddlewaretoken;
-      });
-
-      const sessionId: string = cookies.find(
-        (e) => e.name == "sessionid"
-      ).value;
-      const csrfToken: string = cookies.find(
-        (e) => e.name == "csrftoken"
-      ).value;
-
-      const formData = new FormData();
-      formData.append("csrfmiddlewaretoken", csrfmiddlewaretoken);
-      formData.append("tipo_envio", "4");
-
-      let res: AxiosResponse = await axios.post(
-        `${process.env.MI_UTEM_URL}/solicitudes/solicitudes_ingreso`,
-        formData,
-        {
-          headers: {
-            ...formData.getHeaders(),
-            ...{
-              "X-Requested-With": "XMLHttpRequest",
-              Host: "mi.utem.cl",
-              Cookie: `MIUTEM=miutem1; csrftoken=${csrfToken}; sessionid=${sessionId}`,
-            },
-          },
-        }
-      );
-
-      const permisosJson: any[] = res.data.data;
-
-      const permisos: Permiso[] = permisosJson.map((permisoJson: any) => {
-        return {
-          id: permisoJson.btn_descarga.split("token=")[1].split("=")[0] + "=",
-          perfil: permisoJson.tipo,
-          motivo: permisoJson.motivo,
-          campus:
-            permisoJson.campus != "-" ? permisoJson.campus.toTitleCase() : null,
-          dependencia:
-            permisoJson.edificio != "-"
-              ? permisoJson.edificio.toTitleCase()
-              : null,
-          jornada: permisoJson.jornada,
-          fechaSolicitud: moment(
-            permisoJson.fecha_solicitud,
-            "DD-MM-YYYY"
-          ).toDate(),
-        };
-      });
-
-      return permisos;
-    } catch (error) {
-      throw error;
-    } finally {
-      page.close();
+    const dataString = res.data.toString().trim();
+    if (dataString == "" || dataString == "[]" || dataString == "{}" || dataString == "null") {
+      throw GenericError.PERMISO_NO_ENCONTRADO;
     }
+
+    return await this.parsePermisoPdf(res.data, {
+      withBase64File: true,
+    });
   }
 
-  public static async getDetallePermiso(
-    cookies: SetCookie[],
-    permisoId: string
-  ): Promise<Permiso> {
-    const page: Page = await browser.newPage();
-    try {
-      const csrfmiddlewaretokenInputSel: string =
-        "input[name='csrfmiddlewaretoken']";
-
-      await page.setRequestInterception(true);
-      page.on("request", (request: Request) => {
-        if (
-          ["image", "stylesheet", "font", "other", "xhr", "script"].includes(
-            request.resourceType()
-          )
-        ) {
-          request.abort();
-        } else {
-          request.continue();
-        }
-      });
-
-      await page.setCookie(...cookies);
-      await page.goto(`${process.env.MI_UTEM_URL}`, {
-        waitUntil: "networkidle2",
-      });
-
-      try {
-        await page.waitForSelector(csrfmiddlewaretokenInputSel, {
-          timeout: 5000,
-        });
-      } catch (error) {
-        const url = await page.url();
-        if (url.startsWith(`${process.env.MI_UTEM_URL}`)) {
-          throw error;
-        } else {
-          throw GenericError.MI_UTEM_EXPIRO;
-        }
-      }
-
-      const csrfmiddlewaretoken: string = await page.evaluate(() => {
-        const csrfmiddlewaretokenInputSel = "input[name='csrfmiddlewaretoken']";
-
-        const csrfmiddlewaretoken = document
-          .querySelector(csrfmiddlewaretokenInputSel)
-          .getAttribute("value");
-
-        return csrfmiddlewaretoken;
-      });
-
-      const sessionId: string = cookies.find(
-        (e) => e.name == "sessionid"
-      ).value;
-      const csrfToken: string = cookies.find(
-        (e) => e.name == "csrftoken"
-      ).value;
-
-      const formData = new FormData();
-      formData.append("csrfmiddlewaretoken", csrfmiddlewaretoken);
-      formData.append("tipo_envio", "5");
-      formData.append("solicitud", permisoId);
-
-      let res: AxiosResponse = await axios.post(
-        `${process.env.MI_UTEM_URL}/solicitudes/solicitudes_ingreso`,
-        formData,
-
-        {
-          responseType: "arraybuffer",
-          headers: {
-            ...formData.getHeaders(),
-            ...{
-              "X-Requested-With": "XMLHttpRequest",
-              Host: "mi.utem.cl",
-              Cookie: `MIUTEM=miutem1; csrftoken=${csrfToken}; sessionid=${sessionId}`,
-            },
-          },
-        }
-      );
-
-      const dataString = res.data.toString().trim();
-      if (
-        dataString == "" ||
-        dataString == "[]" ||
-        dataString == "{}" ||
-        dataString == "null"
-      ) {
-        throw GenericError.PERMISO_NO_ENCONTRADO;
-      }
-
-      const permiso: Permiso = await this.parsePermisoPdf(res.data, {
-        withBase64File: true,
-      });
-
-      return permiso;
-    } catch (error) {
-      throw error;
-    } finally {
-      page.close();
-    }
-  }
-
-  private static parsePermisoPdf(
-    pdfBuffer: Buffer,
-    options?: { withBase64File: boolean }
-  ): Promise<Permiso> {
+  private static parsePermisoPdf(pdfBuffer: Buffer, options?: { withBase64File: boolean }): Promise<Permiso> {
     return new Promise((resolve, reject) => {
       pdf(pdfBuffer)
         .then(function (data) {
@@ -423,9 +165,9 @@ export class MiUtemPermisoService {
 
           const pdfBase64Object: any = options.withBase64File
             ? {
-                pdfBase64:
-                  "data:application/pdf;base64," + pdfBuffer.toString("base64"),
-              }
+              pdfBase64:
+                "data:application/pdf;base64," + pdfBuffer.toString("base64"),
+            }
             : {};
 
           resolve({

@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import bodyParser from "body-parser";
-import express, { NextFunction, Request, Response } from "express";
-import { readFileSync } from "fs";
+import express, {NextFunction, Request, Response} from "express";
+import {readFileSync} from "fs";
 import http from "http";
 import https from "https";
 import morgan from "morgan";
@@ -30,8 +30,8 @@ export default class Server {
     Sentry.init({
       dsn: process.env.SENTRY_URL,
       integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new Tracing.Integrations.Express({ app: this.app }),
+        new Sentry.Integrations.Http({tracing: true}),
+        new Tracing.Integrations.Express({app: this.app}),
       ],
       tracesSampleRate: 1.0,
     });
@@ -41,7 +41,7 @@ export default class Server {
   }
 
   private config(): void {
-    this.app.use(bodyParser.json({ limit: "50mb" }));
+    this.app.use(bodyParser.json({limit: "50mb"}));
 
     this.app.use(Sentry.Handlers.requestHandler());
     this.app.use(Sentry.Handlers.tracingHandler());

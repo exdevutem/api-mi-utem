@@ -1,16 +1,11 @@
-import { NextFunction, Request, Response } from "express";
+import {NextFunction, Request, Response} from "express";
 import jwt from "jsonwebtoken";
-import { SetCookie } from "puppeteer";
 import Usuario from "../../core/models/usuario.model";
 import GenericError from "../models/error.model";
 import CredentialsUtils from "../utils/credentials.utils";
 
 export class CredentialsMiddleware {
-  public static async isLoggedIn(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       let accessToken: string | undefined = req.headers["authorization"];
       if (accessToken) {
@@ -19,8 +14,7 @@ export class CredentialsMiddleware {
         }
         accessToken = accessToken.slice(7, accessToken.length);
 
-        const miUtemCookies: SetCookie[] =
-          CredentialsUtils.getMiUtemCookies(accessToken);
+        const miUtemCookies: object = CredentialsUtils.getMiUtemCookies(accessToken);
         const sigaToken: string = CredentialsUtils.getSigaToken(accessToken);
 
         res.locals.loggedInUser = {

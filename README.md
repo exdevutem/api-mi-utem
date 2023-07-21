@@ -1,19 +1,31 @@
 # API Mi UTEM
-API REST hecha por estudiantes de la [Universidad Tecnológica Metropolitana de Chile](https://www.utem.cl/) a base de scrapping con Puppeteer a la [plataforma académica Mi.UTEM](https://mi.utem.cl/)
+API REST hecha por estudiantes de la [Universidad Tecnológica Metropolitana de Chile](https://www.utem.cl/) a base de scrapping a la [plataforma académica Mi.UTEM](https://mi.utem.cl/)
 
 ## Para comenzar
 
 ### Requisitos
 -  `nvm`
--  `npm`
-- Node.js 14.16.0
-- Puppeteer
-- Dependencias de Chromium
+-  `yarn`
+- Node.js LTS
 
-#### Instalar `nvm`, `npm` y Node.js
+### Inicio con docker
+Si utilizas docker o prefieres tener un inicio más simple y sin instalar nada, puedes utilizar el siguiente comando para iniciar el proyecto
+
+```bash
+docker compose up -d
+```
+Este comando iniciará el servidor local de la app (y si necesita alguna instalación lo hará automáticamente). Para apagarlo utiliza
+    
+```bash
+docker compose down
+```
+
+Si quieres ver más sobre docker compose, puedes ver la [documentación](https://docs.docker.com/compose/).
+
+#### Instalar `nvm`, `yarn` y Node.js
 1. Primero se instalará `nvm` con el siguiente comando
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 ```
 
 2. Luego para poder ocupar `nvm` en la terminal, se deberá agregar al perfil del bash con
@@ -25,27 +37,19 @@ source  ~/.bash_profile
 3. Teniendo instalado `nvm` y con acceso correcto desde la terminal, se instalará `npm` y Node.js con el siguiente comando
 
 ```bash
-nvm install v14.16.0
+nvm install --lts
 ```
 
 4. Para asegurarse de estar usando la versión de Node.js recién instalada, se sugiere ejecutar lo siguiente
 
 ```bash
-nvm use v14.16.0
+nvm use --lts
 ```
 
-#### Instalar Puppeteer
-1. Teniendo instalado `npm` bastará con el siguiente comando
+5. Finalmente para habilitar yarn debes de usar este comando (también puedes seguir la [documentación de yarn](https://yarnpkg.com/getting-started/install))
 
 ```bash
-sudo npm install -g puppeteer --unsafe-perm=true
-```
-
-#### Instalar dependencias de Chromium
-1. Bastará con ejecutar un comando, por ejemplo el comando en CentOS sería el siguiente
-
-```bash
-sudo yum install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 ipa-gothic-fonts xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc
+corepack enable
 ```
 
 ## Configuración
@@ -81,14 +85,14 @@ SISEI_KEY=123456
 | `SISEI_KEY` | Llave para que el equipo de SISEI pueda hacer algunas consultas. Puede ser cualquier valor. |
 
 ## Ejecución
-1. Antes de ejecutar el proyecto, se deberán instalar las librerías con el siguiente comando
+1. Antes de ejecutar el proyecto, se deberán actualizar las librerías y generar archivos necesarios con este comando
 ```bash
-npm install
+yarn install
 ```
 
 2. Luego para ejecutar el proyecto con
 ```bash
-npm start
+yarn start
 ```
 
 ## Consultas

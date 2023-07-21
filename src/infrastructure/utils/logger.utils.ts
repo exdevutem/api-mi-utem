@@ -1,4 +1,4 @@
-import { createLogger, format, Logger, transports } from "winston";
+import {createLogger, format, Logger, transports} from "winston";
 
 require("dotenv").config();
 
@@ -46,12 +46,12 @@ export default class GenericLogger {
   });
 
   public static log({
-    level = "info",
-    message = "",
-  }: {
+                      level = "info",
+                      message = "",
+                    }: {
     level?: string;
     message?: string;
   }) {
-    this.logger.log({ level, message });
+    this.logger.log({level, message});
   }
 }

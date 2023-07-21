@@ -1,17 +1,13 @@
-import { NextFunction, Request, Response } from "express";
-import { Cookie } from "puppeteer";
-import { MiUtemAsignaturaService } from "../../mi-utem/services/asignatura.service";
-import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
-import { SigaApiAsignaturaService } from "../../siga-api/services/asignatura.service";
+import {NextFunction, Request, Response} from "express";
+import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
+import {SigaApiAsignaturaService} from "../../siga-api/services/asignatura.service";
 import SeccionAsignatura from "../models/seccion-asignatura.model";
 import Semestre from "../models/semestre.model";
+import Cookie from "../../infrastructure/models/cookie.model";
+import {MiUtemNotaService} from "../../mi-utem/services/nota.service";
 
 export class AsignaturaController {
-  public static async getActivasByCarrera(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async getActivasByCarrera(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const sigaToken: string = res.locals.loggedInUser.sigaToken;
       const carreraId: string = req.params.carreraId;
@@ -25,11 +21,7 @@ export class AsignaturaController {
     }
   }
 
-  public static async getNotasByAsignatura(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async getNotasByAsignatura(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const sigaToken: string = res.locals.loggedInUser.sigaToken;
       const carreraId: string = req.params.carreraId;
@@ -48,11 +40,7 @@ export class AsignaturaController {
     }
   }
 
-  public static async getHistoricas(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public static async getHistoricas(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const correo: string = req.body.correo;
       const contrasenia: string = req.body.contrasenia;
@@ -64,7 +52,7 @@ export class AsignaturaController {
       const soloAsignaturas: boolean = req.query.soloAsignaturas == "true";
 
       const asignaturasHistoricas: Semestre[] | SeccionAsignatura[] =
-        await MiUtemAsignaturaService.getAsignaturasHistoricas(
+        await MiUtemNotaService.obtenerSeccionesHistoricas(
           cookies,
           soloAsignaturas
         );

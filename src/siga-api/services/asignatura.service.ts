@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios, {AxiosResponse} from "axios";
 import qs from "qs";
 import Evaluacion from "../../core/models/evaluacion.model";
 import SeccionAsignatura from "../../core/models/seccion-asignatura.model";
@@ -13,7 +13,7 @@ export class SigaApiAsignaturaService {
 
     let res: AxiosResponse = await axios.post(
       url,
-      qs.stringify({ token, carrera_id: carreraId }),
+      qs.stringify({token, carrera_id: carreraId}),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -55,7 +55,7 @@ export class SigaApiAsignaturaService {
 
     let res: AxiosResponse = await axios.post(
       url,
-      qs.stringify({ token, carrera_id: carreraId, seccion_id: asignaturaId }),
+      qs.stringify({token, carrera_id: carreraId, seccion_id: asignaturaId}),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
