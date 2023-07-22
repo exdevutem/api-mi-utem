@@ -241,7 +241,7 @@ nohup.out
 !yarn.lock
 !.yarnrc.yml
 # Yarn PnP (cached zip files)
-.yarn/cache
+!.yarn/cache
 
 # Yarn Integrity file
 .yarn-integrity
