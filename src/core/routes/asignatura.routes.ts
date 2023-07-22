@@ -17,6 +17,7 @@ router.get(
 );
 router.post(
   "/asignaturas/historicas",
+  CredentialsMiddleware.isLoggedIn,
   AsignaturaController.getHistoricas
 );
 router.post("/notas/notificar", NotificacionController.notificate);

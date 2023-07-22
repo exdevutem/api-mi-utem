@@ -13,6 +13,7 @@ export default class Cookie {
   constructor(name: string, value: string) {
     this.name = name;
     this.value = value;
+    this.raw = `${name}=${value}`;
   }
 
   static parse(cookieString: string): Cookie {

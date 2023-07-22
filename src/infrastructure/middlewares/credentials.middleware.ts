@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Usuario from "../../core/models/usuario.model";
 import GenericError from "../models/error.model";
 import CredentialsUtils from "../utils/credentials.utils";
+import Cookie from "../models/cookie.model";
 
 export class CredentialsMiddleware {
   public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -14,7 +15,10 @@ export class CredentialsMiddleware {
         }
         accessToken = accessToken.slice(7, accessToken.length);
 
-        const miUtemCookies: object = CredentialsUtils.getMiUtemCookies(accessToken);
+        const miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
+        if(miUtemCookies.length === 0) {
+          return next(GenericError.TOKEN_INVALIDA);
+        }
         const sigaToken: string = CredentialsUtils.getSigaToken(accessToken);
 
         res.locals.loggedInUser = {
