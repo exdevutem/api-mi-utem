@@ -26,4 +26,5 @@ export default interface SeccionAsignatura {
   notaExamen?: number;
   notaPresentacion?: number;
   notaFinal?: number;
+  notaEstimada?: number;
 }

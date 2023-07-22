@@ -90,6 +90,26 @@ export class SigaApiAsignaturaService {
         notaPresentacion: asignaturaJson.nota_seccion_asignatura,
         notaFinal: asignaturaJson.nota_final_asignatura,
       };
+
+      let notaEstimada: number = 0
+
+      if (notasParciales.length > 0) {
+        let sumaPorcentajes = 0
+        notasParciales.forEach(it => sumaPorcentajes += it.porcentaje)
+        if(sumaPorcentajes == 100) {
+          notasParciales.forEach(it => notaEstimada += it.porcentaje * it.nota / 100)
+        }
+      }
+
+      notaEstimada = parseFloat(notaEstimada.toFixed(1))
+
+      if((asignatura.notaExamen || 0) !== 0){
+        notaEstimada = (notaEstimada * 0.6) + (asignatura.notaExamen * 0.4);
+      }
+
+      if(notaEstimada !== 0){
+        asignatura.notaEstimada = parseFloat(notaEstimada.toFixed(1))
+      }
     }
 
     return asignatura;
