@@ -9,21 +9,31 @@ export class CredentialsMiddleware {
   public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       let accessToken: string | undefined = req.headers["authorization"];
+      let error = GenericError.TOKEN_INVALIDA;
       if (accessToken) {
         if (!accessToken.startsWith("Bearer ")) {
-          return next(GenericError.TOKEN_INVALIDA);
+          error.internalCode = 10.1
+          return next(error);
         }
         accessToken = accessToken.slice(7, accessToken.length);
 
         const miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
         if(miUtemCookies.length === 0) {
-          return next(GenericError.TOKEN_INVALIDA);
+          error.internalCode = 10.2
+          return next(error);
         }
         const sigaToken: string = CredentialsUtils.getSigaToken(accessToken);
+
+        const academiaCookies: Cookie[] = CredentialsUtils.getAcademiaCookies(accessToken);
+        if(academiaCookies.length === 0) {
+          error.internalCode = 10.3
+          return next(error);
+        }
 
         res.locals.loggedInUser = {
           sigaToken,
           miUtemCookies,
+          academiaCookies,
         };
 
         if (sigaToken) {
@@ -45,7 +55,8 @@ export class CredentialsMiddleware {
 
         next();
       } else {
-        return next(GenericError.TOKEN_INVALIDA);
+        error.internalCode = 10.4
+        return next(error);
       }
     } catch (error: any) {
       next(error);

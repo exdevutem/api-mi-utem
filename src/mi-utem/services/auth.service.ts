@@ -1,7 +1,7 @@
 import Cookie from "../../infrastructure/models/cookie.model";
 import {KeycloakUserService} from "../../keycloak/services/user.service";
-import axios from "axios";
 import GenericError from "../../infrastructure/models/error.model";
+import axios from "axios";
 
 export class MiUtemAuthService {
 
@@ -19,7 +19,7 @@ export class MiUtemAuthService {
 
       oauthRequest = err.response
     }
-    const miutemCookies = oauthRequest.headers['set-cookie'].map(it => Cookie.parse(it))
+    const miutemBaseCookies = oauthRequest.headers['set-cookie'].map(it => Cookie.parse(it))
 
     // Hacer login
     const [response, cookies] = await KeycloakUserService.loginSSO({
@@ -28,9 +28,31 @@ export class MiUtemAuthService {
       contrasenia
     })
 
-    return (await axios.get(response.headers.location, { // Finaliza el login
+    // Llama al callback del MiUTEM
+    let callbackResponse;
+    try {
+      callbackResponse = await axios.get(response.headers.location, { // Finaliza el login
+        headers: {
+          Cookie: Cookie.header(Cookie.merge(miutemBaseCookies, cookies)),
+        },
+        maxRedirects: 0
+      })
+    } catch (err) {
+      if(err.response.status !== 302) {
+        throw err
+      }
+
+      callbackResponse = err.response
+    }
+
+    const miutemCookies = callbackResponse.headers["set-cookie"].map(it => Cookie.parse(it))
+    if (miutemCookies.length === 0) {
+      throw GenericError.MI_UTEM_EXPIRO
+    }
+
+    return (await axios.get(`${process.env.MI_UTEM_URL}/`, {
       headers: {
-        Cookie: Cookie.header(Cookie.merge(miutemCookies, cookies)),
+        Cookie: Cookie.header(miutemCookies),
       }
     })).headers["set-cookie"].map(it => Cookie.parse(it))
   }
@@ -38,7 +60,7 @@ export class MiUtemAuthService {
   // Revisa que las cookies sean válidas
   public static async valido(cookies: Cookie[]): Promise<boolean> {
     try {
-      const request = await axios.get(`${process.env.MI_UTEM_URL}/`, {
+      const request = await axios.get(`${process.env.MI_UTEM_URL}/users/mi_perfil`, {
         headers: {
           Cookie: Cookie.header(cookies),
         },

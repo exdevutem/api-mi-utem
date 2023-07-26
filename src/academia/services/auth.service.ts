@@ -6,7 +6,7 @@ import Cookie from "../../infrastructure/models/cookie.model";
 import {KeycloakUserService} from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
-  public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<{}> {
+  public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
     const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/utem`)
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
@@ -21,8 +21,7 @@ export class AcademiaUserService {
       nonce: uuid(),
       state: uuid(),
     })
-
-    const [loginResponse] = await KeycloakUserService.loginSSO({oauthUri, esperaRedireccion: true, correo, contrasenia}) // Inicia sesión en sso
+    const [loginResponse] = await KeycloakUserService.loginSSO({oauthUri, correo, contrasenia}) // Inicia sesión en sso
 
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
 
@@ -54,7 +53,7 @@ export class AcademiaUserService {
       loginSsoResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/login-sso`, {
         withCredentials: true,
         headers: {
-          Cookie: academiaSessionCookies.map(it => it.raw).join(";"),
+          Cookie: Cookie.header(academiaSessionCookies),
         },
         maxRedirects: 0,
       });
@@ -76,7 +75,7 @@ export class AcademiaUserService {
       const perfilResponse = await axios.get(loginSsoResponse.headers.location, {
         withCredentials: true,
         headers: {
-          Cookie: academiaSessionCookies.map(it => it.raw).join(";"),
+          Cookie: Cookie.header(academiaSessionCookies),
         }
       });
 
@@ -89,10 +88,30 @@ export class AcademiaUserService {
       }
     }
 
-    // Retorna solo las cookies.name y cookies.value en forma de objeto, así: { name: value }
-    const cookiesResponse = {};
-    academiaSessionCookies.forEach(it => cookiesResponse[it.name] = it.value)
-    return cookiesResponse
+    return academiaSessionCookies
   }
-}
 
+  public static async valido(cookies: Cookie[]): Promise<boolean> {
+    try {
+      const request = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/`, {
+        headers: {
+          Cookie: Cookie.header(cookies),
+        },
+      })
+
+      return `${request?.data}`.includes('id="kc-form-login"') === false // Si es invalido, se redirige al login mostrando el formulario de autenticación
+    } catch (_) {
+    }
+    return false
+  }
+
+  public static async cookiesValidas(cookies: Cookie[]): Promise<string> {
+    const valido = await AcademiaUserService.valido(cookies)
+    const sessionId: string = cookies?.find(it => it.name == "PHPSESSID")?.value || null;
+    if (!valido || !sessionId) {
+      throw GenericError.ACADEMIA_EXPIRO;
+    }
+    return sessionId;
+  }
+
+}

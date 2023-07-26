@@ -8,8 +8,8 @@ export default class CredentialsUtils {
     if(!CredentialsUtils.isBase64(base64)) {
       return [];
     }
-    const data: string[] = atob(base64).split("|"); // Formato: expira|sessionId|csrfToken
-    if(data.length !== 3) { // Valida el formato
+    const data: string[] = atob(base64).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
+    if(data.length <= 1) { // Valida el formato
       return [];
     }
 
@@ -18,17 +18,7 @@ export default class CredentialsUtils {
       return [];
     }
 
-    const sessionId: string = data[1];
-    const csrfToken: string = data[2];
-
-    let date = new Date();
-    date.setDate(date.getDate() + 364);
-    return [
-      new Cookie("sessionid", sessionId),
-      new Cookie("csrftoken", csrfToken),
-      new Cookie("MIUTEM", "miutem1"),
-      new Cookie("dialogShown", "0"),
-    ];
+    return data.slice(1).map(it => Cookie.parse(atob(it)));
   }
 
   public static getSigaUser(sigaBearerToken: string): Usuario | null {
@@ -49,13 +39,31 @@ export default class CredentialsUtils {
     return token.split("|")[1];
   }
 
-  public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[]): string {
-    const sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
-    const csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
-    const expira = new Date((new Date).getTime() + (6 * 60 * 60 * 1000));
-    const miutemToken = btoa(`${expira}|${sessionId}|${csrfToken}`)
+  public static getAcademiaCookies(token: string): Cookie[] {
+    const base64 = token.split("|")[2]
+    if(!CredentialsUtils.isBase64(base64)) {
+      return [];
+    }
 
-    return `${miutemToken}|${sigaBearerToken}`;
+    const data: string[] = atob(base64).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
+    if(data.length <= 1) { // Valida el formato
+      return [];
+    }
+
+    const expira = new Date(parseInt(data[0]) * 1000);
+    if(expira < new Date()) { // Valida que no haya expirado
+      return [];
+    }
+
+    return data.slice(1).map(it => Cookie.parse(atob(it)));
+  }
+
+  public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[], academiaCookies: Cookie[]): string {
+    const expira = new Date((new Date).getTime() + (6 * 60 * 60 * 1000));
+    const miutemToken = btoa(`${expira}|${miUtemCookies.map(it => btoa(it.raw)).join('|')}`)
+    const academiaToken = btoa(`${expira}|${academiaCookies.map(it => btoa(it.raw)).join('|')}`)
+
+    return `${miutemToken}|${sigaBearerToken}|${academiaToken}`;
   }
 
   public static get emptyCookies(): object {

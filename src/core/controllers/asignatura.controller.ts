@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from "express";
-import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
 import {SigaApiAsignaturaService} from "../../siga-api/services/asignatura.service";
 import SeccionAsignatura from "../models/seccion-asignatura.model";
 import Semestre from "../models/semestre.model";

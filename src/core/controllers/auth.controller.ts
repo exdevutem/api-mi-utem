@@ -6,12 +6,15 @@ import Usuario from "../models/usuario.model";
 import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
 import {MiUtemUserService} from "../../mi-utem/services/user.service";
 import Cookie from "../../infrastructure/models/cookie.model";
+import {AcademiaUserService} from "../../academia/services/auth.service";
 
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const correo: string = req.body.correo;
       const contrasenia: string = req.body.contrasenia;
+
+      const academiaCookies = await AcademiaUserService.loginAndGetCookies(correo, contrasenia)
 
       const usuarioSiga = await SigaApiAuthService.loginAndGetProfile(correo, contrasenia);
       const sigaToken = usuarioSiga.token
@@ -27,7 +30,7 @@ export class AuthController {
       const usuarioToken: Usuario = CredentialsUtils.getSigaUser(sigaToken);
 
       const usuario: Usuario = {...usuarioSiga, ...usuarioToken};
-      usuario.token = CredentialsUtils.createToken(sigaToken, cookies);
+      usuario.token = CredentialsUtils.createToken(sigaToken, cookies, academiaCookies);
 
       if (usuarioSiga.perfiles?.length == 0) {
         throw GenericError.SIN_ROL

@@ -51,17 +51,17 @@ export default class Cookie {
     return `${this.name}=${this.value}`
   }
 
-  // Merges the 2 arrays of cookies, other will override original if they have the same name
-  static merge(original: Cookie[], other: Cookie[]) {
-    const newCookies = original;
-
-    other.forEach(cookie => {
-      const index = original.findIndex(it => it.name === cookie.name);
-      if (index !== -1) {
-        newCookies[index] = cookie;
-      } else {
-        newCookies.push(cookie);
-      }
+  static merge(...args: Cookie[][]) {
+    const newCookies: Cookie[] = [];
+    args.forEach(cookies => {
+      cookies.forEach(cookie => {
+        const index = newCookies.findIndex(it => it.name === cookie.name);
+        if (index !== -1) {
+          newCookies[index] = cookie;
+        } else {
+          newCookies.push(cookie);
+        }
+      })
     })
 
     return newCookies
