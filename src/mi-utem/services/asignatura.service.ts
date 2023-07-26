@@ -62,6 +62,10 @@ export class MiUtemAsignaturaService {
     const detalleAsignatura = await axios.post(`${process.env.MI_UTEM_URL}/academicos/get-data-detalle-asignatura`, `csrfmiddlewaretoken=${csrftoken}&scn_id_e=${dato[0]}&asn_id_e=${dato[1]}&mnemonic=${dato[2]}&horario=${dato[3]}&tph_desc=${dato[4]}`, {
       headers: {
         Cookie: Cookie.header(cookies),
+        Referer: process.env.MI_UTEM_URL,
+        Host: process.env.MI_UTEM_HOST,
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
       }
     });
     const $detalleAsignatura = cheerio.load(detalleAsignatura.data);

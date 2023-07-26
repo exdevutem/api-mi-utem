@@ -19,6 +19,11 @@ router.post(
   "/asignaturas/historicas",
   AsignaturaController.getHistoricas
 );
+router.post(
+  "/asignaturas/:asignaturaId/detalle",
+  CredentialsMiddleware.isLoggedIn,
+  AsignaturaController.getDetalle
+);
 router.post("/notas/notificar", NotificacionController.notificate);
 
 export default router;
