@@ -1,5 +1,5 @@
 import Cookie from "../../infrastructure/models/cookie.model";
-import {KeycloakUserService} from "../../keycloak/services/user.service";
+import { KeycloakUserService } from "../../keycloak/services/user.service";
 import GenericError from "../../infrastructure/models/error.model";
 import axios from "axios";
 
@@ -73,6 +73,8 @@ export class MiUtemAuthService {
 
   // Valida las cookies y retorna el sessionid y el csrftoken.
   public static async cookiesValidas(cookies: Cookie[]): Promise<[string, string]> {
+    if (!cookies) throw GenericError.MI_UTEM_EXPIRO;
+
     const valido = await MiUtemAuthService.valido(cookies)
     const sessionId: string = cookies?.find(it => it.name == "sessionid")?.value || null;
     const csrfToken: string = cookies?.find(it => it.name == "csrftoken")?.value || null;

@@ -52,9 +52,12 @@ export default class Cookie {
   }
 
   static merge(...args: Cookie[][]) {
+    if (!original) return other;
+
     const newCookies: Cookie[] = [];
     args.forEach(cookies => {
       cookies.forEach(cookie => {
+
         const index = newCookies.findIndex(it => it.name === cookie.name);
         if (index !== -1) {
           newCookies[index] = cookie;
