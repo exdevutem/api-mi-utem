@@ -1,10 +1,10 @@
-import axios, {AxiosResponse} from "axios";
+import axios, { AxiosResponse } from "axios";
+import * as cheerio from 'cheerio';
 import FormData from "form-data";
-import FilesUtils from "../../infrastructure/utils/files.utils";
-import Cookie from "../../infrastructure/models/cookie.model";
-import {MiUtemAuthService} from "./auth.service";
 import Usuario from "../../core/models/usuario.model";
-import * as cheerio from 'cheerio'
+import Cookie from "../../infrastructure/models/cookie.model";
+import FilesUtils from "../../infrastructure/utils/files.utils";
+import { MiUtemAuthService } from "./auth.service";
 
 export class MiUtemUserService {
   public static async changeProfilePicture(cookies: Cookie[], base64Image: string) {
@@ -12,7 +12,7 @@ export class MiUtemUserService {
     const sessionId: string = cookies.find(it => it.name === 'sessionid').value;
     const csrfToken: string = cookies.find(it => it.name === 'csrftoken').value;
 
-    const {file, filename} = await FilesUtils.base64ToFile(base64Image);
+    const { file, filename } = await FilesUtils.base64ToFile(base64Image);
 
     const formData = new FormData();
     formData.append("csrfmiddlewaretoken", csrfToken);
@@ -41,7 +41,7 @@ export class MiUtemUserService {
   public static async getProfile(cookies: Cookie[]): Promise<Usuario> {
     await MiUtemAuthService.cookiesValidas(cookies)
 
-    const perfil = await axios.get(`${process.env.MI_UTEM_URL}/users/mi_perfil`, {
+    const perfil = await axios.get(`${process.env.MI_UTEM_URL}/academicos/mi-perfil-estudiante`, {
       headers: {
         Cookie: Cookie.header(cookies),
       },
@@ -52,7 +52,7 @@ export class MiUtemUserService {
     $('body > div.page-container > div.header > div:nth-child(2) > div.search-link.d-lg-inline-block.d-none > div > span').each((i, el) => {
       perfiles.push($(el).text())
     })
-    const fotoUrl = $('#user_picture').attr('src').includes('default') ? null : `${process.env.Mi_UTEM_URL}${$('#user_picture').attr('src')}`;
+    const fotoUrl = $('#user_picture').attr('src').includes('default') ? null : $('#user_picture').attr('src');
 
     return {
       perfiles,
