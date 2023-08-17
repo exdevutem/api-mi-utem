@@ -52,9 +52,12 @@ export default class Cookie {
 
   // Merges the 2 arrays of cookies, other will override original if they have the same name
   static merge(original: Cookie[], other: Cookie[]) {
+    if (!original) return other;
+
     const newCookies = original;
 
     other.forEach(cookie => {
+
       const index = original.findIndex(it => it.name === cookie.name);
       if (index !== -1) {
         newCookies[index] = cookie;

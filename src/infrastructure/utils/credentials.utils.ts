@@ -76,10 +76,15 @@ export default class CredentialsUtils {
   }
 
   public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[]): string {
-    let sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
-    let csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
+    let miUtemToken = "";
+    if (miUtemCookies != null) {
+      let sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
+      let csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
 
-    return sessionId + csrfToken + "|" + sigaBearerToken;
+      miUtemToken = sessionId + csrfToken;
+    }
+
+    return miUtemToken + "|" + sigaBearerToken;
   }
 
   public static get emptyCookies(): object {
