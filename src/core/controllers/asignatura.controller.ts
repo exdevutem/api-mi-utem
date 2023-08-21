@@ -68,7 +68,7 @@ export class AsignaturaController {
     try {
       const cookies: Cookie[] = res.locals.loggedInUser.miUtemCookies;
 
-      const codigo: string = req.params.asignaturaId;
+      const codigo: string = req.params.codigoId;
 
       const asignatura: SeccionAsignatura =
         await MiUtemAsignaturaService.getDetalleAsignatura(

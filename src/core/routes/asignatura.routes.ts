@@ -19,8 +19,8 @@ router.post(
   "/asignaturas/historicas",
   AsignaturaController.getHistoricas
 );
-router.post(
-  "/asignaturas/:asignaturaId/detalle",
+router.get(
+  "/asignaturas/:codigoId",
   CredentialsMiddleware.isLoggedIn,
   AsignaturaController.getDetalle
 );
