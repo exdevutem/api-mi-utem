@@ -46,7 +46,7 @@ export class KeycloakUserService {
     }
 
     if (response.headers.location) {
-      response.headers.location = response.headers.location.replace('http', 'https')
+      response.headers.location = response.headers.location.replace('http://', 'https://')
     }
 
     return [response, cookies]
