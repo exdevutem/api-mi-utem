@@ -11,8 +11,11 @@ import {AcademiaUserService} from "../../academia/services/auth.service";
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const correo: string = req.body.correo;
-      const contrasenia: string = req.body.contrasenia;
+      const correo: string = req.body.correo || '';
+      const contrasenia: string = req.body.contrasenia || '';
+      if(correo.length === 0 || contrasenia.length === 0) {
+        throw GenericError.CREDENCIALES_INCORRECTAS
+      }
 
       /* Inicia sesión en Siga */
       const usuarioSigaByAuth = await SigaApiAuthService.loginAndGetProfile(correo, contrasenia); // Usuario generado por autenticación

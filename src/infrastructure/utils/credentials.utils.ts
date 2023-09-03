@@ -60,8 +60,8 @@ export default class CredentialsUtils {
 
   public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[], academiaCookies: Cookie[]): string {
     const expira = new Date((new Date).getTime() + (6 * 60 * 60 * 1000));
-    const miutemToken = btoa(`${expira}|${(miUtemCookies || []).map(it => btoa(it.raw)).join('|')}`)
-    const academiaToken = btoa(`${expira}|${(academiaCookies || []).map(it => btoa(it.raw)).join('|')}`)
+    const miutemToken = btoa(`${expira}|${(miUtemCookies || []).map(it => btoa(it.simple())).join('|')}`)
+    const academiaToken = btoa(`${expira}|${(academiaCookies || []).map(it => btoa(it.simple())).join('|')}`)
 
     return `${miutemToken}|${sigaBearerToken}|${academiaToken}`;
   }

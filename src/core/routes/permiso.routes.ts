@@ -1,17 +1,17 @@
 import { Router } from "express";
 import { PermisoController } from "../controllers/permiso.controller";
-import {CredentialsMiddleware} from "../../infrastructure/middlewares/credentials.middleware";
+import {MiUTEMCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/miutem-credentials.middleware";
 
 const router: Router = Router();
 
 router.post(
   "/permisos",
-  CredentialsMiddleware.isLoggedIn,
+  MiUTEMCredentialsMiddleware.isLoggedIn,
   PermisoController.getAll
 );
 router.post(
   "/permisos/:permisoId",
-  CredentialsMiddleware.isLoggedIn,
+  MiUTEMCredentialsMiddleware.isLoggedIn,
   PermisoController.getOne
 );
 
