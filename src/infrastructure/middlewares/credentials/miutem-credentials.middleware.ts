@@ -7,9 +7,9 @@ export class MiUTEMCredentialsMiddleware extends CredentialsMiddleware {
 
   public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      let [error, accessToken] = this.validateToken(req)
+      let [error, accessToken] = MiUTEMCredentialsMiddleware.validateToken(req)
       if(accessToken.length === 0) {
-        return next(accessToken)
+        return next(error)
       }
 
       const miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
