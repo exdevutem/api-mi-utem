@@ -1,23 +1,36 @@
-import {Request} from "express";
+import { Request } from "express";
 import GenericError from "../../models/error.model";
 
 /**
  * Esta clase representa la base de los middleware 'Credentials', permitiendo una validación de token.
  */
 export class CredentialsMiddleware {
-  public static validateToken(req: Request): [GenericError,string]{
+  public static validateTokenExist(req: Request): boolean {
     let accessToken: string | undefined = req.headers["authorization"];
-    let error = GenericError.TOKEN_INVALIDA;
-    if(!accessToken) {
-      error.internalCode = 10.1
-      return [error, '']
-    }
+
+    return accessToken !== undefined && accessToken.length > 0;
+  }
+
+  public static validateTokenFormat(req: Request): string {
+    let accessToken: string | undefined = req.headers["authorization"];
 
     if (!accessToken.startsWith("Bearer ")) {
+      let error = GenericError.TOKEN_INVALIDA;
       error.internalCode = 10.2
-      return [error, ''];
+      throw error;
     }
 
-    return [error, accessToken.slice(7, accessToken.length)];
+    return accessToken.slice(7, accessToken.length);
+  }
+
+  public static validateToken(req: Request): string {
+    let existToken: boolean = CredentialsMiddleware.validateTokenExist(req);
+    if (!existToken) {
+      let error = GenericError.TOKEN_INVALIDA;
+      error.internalCode = 10.1
+      throw error;
+    }
+
+    return CredentialsMiddleware.validateTokenFormat(req);
   }
 }
