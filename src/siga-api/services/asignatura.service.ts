@@ -85,17 +85,7 @@ export class SigaApiAsignaturaService {
 
       asignatura = {
         tipoHora: asignaturaJson.tipo_hora,
-        notasParciales: [
-          /* {
-            descripcion: null,
-            porcentaje: 70,
-            nota: 7,
-          }, {
-            descripcion: null,
-            porcentaje: 30,
-            nota: null,
-          } */
-        ],
+        notasParciales: notasParciales,
         notaExamen: asignaturaJson.nota_examen,
         notaPresentacion: asignaturaJson.nota_seccion_asignatura,
         notaFinal: asignaturaJson.nota_final_asignatura,

@@ -117,7 +117,6 @@ export class MiUtemAuthService {
     const valido = await MiUtemAuthService.valido(cookies)
     const sessionId: string = cookies?.find(it => it.name == "sessionid")?.value || null;
     const csrfToken: string = cookies?.find(it => it.name == "csrftoken")?.value || null;
-
     if (!valido || !sessionId || !csrfToken) {
       error.internalCode = 3.2
       throw error
