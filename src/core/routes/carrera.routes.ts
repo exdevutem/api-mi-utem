@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { CredentialsMiddleware } from "../../infrastructure/middlewares/credentials.middleware";
 import { CarreraController } from "../controllers/carrera.controller";
+import {SigaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/siga-credentials.middleware";
 
 const router: Router = Router();
 
 router.get(
   "/carreras",
-  CredentialsMiddleware.isLoggedIn,
+  SigaCredentialsMiddleware.isLoggedIn,
   CarreraController.getAll
 );
 

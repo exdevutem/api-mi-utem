@@ -23,6 +23,10 @@ export class SigaApiAuthService {
       };
     } catch (err) {
       if (err.response?.status === 401) {
+        console.debug({
+          message: "Credenciales incorrectas",
+          error: err,
+        })
         throw GenericError.CREDENCIALES_INCORRECTAS
       }
 

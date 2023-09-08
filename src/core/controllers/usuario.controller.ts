@@ -24,9 +24,7 @@ export class UsuarioController {
 
   public static async changeProfilePhoto(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const correo: string = req.body.correo;
-      const contrasenia: string = req.body.contrasenia;
-      const cookies: Cookie[] = await MiUtemAuthService.loginAndGetCookies(correo, contrasenia);
+      const cookies: Cookie[] = res.locals.loggedInUser.miUtemCookies
 
       const base64Image: string = req.body.imagen;
       const respuesta: any = await MiUtemUserService.changeProfilePicture(
