@@ -1,8 +1,8 @@
-import Cookie from "../../infrastructure/models/cookie.model";
-import { KeycloakUserService } from "../../keycloak/services/user.service";
-import GenericError from "../../infrastructure/models/error.model";
 import axios from "axios";
-import * as cheerio from 'cheerio'
+import * as cheerio from 'cheerio';
+import Cookie from "../../infrastructure/models/cookie.model";
+import GenericError from "../../infrastructure/models/error.model";
+import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class MiUtemAuthService {
 
@@ -44,7 +44,7 @@ export class MiUtemAuthService {
         maxRedirects: 0
       })
     } catch (err) {
-      if(err.response.status !== 302) {
+      if (err.response.status !== 302) {
         throw err
       }
 
@@ -80,9 +80,9 @@ export class MiUtemAuthService {
       });
 
       return Cookie.merge(cookies, response.headers["set-cookie"].map(it => Cookie.parse(it)))
-    }catch (error) {
+    } catch (error) {
       const response = error.response
-      if(response && response.status !== 302) {
+      if (response && response.status !== 302) {
         return undefined
       }
 
@@ -95,14 +95,14 @@ export class MiUtemAuthService {
   // Revisa que las cookies sean válidas
   public static async valido(cookies: Cookie[]): Promise<boolean> {
     try {
-      const request = await axios.get(`${process.env.MI_UTEM_URL}/users/mi_perfil`, {
+      const request = await axios.get(`${process.env.MI_UTEM_URL}/academicos/mi-perfil-estudiante`, {
         headers: {
           Cookie: Cookie.header(cookies),
         },
       })
 
       return `${request?.data}`.includes('id="kc-form-login"') === false // Si es invalido, se redirige al login mostrando el formulario de autenticación
-    } catch(_) {}
+    } catch (_) { }
     return false
   }
 

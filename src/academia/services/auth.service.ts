@@ -1,9 +1,9 @@
-import GenericError from "../../infrastructure/models/error.model";
-import {Issuer} from "openid-client";
 import axios from "axios";
-import {v4 as uuid} from 'uuid'
+import { Issuer } from "openid-client";
+import { v4 as uuid } from 'uuid';
 import Cookie from "../../infrastructure/models/cookie.model";
-import {KeycloakUserService} from "../../keycloak/services/user.service";
+import GenericError from "../../infrastructure/models/error.model";
+import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
@@ -21,7 +21,7 @@ export class AcademiaUserService {
       nonce: uuid(),
       state: uuid(),
     })
-    const [loginResponse] = await KeycloakUserService.loginSSO({oauthUri, correo, contrasenia}) // Inicia sesión en sso
+    const [loginResponse] = await KeycloakUserService.loginSSO({ oauthUri, correo, contrasenia }) // Inicia sesión en sso
 
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
 
@@ -83,9 +83,7 @@ export class AcademiaUserService {
         throw GenericError.CREDENCIALES_INCORRECTAS
       }
     } catch (err) {
-      if (`${err.response.data}`.includes('Hola,') === false) { // Si no se logeó, se lanza un error
-        throw GenericError.CREDENCIALES_INCORRECTAS
-      }
+      throw err;
     }
 
     return academiaSessionCookies

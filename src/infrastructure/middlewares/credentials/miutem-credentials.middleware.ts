@@ -1,21 +1,34 @@
-import {CredentialsMiddleware} from "./credentials.middleware";
-import {NextFunction, Request, Response} from "express";
-import CredentialsUtils from "../../utils/credentials.utils";
+import { NextFunction, Request, Response } from "express";
+import { MiUtemAuthService } from "../../../mi-utem/services/auth.service";
 import Cookie from "../../models/cookie.model";
+import GenericError from "../../models/error.model";
+import CredentialsUtils from "../../utils/credentials.utils";
+import { CredentialsMiddleware } from "./credentials.middleware";
 
 export class MiUTEMCredentialsMiddleware extends CredentialsMiddleware {
 
   public static async isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      let [error, accessToken] = MiUTEMCredentialsMiddleware.validateToken(req)
-      if(accessToken.length === 0) {
-        return next(error)
+      let miUtemCookies: Cookie[];
+
+      let error = GenericError.TOKEN_INVALIDA;
+      let tokenExist: boolean = MiUTEMCredentialsMiddleware.validateTokenExist(req);
+
+      if (tokenExist) {
+        let accessToken: string = MiUTEMCredentialsMiddleware.validateTokenFormat(req);
+        miUtemCookies = CredentialsUtils.getMiUtemCookies(accessToken);
+      } else {
+        if (req.body.correo && req.body.contrasenia) {
+          miUtemCookies = await MiUtemAuthService.loginAndGetCookies(req.body.correo, req.body.contrasenia);
+        } else {
+          error.internalCode = 10.1
+          throw error;
+        }
       }
 
-      const miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
-      if(miUtemCookies.length === 0) {
+      if (miUtemCookies.length === 0) {
         error.internalCode = 10.3
-        return next(error);
+        throw error;
       }
 
       res.locals.loggedInUser = {
@@ -23,7 +36,7 @@ export class MiUTEMCredentialsMiddleware extends CredentialsMiddleware {
         miUtemCookies,
       }
       next();
-    }catch(error: any) {
+    } catch (error: any) {
       next(error)
     }
   }
