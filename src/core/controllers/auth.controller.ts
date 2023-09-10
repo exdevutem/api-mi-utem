@@ -31,6 +31,9 @@ export class AuthController {
       try {
         academiaCookies = await AcademiaUserService.loginAndGetCookies(correo, contrasenia)
       } catch (error) {
+        console.debug({
+          error
+        })
         console.log("No se pudo loggear en Academia");
       }
 

@@ -23,7 +23,7 @@ router.post(
 );
 router.get(
   "/asignaturas/:codigoId",
-  CredentialsMiddleware.isLoggedIn,
+  MiUTEMCredentialsMiddleware.isLoggedIn,
   AsignaturaController.getDetalle
 );
 router.post("/notas/notificar", NotificacionController.notificate);

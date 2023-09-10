@@ -30,10 +30,16 @@ export class MiUtemAsignaturaService {
     return asignaturas;
   }
 
-  public static async getDetalleAsignatura(cookies: Cookie[], codigoAsignatura: string): Promise<SeccionAsignatura> {
+  /**
+   * Obtiene el detalle de una asignatura del usuario
+   * @param cookies las cookies de MiUTEM
+   * @param codigoAsignatura el codigo en formato por ejemplo 'MATC8020' para Álgebra Clásica.
+   * @param esLaboratiorio si es laboratorio o no. Por defecto es falso.
+   */
+  public static async getDetalleAsignatura(cookies: Cookie[], codigoAsignatura: string, esLaboratiorio: boolean = false): Promise<SeccionAsignatura> {
     const [_, csrftoken] = await MiUtemAuthService.cookiesValidas(cookies);
 
-    // El uso se encuentra acá: https://mi.utem.cl/static/js/home/home_alumnos.js (linea 52, #showDetails)
+    // El uso se encuentra acá: https://mi.utem.cl/static/js/home/home_alumnos.js (línea 52, #showDetails)
     const page = await axios.get(process.env.MI_UTEM_URL, {
       headers: {
         Cookie: Cookie.header(cookies),
@@ -42,21 +48,24 @@ export class MiUtemAsignaturaService {
 
     const $ = cheerio.load(page.data);
 
-    let selectorDetalleAsignatura: string = null;
+    let onclick: string = null;
 
     $('.card-utem #table_mdl_titulo tbody tr.no-border').each((i, el) => {
-      if($(el).find('td:nth-child(1) > span').text().split(' - ')[0].trim().toUpperCase() === codigoAsignatura.toUpperCase()) {
-        selectorDetalleAsignatura = `.card-utem #table_mdl_titulo tbody tr:nth-child(${i + 1}) td:nth-child(3) > span`;
+      if($(el).find('td:nth-child(1) > span').text().split(' - ')[0].trim().toUpperCase() === codigoAsignatura.toUpperCase() && $(el).find('td:nth-child(2) > span').text().toLowerCase().includes(esLaboratiorio ? 'laboratorio' : 'teoria')) {
+        onclick = $(el).find('span[onclick]').attr('onclick')
       }
     });
 
-    if (!selectorDetalleAsignatura) {
-      throw GenericError.ASIGNATURA_NO_ENCONTRADA;
-    }
+    const asignaturaNoEncontrada = GenericError.ASIGNATURA_NO_ENCONTRADA
 
-    const dato = $(selectorDetalleAsignatura).attr('onclick').replace('showDetails(', '').replace(')', '').split(',').map((el) => el.replace(/'/g, ''));
+    if(!onclick) {
+      asignaturaNoEncontrada.internalCode = 6.1;
+      throw asignaturaNoEncontrada;
+    }
+    const dato = onclick.replace('showDetails(', '').replace(')', '').split(',').map((el) => el.replace(/'/g, ''));
     if(dato.length !== 5) {
-      throw GenericError.ASIGNATURA_NO_ENCONTRADA;
+      asignaturaNoEncontrada.internalCode = 6.2;
+      throw asignaturaNoEncontrada;
     }
 
     const detalleAsignatura = await axios.post(`${process.env.MI_UTEM_URL}/academicos/get-data-detalle-asignatura`, `csrfmiddlewaretoken=${csrftoken}&scn_id_e=${dato[0]}&asn_id_e=${dato[1]}&mnemonic=${dato[2]}&horario=${dato[3]}&tph_desc=${dato[4]}`, {
@@ -66,10 +75,14 @@ export class MiUtemAsignaturaService {
         Host: process.env.MI_UTEM_HOST,
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
       }
     });
     const $detalleAsignatura = cheerio.load(detalleAsignatura.data);
-    const docente = $detalleAsignatura('#TABLA1 > div:nth-child(1) > div > div > div > div > div:nth-child(2) > span').text().trim()
+    let docente = $detalleAsignatura('#TABLA1 > div:nth-child(1) > div > div > div > div > div:nth-child(2) > span').html().trim()
+    if(docente.includes(' - ') && !isNaN(Number.parseInt(docente.split(' - ')[0]))) {
+      docente = docente.split(' - ')[1].trim()
+    }
     let asistenciaSinRegistro = parseInt($detalleAsignatura('#clas_noreg').text().trim());
     asistenciaSinRegistro = asistenciaSinRegistro >= 0 ? asistenciaSinRegistro : 0;
     let asistenciaAsistida = parseInt($detalleAsignatura('#clas_asi').text().trim());
