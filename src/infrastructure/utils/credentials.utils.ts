@@ -3,58 +3,78 @@ import Usuario from "../../core/models/usuario.model";
 import Cookie from "../models/cookie.model";
 
 export default class CredentialsUtils {
-  public static getMiUtemCookies(token: string) {
-    const cookies: string = token.split("|")[0];
-    const sessionId: string = cookies.slice(0, 32);
-    const csrfToken: string = cookies.slice(32);
+  public static isCookieExpired(token: string): boolean {
+    const data: string[] = atob(token).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
+    if (data.length <= 1) { // Valida el formato
+      return true;
+    }
 
-    let date = new Date();
-    date.setDate(date.getDate() + 364);
+    const expirationString = data[0];
+    const expirationDate = new Date(parseInt(expirationString) * 1000);
+    return expirationDate < new Date();
+  }
 
-    return [
-      {
-        name: "sessionid",
-        value: sessionId,
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: -1,
-        httpOnly: true,
-        secure: false,
-        session: true,
-        sameSite: "Lax",
-      },
-      {
-        name: "MIUTEM",
-        value: "miutem1",
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: -1,
-        httpOnly: false,
-        secure: false,
-        session: true,
-      },
-      {
-        name: "csrftoken",
-        value: csrfToken,
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: date.getTime() / 1000,
-        httpOnly: false,
-        secure: false,
-        session: false,
-        sameSite: "Lax",
-      },
-      {
-        name: "dialogShown",
-        value: "0",
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: date.getTime() / 1000,
-        httpOnly: false,
-        secure: false,
-        session: false,
-      },
-    ];
+  public static getMiUtemToken(authToken: string): string | undefined {
+    const authTokenComponents = authToken.split("|");
+    if (authTokenComponents.length < 3) {
+      return;
+    }
+
+    const miUtemToken = authTokenComponents[0];
+    if (!CredentialsUtils.isBase64(miUtemToken)) {
+      return;
+    }
+    return miUtemToken;
+  }
+
+  public static getMiUtemCookies(authToken: string): Cookie[] {
+    const token = CredentialsUtils.getMiUtemToken(authToken)
+    if (!token || token.length === 0) {
+      return [];
+    }
+    let data: string[] = atob(token).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
+    data = data.filter(it => it && it.length > 0);
+    if (data.length <= 1) { // Valida el formato
+      return [];
+    }
+
+    if (CredentialsUtils.isCookieExpired(token)) { // Valida que no haya expirado
+      return [];
+    }
+
+
+    return data.slice(1).map(it => Cookie.parse(atob(it)));
+  }
+
+  public static getAcademiaToken(authToken: string): string | undefined {
+    const authTokenComponents = authToken.split("|");
+    if (authTokenComponents.length < 3) {
+      return;
+    }
+    const academiaToken = authTokenComponents[2];
+    if (!CredentialsUtils.isBase64(academiaToken)) {
+      return;
+    }
+    return academiaToken;
+  }
+
+  public static getAcademiaCookies(authToken: string): Cookie[] {
+    const token = CredentialsUtils.getAcademiaToken(authToken);
+    if (!token || token.length === 0) {
+      return [];
+    }
+
+    let data: string[] = atob(token).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
+    data = data.filter(it => it && it.length > 0);
+    if (data.length <= 1) { // Valida el formato
+      return [];
+    }
+
+    if (CredentialsUtils.isCookieExpired(token)) { // Valida que no haya expirado
+      return [];
+    }
+
+    return data.slice(1).map(it => Cookie.parse(atob(it)));
   }
 
   public static getSigaUser(sigaBearerToken: string): Usuario | null {
@@ -71,20 +91,32 @@ export default class CredentialsUtils {
     }
   }
 
-  public static getSigaToken(token: string): string | undefined {
-    return token.split("|")[1];
-  }
-
-  public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[]): string {
-    let miUtemToken = "";
-    if (miUtemCookies != null) {
-      let sessionId: string = miUtemCookies.find(cookie => cookie.name == "sessionid")?.value || "";
-      let csrfToken: string = miUtemCookies.find(cookie => cookie.name == "csrftoken")?.value || "";
-
-      miUtemToken = sessionId + csrfToken;
+  public static isTokenExpired(token: string): boolean {
+    if (token == null) {
+      return true;
     }
 
-    return miUtemToken + "|" + sigaBearerToken;
+    const payload: any = jwt.decode(token);
+    return payload.exp < Date.now() / 1000;
+  }
+
+  public static getSigaToken(authToken: string): string | undefined {
+    const authTokenComponents = authToken.split("|");
+    if (authTokenComponents.length < 1) {
+      return;
+    } else if (authTokenComponents.length == 1) {
+      return authToken;
+    } else {
+      return authToken.split("|")[1];
+    }
+  }
+
+  public static createToken(sigaBearerToken: string, miUtemCookies: Cookie[], academiaCookies: Cookie[]): string {
+    const expira = new Date((new Date).getTime() + (6 * 60 * 60 * 1000));
+    const miutemToken = btoa(`${expira}|${(miUtemCookies || []).map(it => btoa(it.simple())).join('|')}`)
+    const academiaToken = btoa(`${expira}|${(academiaCookies || []).map(it => btoa(it.simple())).join('|')}`)
+
+    return `${miutemToken}|${sigaBearerToken}|${academiaToken}`;
   }
 
   public static get emptyCookies(): object {
@@ -112,5 +144,13 @@ export default class CredentialsUtils {
         sameSite: "Lax",
       },
     ];
+  }
+
+  private static isBase64(str: string): boolean {
+    try {
+      return btoa(atob(str)) == str;
+    } catch (err) {
+      return false;
+    }
   }
 }

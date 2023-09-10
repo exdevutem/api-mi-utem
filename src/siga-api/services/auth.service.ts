@@ -3,6 +3,29 @@ import Usuario from "../../core/models/usuario.model";
 import GenericError from "../../infrastructure/models/error.model";
 
 export class SigaApiAuthService {
+  public static async loginAndGetToken(correo: string, contrasenia: string): Promise<string> {
+    try {
+      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, `username=${correo}&password=${contrasenia}`, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Host: "siga.utem.cl",
+        },
+      });
+
+      return res.data.response.token;
+    } catch (err) {
+      if (err.response?.status === 401) {
+        console.debug({
+          message: "Credenciales incorrectas",
+          error: err,
+        })
+        throw GenericError.CREDENCIALES_INCORRECTAS
+      }
+
+      throw err
+    }
+  }
+
   public static async loginAndGetProfile(correo: string, contrasenia: string): Promise<Usuario> {
     try {
       const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, `username=${correo}&password=${contrasenia}`, {
@@ -23,6 +46,10 @@ export class SigaApiAuthService {
       };
     } catch (err) {
       if (err.response?.status === 401) {
+        console.debug({
+          message: "Credenciales incorrectas",
+          error: err,
+        })
         throw GenericError.CREDENCIALES_INCORRECTAS
       }
 

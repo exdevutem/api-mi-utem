@@ -6,6 +6,9 @@
             "es2021",
             "dom"
         ],
-        "moduleResolution": "NodeNext"
-    }
+        "moduleResolution": "node",
+        
+    },
+    "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

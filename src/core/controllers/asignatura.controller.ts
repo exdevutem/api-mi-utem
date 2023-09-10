@@ -1,5 +1,4 @@
 import {NextFunction, Request, Response} from "express";
-import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
 import {SigaApiAsignaturaService} from "../../siga-api/services/asignatura.service";
 import SeccionAsignatura from "../models/seccion-asignatura.model";
 import Semestre from "../models/semestre.model";
@@ -42,12 +41,7 @@ export class AsignaturaController {
 
   public static async getHistoricas(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const correo: string = req.body.correo;
-      const contrasenia: string = req.body.contrasenia;
-      const cookies: Cookie[] = await MiUtemAuthService.loginAndGetCookies(
-        correo,
-        contrasenia
-      );
+      const cookies: Cookie[] = res.locals.loggedInUser.miUtemCookies;
 
       const soloAsignaturas: boolean = req.query.soloAsignaturas == "true";
 

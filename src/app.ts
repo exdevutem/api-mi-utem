@@ -1,6 +1,14 @@
 import * as firebaseAdmin from "firebase-admin";
 import Server from "./infrastructure/server/server";
 
+/* Este codigo permite realizar console.debug solo en log level = 'debug' */
+const debugFunction = console.debug
+console.debug = function () {
+  if ((process.env.LOG_LEVEL || 'info') === "debug") {
+    debugFunction(...arguments)
+  }
+}
+
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert({
     projectId: process.env.FIREBASE_ADMINSDK_PROJECT_ID,

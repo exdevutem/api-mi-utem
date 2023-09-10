@@ -62,6 +62,7 @@ PRIVATE_KEY_PATH=/etc/letsencrypt/live/miutem.inndev.studio/privkey.pem
 CERTIFICATE_PATH=/etc/letsencrypt/live/miutem.inndev.studio/fullchain.pem
 MI_UTEM_URL=https://mi.utem.cl
 ACADEMIA_UTEM_URL=https://academia.utem.cl
+ACADEMIA_CLIENT_SECRET=....
 PASAPORTE_UTEM_URL=https://pasaporte.utem.cl
 SSO_UTEM_URL=https://sso.utem.cl
 GOOGLE_APPLICATION_CREDENTIALS=./mi-utem-inndev-credentials.json
@@ -69,19 +70,20 @@ FCM_SERVER_KEY=AAAAPEuk7fI:APA91bGG9UrjuLX8kt1DWVwz...
 SISEI_KEY=123456
 ```
 
-| **Variable** | **Descripción** |
-|----------------------|--------------------------------------------------------------------------------------------|
-| `PORT` | Puerto donde correrá el servicio, se utiliza ´443´ para habilitar las consultas ´HTTPS´ |
-| `SENTRY_URL` | URL de Sentry para el manejo de errores |
-| `PRIVATE_KEY_PATH` | Ubicación del archivo correspondiente a la llave privada del certificado HTTPS |
-| `CERTIFICATE_PATH` | Ubicación del archivo correspondiente al certificado HTTPS |
-| `MI_UTEM_URL` | URL de la página web Mi.UTEM |
-| `ACADEMIA_UTEM_URL` | URL de la página web de Academia.UTEM |
-| `PASAPORTE_UTEM_URL` | URL de la página web de Pasaporte.UTEM |
-| `SSO_UTEM_URL` | URL de la página web de SSO.UTEM |
-| `REQ_REF` | Opcional. Valor del parámetro `ref` que se agregará a las consultas a las distintas webs. |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Ubicación del archivo de credenciales del proyecto Firebase. |
-| `FCM_SERVER_KEY` | Llave del servidor de FCM para enviar notificaciones. |
+| **Variable** | **Descripción**                                                                             |
+|----------------------|---------------------------------------------------------------------------------------------|
+| `PORT` | Puerto donde correrá el servicio, se utiliza ´443´ para habilitar las consultas ´HTTPS´     |
+| `SENTRY_URL` | URL de Sentry para el manejo de errores                                                     |
+| `PRIVATE_KEY_PATH` | Ubicación del archivo correspondiente a la llave privada del certificado HTTPS              |
+| `CERTIFICATE_PATH` | Ubicación del archivo correspondiente al certificado HTTPS                                  |
+| `MI_UTEM_URL` | URL de la página web Mi.UTEM                                                                |
+| `ACADEMIA_UTEM_URL` | URL de la página web de Academia.UTEM                                                       |
+| `ACADEMIA_CLIENT_SECRET` | Token para generar URLs de login del SSO para Academia.UTEM                                 |
+| `PASAPORTE_UTEM_URL` | URL de la página web de Pasaporte.UTEM                                                      |
+| `SSO_UTEM_URL` | URL de la página web de SSO.UTEM                                                            |
+| `REQ_REF` | Opcional. Valor del parámetro `ref` que se agregará a las consultas a las distintas webs.   |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Ubicación del archivo de credenciales del proyecto Firebase.                                |
+| `FCM_SERVER_KEY` | Llave del servidor de FCM para enviar notificaciones.                                       |
 | `SISEI_KEY` | Llave para que el equipo de SISEI pueda hacer algunas consultas. Puede ser cualquier valor. |
 
 ## Ejecución
@@ -115,6 +117,12 @@ Content-Type: application/json
     "key": "123456"                     // Debe ser la misma que SISEI_KEY en las variables de entorno
 }
 ```
+
+### Obtener token para Academia.UTEM
+
+Puedes solo hacer una solicitud a `https://academia.utem.cl/sso` (con javascript desactivado), luego ve 
+el código fuente y busca la variable 'keycloak', dentro tiene una configuración `credentials.token` en 
+formato json. Allí puedes obtener el token.
 
 ## Créditos
 Proyecto hecho por el Club de Innovación y Desarrollo.
