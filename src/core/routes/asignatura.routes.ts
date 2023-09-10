@@ -1,22 +1,24 @@
 import { Router } from "express";
-import { CredentialsMiddleware } from "../../infrastructure/middlewares/credentials.middleware";
 import { AsignaturaController } from "../controllers/asignatura.controller";
 import { NotificacionController } from "../controllers/notificacion.controller";
+import {SigaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/siga-credentials.middleware";
+import {MiUTEMCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/miutem-credentials.middleware";
 
 const router: Router = Router();
 
 router.get(
   "/carreras/:carreraId/asignaturas",
-  CredentialsMiddleware.isLoggedIn,
+  SigaCredentialsMiddleware.isLoggedIn,
   AsignaturaController.getActivasByCarrera
 );
 router.get(
   "/carreras/:carreraId/asignaturas/:seccionId/notas",
-  CredentialsMiddleware.isLoggedIn,
+  SigaCredentialsMiddleware.isLoggedIn,
   AsignaturaController.getNotasByAsignatura
 );
 router.post(
   "/asignaturas/historicas",
+  MiUTEMCredentialsMiddleware.isLoggedIn,
   AsignaturaController.getHistoricas
 );
 router.get(

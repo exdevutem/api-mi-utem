@@ -38,6 +38,13 @@ export default class GenericError extends Error {
     3
   );
 
+  static ACADEMIA_EXPIRO = new GenericError(
+    "Expiró la sesión de Academia UTEM",
+    "Debe iniciar sesión nuevamente",
+    401,
+    3.1
+  );
+
   static SIN_ROL = new GenericError(
     "El usuario no tiene rol",
     "El usuario no tiene rol definido en la plataforma. Si es estudiante nuevo, debe esperar a que se habilite el contenido de la plataforma, si es estudiante antiguo debe enviar correo a soporte.sisei@utem.cl",
@@ -108,17 +115,25 @@ export default class GenericError extends Error {
     13
   );
 
-  static BROWSER_NO_INICIALIZADO = new GenericError(
-    "El navegador no ha sido inicializado",
-    "Por favor intente más tarde",
-    501,
-    14
-  );
-
   static PERMISO_NO_ENCONTRADO = new GenericError(
     "El permiso no existe",
     "Verifique que el ID del permiso sea correcto",
     404,
     15
   );
+
+  static SIN_BECA_ALIMENTACION = new GenericError(
+    "El usuario no tiene beca de alimentación",
+    "No tiene beca de alimentación",
+    403,
+    16
+  );
+
+  static SIN_CODIGO_BECA_ALIMENTACION = new GenericError(
+    "El usuario no tiene código de beca de alimentación",
+    "No se ha encontrado el código de beca de alimentación",
+    404,
+    17
+  );
+
 }

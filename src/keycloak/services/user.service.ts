@@ -21,7 +21,7 @@ export class KeycloakUserService {
       try {
         await axios.post(loginPost || '', `username=${correo}&password=${contrasenia}`, { // Postea el formulario de login de sso
           headers: {
-            Cookie: cookies.map(it => it.raw).join(";"),
+            Cookie: Cookie.header(cookies),
             'Content-Type': 'application/x-www-form-urlencoded'
           },
           maxRedirects: 0,
@@ -46,7 +46,7 @@ export class KeycloakUserService {
     }
 
     if (response.headers.location) {
-      response.headers.location = response.headers.location.replace('http', 'https')
+      response.headers.location = response.headers.location.replace('http://', 'https://')
     }
 
     return [response, cookies]
