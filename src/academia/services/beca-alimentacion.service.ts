@@ -20,13 +20,19 @@ export class BecaAlimentacionService {
       throw GenericError.SIN_BECA_ALIMENTACION
     }
 
+    let $ = cheerio.load(becaAlimentacionResponse.data);
+
     // Generar codigo
     try {
+      const txt_inicio = $('input[name="txt_inicio"]').val()
+      const txt_termino = $('input[name="txt_termino"]').val()
       await axios.post(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion/generar_cupon`, {
+        txt_inicio,
+        txt_termino,
+      }, {
         headers: {
           Cookie: Cookie.header(cookies),
         },
-        maxRedirects: 0,
       })
     } catch (_){}
 
@@ -37,11 +43,15 @@ export class BecaAlimentacionService {
       },
     })
 
-    const $ = cheerio.load(becaAlimentacionResponse.data);
+    $ = cheerio.load(becaAlimentacionResponse.data);
 
     const codigo = $('#datatable > tbody > tr > td:nth-child(1)').text()
     if(!codigo) {
       throw GenericError.SIN_CODIGO_BECA_ALIMENTACION
+    }
+
+    if(codigo === 'No hay cupones generados.') {
+      throw GenericError.FUERA_DE_HORARIO_BECA_ALIMENTACION // Si al generar codigo, no aparece nada, significa que estamos fuera de horario.
     }
 
     return codigo

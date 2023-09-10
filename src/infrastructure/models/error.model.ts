@@ -136,4 +136,11 @@ export default class GenericError extends Error {
     17
   );
 
+  static FUERA_DE_HORARIO_BECA_ALIMENTACION = new GenericError(
+    "No es posible generar un código en este momento.",
+    "No es posible generar un código en este momento.",
+    404,
+    18
+  );
+
 }

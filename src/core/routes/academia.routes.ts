@@ -1,12 +1,12 @@
 import { Router } from "express";
-import {CredentialsMiddleware} from "../../infrastructure/middlewares/credentials.middleware";
 import {AcademiaController} from "../controllers/academia.controller";
+import {AcademiaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/academia-credentials.middleware";
 
 const router: Router = Router();
 
-router.post(
+router.get(
     "/academia/beca_alimentacion",
-    CredentialsMiddleware.isLoggedIn,
+    AcademiaCredentialsMiddleware.isLoggedIn,
     AcademiaController.getCodigoBecaAlimentacion
 );
 
