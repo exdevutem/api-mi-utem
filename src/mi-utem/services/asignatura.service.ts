@@ -34,9 +34,9 @@ export class MiUtemAsignaturaService {
    * Obtiene el detalle de una asignatura del usuario
    * @param cookies las cookies de MiUTEM
    * @param codigoAsignatura el codigo en formato por ejemplo 'MATC8020' para Álgebra Clásica.
-   * @param esLaboratiorio si es laboratorio o no. Por defecto es falso.
+   * @param tipoHora el tipo de hora a ver. Puede ser cualquier valor que exista dentro del avance de malla actual del usuario.
    */
-  public static async getDetalleAsignatura(cookies: Cookie[], codigoAsignatura: string, esLaboratiorio: boolean = false): Promise<SeccionAsignatura> {
+  public static async getDetalleAsignatura(cookies: Cookie[], codigoAsignatura: string, tipoHora: string = 'TEORIA'): Promise<SeccionAsignatura> {
     const [_, csrftoken] = await MiUtemAuthService.cookiesValidas(cookies);
 
     // El uso se encuentra acá: https://mi.utem.cl/static/js/home/home_alumnos.js (línea 52, #showDetails)
@@ -51,7 +51,7 @@ export class MiUtemAsignaturaService {
     let onclick: string = null;
 
     $('.card-utem #table_mdl_titulo tbody tr.no-border').each((i, el) => {
-      if($(el).find('td:nth-child(1) > span').text().split(' - ')[0].trim().toUpperCase() === codigoAsignatura.toUpperCase() && $(el).find('td:nth-child(2) > span').text().toLowerCase().includes(esLaboratiorio ? 'laboratorio' : 'teoria')) {
+      if($(el).find('td:nth-child(1) > span').text().split(' - ')[0].trim().toUpperCase() === codigoAsignatura.toUpperCase() && $(el).find('td:nth-child(2) > span').text().toUpperCase() === tipoHora.toUpperCase()) {
         onclick = $(el).find('span[onclick]').attr('onclick')
       }
     });

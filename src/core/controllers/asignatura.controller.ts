@@ -64,13 +64,11 @@ export class AsignaturaController {
 
       const codigo: string = req.params.codigoId;
 
-      console.debug({req})
-
       const asignatura: SeccionAsignatura =
         await MiUtemAsignaturaService.getDetalleAsignatura(
           cookies,
           codigo,
-          req.query.laboratorio != null,
+          req.query.tipoHora || 'TEORIA', // Por defecto vemos la teoría
         );
 
       res.status(200).json(asignatura);
