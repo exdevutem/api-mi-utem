@@ -35,6 +35,8 @@ export class BecaAlimentacionService {
       } catch(_){}
     })
 
+    console.debug({ codigos })
+
     return codigos
   }
 
@@ -53,12 +55,12 @@ export class BecaAlimentacionService {
     }
 
     const desde = dayjs(fechaInicio, 'DD-MM-YYYY').tz('America/Santiago').startOf('day')
-    const hasta = dayjs(fechaTermino, 'DD-MM-YYYY').tz('America/Santiago').startOf('day')
+    const hasta = dayjs(fechaTermino, 'DD-MM-YYYY').tz('America/Santiago').endOf('day')
 
     // Generar codigo
     let responseCode: Number
     try {
-      const response = await axios.post(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion/generar_cupon`, { txt_inicio: desde, txt_termino: hasta }, {
+      const response = await axios.post(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion/generar_cupon`, `txt_inicio=${desde.format('DD-MM-YYYY')}&txt_termino=${hasta.format('DD-MM-YYYY')}`, {
         headers: {
           Cookie: Cookie.header(cookies),
         },

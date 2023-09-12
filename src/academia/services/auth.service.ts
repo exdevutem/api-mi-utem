@@ -97,7 +97,7 @@ export class AcademiaUserService {
         },
       })
 
-      return `${request?.data}`.includes('id="kc-form-login"') === false // Si es invalido, se redirige al login mostrando el formulario de autenticación
+      return `${request?.data}`.includes('id="kc-form-login"') === false && `${request?.data}`.includes('var keycloak = Keycloak') == false // Si es invalido, se redirige al login mostrando el formulario de autenticación o muestra la carga del sso
     } catch (_) {
     }
     return false

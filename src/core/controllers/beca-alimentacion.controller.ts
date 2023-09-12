@@ -36,9 +36,17 @@ export class BecaAlimentacionController {
       const hoy = dayjs().tz('America/Santiago').startOf('day') // Hoy a las 00:00
       const fechaDesde = dayjs(desde, 'DD-MM-YYYY').tz('America/Santiago').startOf('day') // Desde a las 00:00
       const fechaHasta = dayjs(hasta, 'DD-MM-YYYY').tz('America/Santiago').endOf('day') // Hasta a las 23:59:59
-      const maximoDias = dayjs().tz('America/Santiago').add(40, 'day').endOf('day') // 40 días después a las 23:59:59
-      if (!dayjs(fechaDesde).isSameOrAfter(hoy) || !dayjs(fechaHasta).isSameOrBefore(maximoDias)) { // Si no está entre hoy y 40 días después
-        return next(GenericError.FECHA_FUERA_DE_RANGO)
+      const maximoDias = dayjs().tz('America/Santiago').endOf('year') // Fin de año
+      if (!dayjs(fechaDesde).isSameOrAfter(hoy)) { // Si no esta hoy o después
+        const error = GenericError.FECHA_FUERA_DE_RANGO
+        error.internalCode = 19.1
+        return next(error)
+      }
+
+      if (!dayjs(fechaHasta).isSameOrBefore(maximoDias)) { // Si no está entre fin de año o antes
+        const error = GenericError.FECHA_FUERA_DE_RANGO
+        error.internalCode = 19.2
+        return next(error)
       }
 
       const codigos = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desde, hasta)
