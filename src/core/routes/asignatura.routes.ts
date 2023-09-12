@@ -21,6 +21,11 @@ router.post(
   MiUTEMCredentialsMiddleware.isLoggedIn,
   AsignaturaController.getHistoricas
 );
+router.get(
+  "/asignaturas/:codigoId",
+  MiUTEMCredentialsMiddleware.isLoggedIn,
+  AsignaturaController.getDetalle
+);
 router.post("/notas/notificar", NotificacionController.notificate);
 
 export default router;

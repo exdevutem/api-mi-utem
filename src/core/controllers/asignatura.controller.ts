@@ -4,6 +4,7 @@ import SeccionAsignatura from "../models/seccion-asignatura.model";
 import Semestre from "../models/semestre.model";
 import Cookie from "../../infrastructure/models/cookie.model";
 import {MiUtemNotaService} from "../../mi-utem/services/nota.service";
+import {MiUtemAsignaturaService} from "../../mi-utem/services/asignatura.service";
 
 export class AsignaturaController {
   public static async getActivasByCarrera(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -52,6 +53,25 @@ export class AsignaturaController {
         );
 
       res.status(200).json(asignaturasHistoricas);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public static async getDetalle(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const cookies: Cookie[] = res.locals.loggedInUser.miUtemCookies;
+
+      const codigo: string = req.params.codigoId;
+
+      const asignatura: SeccionAsignatura =
+        await MiUtemAsignaturaService.getDetalleAsignatura(
+          cookies,
+          codigo,
+          req.query.tipoHora || 'TEORIA', // Por defecto vemos la teoría
+        );
+
+      res.status(200).json(asignatura);
     } catch (error) {
       next(error);
     }
