@@ -3,10 +3,42 @@ import {AcademiaUserService} from "./auth.service";
 import GenericError from "../../infrastructure/models/error.model";
 import axios from "axios";
 import * as cheerio from 'cheerio';
+import CodigoBecaAlimentacion from "../../core/models/codigo-beca-alimentacion.model";
+import {dayjs} from "../../app";
 
 export class BecaAlimentacionService {
 
-  public static async generarCodigoAlimentacion(cookies: Cookie[]): Promise<string> {
+  public static async obtenerCodigoAlimentacion(cookies: Cookie[]): Promise<CodigoBecaAlimentacion[]> {
+    await AcademiaUserService.cookiesValidas(cookies);
+
+    let becaAlimentacionResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion`, {
+      headers: {
+        Cookie: Cookie.header(cookies),
+      },
+    })
+
+    if(becaAlimentacionResponse.data.includes('Actualmente, no posees la beca de alimentación UTEM, cualquier consulta, dirígete a bienestar estudiantil de tu sede.')) {
+      throw GenericError.SIN_BECA_ALIMENTACION
+    }
+
+    let $ = cheerio.load(becaAlimentacionResponse.data);
+
+    const codigos: CodigoBecaAlimentacion[] = [];
+
+    $('#datatable > tbody > tr').each((index, it) => {
+      const codigo = $(it).find('td:nth-child(1)').text();
+      const validoPara = ($(it).find('td:nth-child(2)').text())
+      const estado = $(it).find('td:nth-child(3)').text();
+
+      try {
+        codigos.push({ codigo, validoPara: dayjs(validoPara, 'DD-MM-YYYY').tz('America/Santiago').toISOString(), estado })
+      } catch(_){}
+    })
+
+    return codigos
+  }
+
+  public static async generarCodigoAlimentacion(cookies: Cookie[], fechaInicio: string, fechaTermino: string): Promise<CodigoBecaAlimentacion[]> {
     await AcademiaUserService.cookiesValidas(cookies);
 
     // Revisar si tiene beca
@@ -16,44 +48,34 @@ export class BecaAlimentacionService {
       },
     })
 
-    if(!becaAlimentacionResponse.data.includes('te informamos que obtuviste la beca de alimentos UTEM, por lo que debes imprimir tus cupones para almorzar en el casino de tu campus.')) {
+    if(becaAlimentacionResponse.data.includes('Actualmente, no posees la beca de alimentación UTEM, cualquier consulta, dirígete a bienestar estudiantil de tu sede.')) {
       throw GenericError.SIN_BECA_ALIMENTACION
     }
 
-    let $ = cheerio.load(becaAlimentacionResponse.data);
+    const desde = dayjs(fechaInicio, 'DD-MM-YYYY').tz('America/Santiago').startOf('day')
+    const hasta = dayjs(fechaTermino, 'DD-MM-YYYY').tz('America/Santiago').startOf('day')
 
     // Generar codigo
+    let responseCode: Number
     try {
-      const txt_inicio = $('input[name="txt_inicio"]').val()
-      const txt_termino = $('input[name="txt_termino"]').val()
-      await axios.post(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion/generar_cupon`, {
-        txt_inicio,
-        txt_termino,
-      }, {
+      const response = await axios.post(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion/generar_cupon`, { txt_inicio: desde, txt_termino: hasta }, {
         headers: {
           Cookie: Cookie.header(cookies),
         },
+        maxRedirects: 0,
       })
-    } catch (_){}
 
-    // Obtener codigo
-    becaAlimentacionResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/bienestar_estudiantil/beca_alimentacion`, {
-      headers: {
-        Cookie: Cookie.header(cookies),
-      },
-    })
-
-    $ = cheerio.load(becaAlimentacionResponse.data);
-
-    const codigo = $('#datatable > tbody > tr > td:nth-child(1)').text()
-    if(!codigo) {
-      throw GenericError.SIN_CODIGO_BECA_ALIMENTACION
+      responseCode = response.status
+    } catch (err){
+      responseCode = err?.response?.status || 0
     }
 
-    if(codigo === 'No hay cupones generados.') {
-      throw GenericError.FUERA_DE_HORARIO_BECA_ALIMENTACION // Si al generar codigo, no aparece nada, significa que estamos fuera de horario.
+    if(responseCode !== 302) {
+      throw GenericError.ERROR_GENERAR_CODIGO
     }
 
-    return codigo
+    // Obtiene los codigos y los filtra por fecha
+    const codigos = await BecaAlimentacionService.obtenerCodigoAlimentacion(cookies)
+    return codigos.filter(it => dayjs(it.validoPara).tz('America/Santiago').isSameOrAfter(desde, 'day') && dayjs(it.validoPara).tz('America/Santiago').isSameOrBefore(hasta, 'day'))
   }
 }

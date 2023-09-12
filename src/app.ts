@@ -1,6 +1,24 @@
 import * as firebaseAdmin from "firebase-admin";
 import Server from "./infrastructure/server/server";
 
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
+
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import isBetween from 'dayjs/plugin/isBetween'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+
+dayjs.locale('es')
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(customParseFormat)
+dayjs.extend(isBetween)
+dayjs.extend(isSameOrBefore)
+dayjs.extend(isSameOrAfter)
+
 /* Este codigo permite realizar console.debug solo en log level = 'debug' */
 const debugFunction = console.debug
 console.debug = function () {
@@ -35,4 +53,4 @@ String.prototype.toTitleCase = function (): string {
 /* ExpressJS Server */
 const server = new Server(process.env.PORT ? parseInt(process.env.PORT) : 3000);
 
-export {server}
+export {server, dayjs}

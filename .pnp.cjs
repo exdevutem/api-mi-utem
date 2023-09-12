@@ -38,6 +38,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["body-parser", "npm:1.20.2"],\
             ["cheerio", "npm:1.0.0-rc.12"],\
             ["chilean-rut", "npm:1.0.24"],\
+            ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
             ["express", "npm:4.18.2"],\
             ["firebase", "npm:9.23.0"],\
@@ -5079,6 +5080,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["dayjs", [\
+        ["npm:1.11.9", {\
+          "packageLocation": "./.yarn/cache/dayjs-npm-1.11.9-c47d327b7c-a4844d83dc.zip/node_modules/dayjs/",\
+          "packageDependencies": [\
+            ["dayjs", "npm:1.11.9"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["debug", [\
         ["npm:2.6.9", {\
           "packageLocation": "./.yarn/cache/debug-npm-2.6.9-7d4cb597dc-d2f51589ca.zip/node_modules/debug/",\
@@ -7909,6 +7919,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["body-parser", "npm:1.20.2"],\
             ["cheerio", "npm:1.0.0-rc.12"],\
             ["chilean-rut", "npm:1.0.24"],\
+            ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
             ["express", "npm:4.18.2"],\
             ["firebase", "npm:9.23.0"],\
