@@ -10,7 +10,7 @@ export default class CredentialsUtils {
     }
 
     const expirationString = data[0];
-    const expirationDate = new Date(parseInt(expirationString) * 1000);
+    const expirationDate = Date.parse(expirationString);
     return expirationDate < new Date();
   }
 
