@@ -70,20 +70,21 @@ FCM_SERVER_KEY=AAAAPEuk7fI:APA91bGG9UrjuLX8kt1DWVwz...
 SISEI_KEY=123456
 ```
 
-| **Variable** | **Descripción**                                                                             |
-|----------------------|---------------------------------------------------------------------------------------------|
-| `PORT` | Puerto donde correrá el servicio, se utiliza ´443´ para habilitar las consultas ´HTTPS´     |
-| `SENTRY_URL` | URL de Sentry para el manejo de errores                                                     |
-| `PRIVATE_KEY_PATH` | Ubicación del archivo correspondiente a la llave privada del certificado HTTPS              |
-| `CERTIFICATE_PATH` | Ubicación del archivo correspondiente al certificado HTTPS                                  |
-| `MI_UTEM_URL` | URL de la página web Mi.UTEM                                                                |
-| `ACADEMIA_UTEM_URL` | URL de la página web de Academia.UTEM                                                       |
-| `ACADEMIA_CLIENT_SECRET` | Token para generar URLs de login del SSO para Academia.UTEM                                 |
-| `PASAPORTE_UTEM_URL` | URL de la página web de Pasaporte.UTEM                                                      |
-| `SSO_UTEM_URL` | URL de la página web de SSO.UTEM                                                            |
-| `REQ_REF` | Opcional. Valor del parámetro `ref` que se agregará a las consultas a las distintas webs.   |
-| `GOOGLE_APPLICATION_CREDENTIALS` | Ubicación del archivo de credenciales del proyecto Firebase.                                |
-| `FCM_SERVER_KEY` | Llave del servidor de FCM para enviar notificaciones.                                       |
+| **Variable** | **Descripción**                                                                          |
+|----------------------|------------------------------------------------------------------------------------------|
+| `PORT` | Puerto donde correrá el servicio, se utiliza ´443´ para habilitar las consultas ´HTTPS´  |
+| `SENTRY_URL` | URL de Sentry para el manejo de errores                                                  |
+| `PRIVATE_KEY_PATH` | Ubicación del archivo correspondiente a la llave privada del certificado HTTPS           |
+| `CERTIFICATE_PATH` | Ubicación del archivo correspondiente al certificado HTTPS                               |
+| `UTEM_URL` | URL de la página web UTEM                                                                |
+| `MI_UTEM_URL` | URL de la página web Mi.UTEM                                                             |
+| `ACADEMIA_UTEM_URL` | URL de la página web de Academia.UTEM                                                    |
+| `ACADEMIA_CLIENT_SECRET` | Token para generar URLs de login del SSO para Academia.UTEM                              |
+| `PASAPORTE_UTEM_URL` | URL de la página web de Pasaporte.UTEM                                                   |
+| `SSO_UTEM_URL` | URL de la página web de SSO.UTEM                                                         |
+| `REQ_REF` | Opcional. Valor del parámetro `ref` que se agregará a las consultas a las distintas webs. |
+| `GOOGLE_APPLICATION_CREDENTIALS` | Ubicación del archivo de credenciales del proyecto Firebase.                             |
+| `FCM_SERVER_KEY` | Llave del servidor de FCM para enviar notificaciones.                                    |
 | `SISEI_KEY` | Llave para que el equipo de SISEI pueda hacer algunas consultas. Puede ser cualquier valor. |
 
 ## Ejecución
