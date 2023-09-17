@@ -11,7 +11,8 @@ export default class CredentialsUtils {
 
     const expirationString = data[0];
     const expirationDate = Date.parse(expirationString);
-    return expirationDate < new Date();
+    const now = new Date().getTime();
+    return expirationDate < now;
   }
 
   public static getMiUtemToken(authToken: string): string | undefined {
