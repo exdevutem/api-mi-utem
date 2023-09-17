@@ -125,12 +125,8 @@ el código fuente y busca la variable 'keycloak', dentro tiene una configuració
 formato json. Allí puedes obtener el token.
 
 ## Créditos
-Proyecto hecho por el Club de Innovación y Desarrollo.
+Este proyecto fue creado por el Club de Desarrollo Experimental (Ex Club de Innovación y Desarrollo) y a este repositorio han aportado los siguientes perfiles:
 
-### Miembros del club
-* Sebastián Albornoz Medina ([@Ballena0](https://github.com/ballena0  "GitHub de Sebastián Albornoz Medina")) - Desarrollador
-* Juan Avendaño Nuñez ([@Javendanon](https://github.com/Javendanon  "GitHub de Juan Avendaño Nuñez")) - Desarrollador
-* Felipe Flores Vivanco ([@Spipe](https://github.com/spipe  "GitHub de Felipe Flores Vivanco")) - Desarrollador
-* Mariam V. Maldonado Marin ([@mariam6697](https://github.com/mariam6697  "GitHub de Mariam V. Maldonado Marin")) - Desarrolladora
-* Jorge Verdugo Chacón ([@mapacheverdugo](https://github.com/mapacheverdugo/  "GitHub de Jorge Verdugo Chacón")) - Desarrollador
-* Javiera Vergara Navarro ([@PollitoMayo](https://github.com/pollitomayo/  "GitHub de Javiera Vergara Navarro")) - Desarrolladora / Ilustradora
+<a href="https://github.com/exdevutem/api-mi-utem/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=exdevutem/api-mi-utem" />
+</a>
