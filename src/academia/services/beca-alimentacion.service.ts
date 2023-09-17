@@ -54,8 +54,8 @@ export class BecaAlimentacionService {
       throw GenericError.SIN_BECA_ALIMENTACION
     }
 
-    const desde = dayjs(fechaInicio, 'DD-MM-YYYY').tz('America/Santiago').startOf('day')
-    const hasta = dayjs(fechaTermino, 'DD-MM-YYYY').tz('America/Santiago').endOf('day')
+    const desde = dayjs(fechaInicio).tz('America/Santiago').startOf('day')
+    const hasta = dayjs(fechaTermino).tz('America/Santiago').endOf('day')
 
     // Generar codigo
     let responseCode: Number

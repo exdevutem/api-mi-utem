@@ -19,37 +19,43 @@ export class BecaAlimentacionController {
 
   public static async solicitarCodigoBecaAlimentacion(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if ([0,6].includes(dayjs().tz('America/Santiago').day())) {
+      if (req.body.desde && !dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
+        const error = GenericError.FORMATO_FECHA_INVALIDO
+        error.internalCode = 18.1
+        return next(error)
+      }
+
+      if (req.body.hasta && !dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
+        const error = GenericError.FORMATO_FECHA_INVALIDO
+        error.internalCode = 18.2
+        return next(error)
+      }
+
+      const ahora = dayjs().tz('America/Santiago') // Hoy a las 00:00
+
+      const cookies = res.locals.loggedInUser.academiaCookies;
+      const desde = (dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago') || ahora).startOf('day');
+      const hasta = (dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago') || ahora).endOf('day');
+
+      // Si es desde sabado hasta domingo lanzar error
+      if (dayjs(desde).tz('America/Santiago').day() === 6 && dayjs(hasta).tz('America/Santiago').day() === 0) {
         return next(GenericError.FUERA_DE_HORARIO_BECA_ALIMENTACION) // Si es sabado o domingo, no se puede generar codigo.
       }
 
-      const cookies = res.locals.loggedInUser.academiaCookies;
-      const desde = req.body.desde || dayjs().tz('America/Santiago').format('DD-MM-YYYY');
-      const hasta = req.body.hasta || dayjs().tz('America/Santiago').add(7, 'day').format('DD-MM-YYYY');
-
-      // Verifica si es formato DD-MM-YYYY
-      if (!dayjs(desde, 'DD-MM-YYYY').tz('America/Santiago').isValid() || !dayjs(hasta, 'DD-MM-YYYY').tz('America/Santiago').isValid()) {
-        return next(GenericError.FORMATO_FECHA_INVALIDO)
-      }
-
       // Verifica si es entre hoy a las 00:00 y 40 días después
-      const hoy = dayjs().tz('America/Santiago').startOf('day') // Hoy a las 00:00
-      const fechaDesde = dayjs(desde, 'DD-MM-YYYY').tz('America/Santiago').startOf('day') // Desde a las 00:00
-      const fechaHasta = dayjs(hasta, 'DD-MM-YYYY').tz('America/Santiago').endOf('day') // Hasta a las 23:59:59
-      const maximoDias = dayjs().tz('America/Santiago').endOf('year') // Fin de año
-      if (!dayjs(fechaDesde).isSameOrAfter(hoy)) { // Si no esta hoy o después
+      if (!dayjs(desde).isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.1
         return next(error)
       }
 
-      if (!dayjs(fechaHasta).isSameOrBefore(maximoDias)) { // Si no está entre fin de año o antes
+      if (!dayjs(ahora).isSameOrBefore(dayjs().tz('America/Santiago').endOf('year'))) { // Si no está entre fin de año o antes
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.2
         return next(error)
       }
 
-      const codigos = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desde, hasta)
+      const codigos = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desde.toISOString(), hasta.toISOString())
 
       res.status(200).json(codigos);
     } catch (error) {
