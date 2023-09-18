@@ -2,8 +2,8 @@ import { describe, expect } from '@jest/globals';
 import request from 'supertest';
 import { server } from '../src/app';
 
-const correo = "tlillo@utem.cl";
-const contrasenia = "TALStrece02";
+const correo = process.env.USER_EMAI || "";
+const contrasenia = process.env.USER_PASSWORD || "";
 
 describe('POST /auth', () => {
     it('login successful with @utem.cl', async () => {
