@@ -34,15 +34,15 @@ jobs:
           yarn test
         env:
           ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
-          SSO_UTEM_URL: ${{ secrets.SSO_UTEM_URL }}
-          MI_UTEM_URL: ${{ secrets.MI_UTEM_URL }}
-          PASAPORTE_UTEM_URL: ${{ secrets.PASAPORTE_UTEM_URL }}
-          ACADEMIA_UTEM_URL: ${{ secrets.ACADEMIA_UTEM_URL }}
-          SIGA_API_URL: ${{ secrets.SIGA_API_URL }}
+          SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL }}
+          MI_UTEM_URL: ${{ vars.MI_UTEM_URL }}
+          PASAPORTE_UTEM_URL: ${{ vars.PASAPORTE_UTEM_URL }}
+          ACADEMIA_UTEM_URL: ${{ vars.ACADEMIA_UTEM_URL }}
+          SIGA_API_URL: ${{ vars.SIGA_API_URL }}
           FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
           SISEI_KEY: ${{ secrets.SISEI_KEY }}
-          FIREBASE_ADMINSDK_PROJECT_ID: ${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}
-          FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ secrets.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
+          FIREBASE_ADMINSDK_PROJECT_ID: ${{ vars.FIREBASE_ADMINSDK_PROJECT_ID }}
+          FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ vars.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
           FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+          USER_EMAIL: ${{ vars.USER_EMAIL }}
+          USER_PASSWORD: ${{ vars.USER_PASSWORD }}
