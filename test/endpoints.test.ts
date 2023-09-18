@@ -2,7 +2,7 @@ import { describe, expect } from '@jest/globals';
 import request from 'supertest';
 import { server } from '../src/app';
 
-const correo = process.env.USER_EMAI || "";
+const correo = process.env.USER_EMAIL || "";
 const contrasenia = process.env.USER_PASSWORD || "";
 
 describe('POST /auth', () => {
