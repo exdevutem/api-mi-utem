@@ -2,20 +2,7 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node Tests
-env:
-  ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
-  SSO_UTEM_URL: ${{ secrets.SSO_UTEM_URL }}
-  MI_UTEM_URL: ${{ secrets.MI_UTEM_URL }}
-  PASAPORTE_UTEM_URL: ${{ secrets.PASAPORTE_UTEM_URL }}
-  ACADEMIA_UTEM_URL: ${{ secrets.ACADEMIA_UTEM_URL }}
-  SIGA_API_URL: ${{ secrets.SIGA_API_URL }}
-  FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
-  SISEI_KEY: ${{ secrets.SISEI_KEY }}
-  FIREBASE_ADMINSDK_PROJECT_ID: ${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}
-  FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ secrets.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
-  FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
-  USER_EMAIL: ${{ secrets.USER_EMAIL }}
-  USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+
   
 on:
   push:
@@ -40,6 +27,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install -g yarn    
       - name: yarn install and test
+        env:
+          ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
+          SSO_UTEM_URL: ${{ secrets.SSO_UTEM_URL }}
+          MI_UTEM_URL: ${{ secrets.MI_UTEM_URL }}
+          PASAPORTE_UTEM_URL: ${{ secrets.PASAPORTE_UTEM_URL }}
+          ACADEMIA_UTEM_URL: ${{ secrets.ACADEMIA_UTEM_URL }}
+          SIGA_API_URL: ${{ secrets.SIGA_API_URL }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
+          SISEI_KEY: ${{ secrets.SISEI_KEY }}
+          FIREBASE_ADMINSDK_PROJECT_ID: ${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}
+          FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ secrets.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
+          FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
         run: | 
           yarn 
           yarn test
