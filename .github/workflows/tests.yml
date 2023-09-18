@@ -3,7 +3,6 @@
 
 name: Node Tests
 
-  
 on:
   push:
     branches: [ dev ]
@@ -28,12 +27,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: 'Install yarn'
         run: npm install -g yarn
-      - name: 'Create env file'
-        run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
-        env: 
-          ENV_FILE: ${{ secrets.ENV_FILE }} 
       - name: 'yarn install and test'
-        run: | 
+        run: |
+          echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
           yarn 
           yarn test
+        env:
+          ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
+          SSO_UTEM_URL: ${{ secrets.SSO_UTEM_URL }}
+          MI_UTEM_URL: ${{ secrets.MI_UTEM_URL }}
+          PASAPORTE_UTEM_URL: ${{ secrets.PASAPORTE_UTEM_URL }}
+          ACADEMIA_UTEM_URL: ${{ secrets.ACADEMIA_UTEM_URL }}
+          SIGA_API_URL: ${{ secrets.SIGA_API_URL }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
+          SISEI_KEY: ${{ secrets.SISEI_KEY }}
+          FIREBASE_ADMINSDK_PROJECT_ID: ${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}
+          FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ secrets.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
+          FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
+          USER_EMAIL: ${{ secrets.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
