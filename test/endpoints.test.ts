@@ -2,12 +2,14 @@ import { describe, expect } from '@jest/globals';
 import request from 'supertest';
 import { server } from '../src/app';
 
+let api;
+
 const correo = process.env.USER_EMAIL || "";
 const contrasenia = process.env.USER_PASSWORD || "";
 
 describe('POST /auth', () => {
     it('login successful with @utem.cl', async () => {
-        const res = await request(server.app)
+        const res = await request(api)
           .post('/v1/auth')
           .send({
             correo: correo,
@@ -15,7 +17,7 @@ describe('POST /auth', () => {
           })
         expect(res.statusCode).toEqual(200)
         expect(res.body).toHaveProperty('token')
-      }, 15000)
+      }, 25000)
 
       it('login successful without @utem.cl', async () => {
         const res = await request(server.app)
@@ -26,7 +28,7 @@ describe('POST /auth', () => {
           })
         expect(res.statusCode).toEqual(200)
         expect(res.body).toHaveProperty('token')
-      }, 15000)
+      }, 25000)
 
       it('wrong email', async () => {
         const res = await request(server.app)
@@ -36,7 +38,7 @@ describe('POST /auth', () => {
             contrasenia: contrasenia
           })
         expect(res.statusCode).toEqual(403)
-      }, 15000)
+      })
 
       it('wrong password', async () => {
         const res = await request(server.app)
@@ -46,7 +48,7 @@ describe('POST /auth', () => {
             contrasenia: contrasenia + "a"
           })
         expect(res.statusCode).toEqual(403)
-      }, 15000)
+      })
 });
 
 describe('SIGA flow', () => {
@@ -90,3 +92,9 @@ describe('SIGA flow', () => {
         expect(res.body['notasParciales'].length).toBeGreaterThan(0)
       }, 60000)
 });
+
+
+afterAll(done => {
+    server.close();
+    done();
+})

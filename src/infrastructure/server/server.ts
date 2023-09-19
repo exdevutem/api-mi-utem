@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import bodyParser from "body-parser";
-import express, {NextFunction, Request, Response} from "express";
-import {readFileSync} from "fs";
+import express, { NextFunction, Request, Response } from "express";
+import { readFileSync } from "fs";
 import http from "http";
 import https from "https";
 import morgan from "morgan";
@@ -23,6 +23,8 @@ winstonMorgarWriter._write = function (chunk, encoding, done) {
 export default class Server {
   public app: express.Application;
   public port: number;
+  private httpsServer: https.Server | undefined;
+  private httpServer: http.Server | undefined;
 
   public constructor(port: number) {
     this.port = port;
@@ -115,7 +117,7 @@ export default class Server {
     }
 
     if (privateKey && certificate) {
-      let httpsServer: https.Server = https.createServer(
+      this.httpsServer = https.createServer(
         {
           key: privateKey,
           cert: certificate,
@@ -123,20 +125,30 @@ export default class Server {
         },
         this.app
       );
-      httpsServer.listen(this.port, async () => {
+      this.httpsServer.listen(this.port, async () => {
         GenericLogger.log({
           level: "info",
           message: `🚀 Servidor HTTPS escuchando en el puerto ${this.port}`,
         });
       });
     } else {
-      let httpServer: http.Server = http.createServer(this.app);
-      httpServer.listen(this.port, async () => {
+      this.httpServer = http.createServer(this.app);
+      this.httpServer.listen(this.port, async () => {
         GenericLogger.log({
           level: "info",
           message: `🚀 Servidor HTTP escuchando en el puerto ${this.port}`,
         });
       });
+    }
+  }
+
+  public close() {
+    if (this.httpsServer) {
+      this.httpsServer.close();
+    }
+
+    if (this.httpServer) {
+      this.httpServer.close();
     }
   }
 }
