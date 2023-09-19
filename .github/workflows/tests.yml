@@ -11,7 +11,7 @@ on:
  
 jobs:
   build:
-
+    name: Tests
     environment: api-mi-utem
     runs-on: ubuntu-latest
 
