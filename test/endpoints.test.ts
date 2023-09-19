@@ -9,7 +9,7 @@ const contrasenia = process.env.USER_PASSWORD || "";
 
 describe('POST /auth', () => {
     it('login successful with @utem.cl', async () => {
-        const res = await request(api)
+        const res = await request(server.app)
           .post('/v1/auth')
           .send({
             correo: correo,
