@@ -136,4 +136,26 @@ export default class GenericError extends Error {
     17
   );
 
+  static FORMATO_FECHA_INVALIDO = new GenericError(
+    "El formato de fecha es inválido.",
+    "El formato de fecha es inválido.",
+    400,
+    18
+  );
+
+  static FECHA_FUERA_DE_RANGO = new GenericError(
+    "La fecha está fuera de rango.",
+    "La fecha está fuera de rango.",
+    400,
+    19
+  );
+
+  static ERROR_GENERAR_CODIGO = new GenericError(
+    "No se pudo generar el código.",
+    "No se pudo generar el código.",
+    400,
+    20
+  );
+
+
 }
