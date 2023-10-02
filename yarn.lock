@@ -7798,8 +7798,8 @@ __metadata:
     body-parser: ^1.20.2
     cheerio: ^1.0.0-rc.12
     chilean-rut: ^1.0.24
-    dayjs: ^1.11.9
     cross-env: ^7.0.3
+    dayjs: ^1.11.9
     dotenv: ^16.3.1
     express: ^4.18.2
     firebase: ^9.23.0

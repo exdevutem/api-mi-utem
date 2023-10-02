@@ -40,8 +40,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["body-parser", "npm:1.20.2"],\
             ["cheerio", "npm:1.0.0-rc.12"],\
             ["chilean-rut", "npm:1.0.24"],\
-            ["dayjs", "npm:1.11.9"],\
             ["cross-env", "npm:7.0.3"],\
+            ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
             ["express", "npm:4.18.2"],\
             ["firebase", "npm:9.23.0"],\
@@ -10219,8 +10219,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["body-parser", "npm:1.20.2"],\
             ["cheerio", "npm:1.0.0-rc.12"],\
             ["chilean-rut", "npm:1.0.24"],\
-            ["dayjs", "npm:1.11.9"],\
             ["cross-env", "npm:7.0.3"],\
+            ["dayjs", "npm:1.11.9"],\
             ["dotenv", "npm:16.3.1"],\
             ["express", "npm:4.18.2"],\
             ["firebase", "npm:9.23.0"],\
