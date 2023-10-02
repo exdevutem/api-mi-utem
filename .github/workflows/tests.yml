@@ -1,0 +1,48 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Node Tests
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+ 
+jobs:
+  build:
+    name: Tests
+    environment: api-mi-utem
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Setup Node.js'
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: 'Install yarn'
+        run: npm install -g yarn
+      - name: 'yarn install and test'
+        run: |
+          echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
+          yarn 
+          yarn test
+        env:
+          ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
+          SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL }}
+          MI_UTEM_URL: ${{ vars.MI_UTEM_URL }}
+          PASAPORTE_UTEM_URL: ${{ vars.PASAPORTE_UTEM_URL }}
+          ACADEMIA_UTEM_URL: ${{ vars.ACADEMIA_UTEM_URL }}
+          SIGA_API_URL: ${{ vars.SIGA_API_URL }}
+          FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
+          SISEI_KEY: ${{ secrets.SISEI_KEY }}
+          FIREBASE_ADMINSDK_PROJECT_ID: ${{ vars.FIREBASE_ADMINSDK_PROJECT_ID }}
+          FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ vars.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
+          FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
+          USER_EMAIL: ${{ vars.USER_EMAIL }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
