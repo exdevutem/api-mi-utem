@@ -129,11 +129,33 @@ export default class GenericError extends Error {
     16
   );
 
-  static SIN_CODIGO_BECA_ALIMENTACION = new GenericError(
-    "El usuario no tiene código de beca de alimentación",
-    "No se ha encontrado el código de beca de alimentación",
+  static FUERA_DE_HORARIO_BECA_ALIMENTACION = new GenericError(
+    "No es posible generar un código en este momento.",
+    "No es posible generar un código en este momento.",
     404,
     17
   );
+
+  static FORMATO_FECHA_INVALIDO = new GenericError(
+    "El formato de fecha es inválido.",
+    "El formato de fecha es inválido.",
+    400,
+    18
+  );
+
+  static FECHA_FUERA_DE_RANGO = new GenericError(
+    "La fecha está fuera de rango.",
+    "La fecha está fuera de rango.",
+    400,
+    19
+  );
+
+  static ERROR_GENERAR_CODIGO = new GenericError(
+    "No se pudo generar el código.",
+    "No se pudo generar el código.",
+    400,
+    20
+  );
+
 
 }
