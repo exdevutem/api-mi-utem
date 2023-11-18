@@ -129,9 +129,9 @@ export default class GenericError extends Error {
     16
   );
 
-  static SIN_CODIGO_BECA_ALIMENTACION = new GenericError(
-    "El usuario no tiene código de beca de alimentación",
-    "No se ha encontrado el código de beca de alimentación",
+  static FUERA_DE_HORARIO_BECA_ALIMENTACION = new GenericError(
+    "No es posible generar un código en este momento.",
+    "No es posible generar un código en este momento.",
     404,
     17
   );
