@@ -8,7 +8,7 @@ on:
     branches: [ dev ]
   pull_request:
     branches: [ dev ]
- 
+
 jobs:
   build:
     name: Tests
@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x]
-    
+
     steps:
       - uses: actions/checkout@v2
       - name: 'Setup Node.js'
@@ -30,19 +30,23 @@ jobs:
       - name: 'yarn install and test'
         run: |
           echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
-          yarn 
+          yarn
           yarn test
         env:
-          ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
-          SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL }}
-          MI_UTEM_URL: ${{ vars.MI_UTEM_URL }}
-          PASAPORTE_UTEM_URL: ${{ vars.PASAPORTE_UTEM_URL }}
-          ACADEMIA_UTEM_URL: ${{ vars.ACADEMIA_UTEM_URL }}
-          SIGA_API_URL: ${{ vars.SIGA_API_URL }}
+          UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
+          SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL || 'https://sso.utem.cl' }}
+          MI_UTEM_URL: ${{ vars.MI_UTEM_URL || 'https://mi.utem.cl' }}
+          PASAPORTE_UTEM_URL: ${{ vars.PASAPORTE_UTEM_URL || 'https://pasaporte.utem.cl' }}
+          ACADEMIA_UTEM_URL: ${{ vars.ACADEMIA_UTEM_URL || 'https://academia.utem.cl' }}
+          SIGA_API_URL: ${{ vars.SIGA_API_URL || 'https://siga.utem.cl/servicios' }}
+
           FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}
           SISEI_KEY: ${{ secrets.SISEI_KEY }}
+          ACADEMIA_CLIENT_SECRET: ${{ secrets.ACADEMIA_CLIENT_SECRET }}
+
           FIREBASE_ADMINSDK_PROJECT_ID: ${{ vars.FIREBASE_ADMINSDK_PROJECT_ID }}
           FIREBASE_ADMINSDK_CLIENT_EMAIL: ${{ vars.FIREBASE_ADMINSDK_CLIENT_EMAIL }}
           FIREBASE_ADMINSDK_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMINSDK_PRIVATE_KEY }}
+
           USER_EMAIL: ${{ vars.USER_EMAIL }}
           USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
