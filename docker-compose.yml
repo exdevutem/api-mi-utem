@@ -9,4 +9,4 @@ services:
             - '.:/app'
         ports:
             - '${FORWARD_APP_PORT:-3000}:3000'
-        command: 'yarn start'
+        command: 'yarn start-dev'
