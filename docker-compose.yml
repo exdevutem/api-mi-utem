@@ -1,12 +1,13 @@
 version: "3"
-services:
-    app:
+services: 
+    app: 
         image: 'node:latest'
         container_name: 'app'
         restart: 'always'
         working_dir: '/app'
-        volumes:
+        volumes: 
             - '.:/app'
-        ports:
+        ports: 
             - '${FORWARD_APP_PORT:-3000}:3000'
-        command: 'yarn start'
+        command: >
+            bash -c "yarn install && yarn start-dev"
