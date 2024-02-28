@@ -10,6 +10,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isBetween from 'dayjs/plugin/isBetween'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import NodeCache from "node-cache";
 
 dayjs.locale('es')
 dayjs.extend(utc)
@@ -27,6 +28,16 @@ console.debug = function () {
   }
 }
 
+/* Inicializar sistema de cache en memoria */
+const cache = new NodeCache({
+  stdTTL: 60 * 60, // Tiempo de vida estándar de 1 hora
+  checkperiod: 60 * 10, // Cada 10 minutos se revisa si hay elementos que expiraron
+  useClones: true, // Guardar copias de los objetos en lugar de referencias
+  deleteOnExpire: true, // Eliminar elementos que expiraron
+  errorOnMissing: false, // No lanzar error si no se encuentra un elemento
+})
+
+/* Firebase */
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert({
     projectId: process.env.FIREBASE_ADMINSDK_PROJECT_ID,
@@ -53,4 +64,4 @@ String.prototype.toTitleCase = function (): string {
 /* ExpressJS Server */
 const server = new Server(process.env.PORT ? parseInt(process.env.PORT) : 3000);
 
-export {server, dayjs}
+export {server, dayjs, cache}
