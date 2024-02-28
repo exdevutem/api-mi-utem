@@ -8,6 +8,7 @@ import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
 import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { SigaApiAuthService } from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
+import {cache} from "../../app";
 
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -16,6 +17,14 @@ export class AuthController {
       const contrasenia: string = req.body.contrasenia || '';
       if (correo.length === 0 || contrasenia.length === 0) {
         throw GenericError.CREDENCIALES_INCORRECTAS
+      }
+
+      /* Busca inicio de sesión en cache */
+      const cacheKey = btoa(`login:${correo}`)
+      const cached = cache.get<Usuario>(cacheKey)
+      if(cached != undefined) {
+        res.status(200).json(cached);
+        return;
       }
 
       /* Inicia sesión en Siga */
@@ -73,6 +82,7 @@ export class AuthController {
         }
       }
 
+      cache.set(cacheKey, usuario, 300) // Guarda en cache por 5 minutos
       res.status(200).json(usuario);
     } catch (error) {
       next(error)
