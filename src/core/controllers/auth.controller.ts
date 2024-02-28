@@ -9,6 +9,7 @@ import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { SigaApiAuthService } from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
 import {cache} from "../../app";
+import {HashUtils} from "../../infrastructure/utils/hash.utils";
 
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -20,7 +21,7 @@ export class AuthController {
       }
 
       /* Busca inicio de sesión en cache */
-      const cacheKey = btoa(`login:${correo}`)
+      const cacheKey = HashUtils.sha512(`login:${correo}:${contrasenia}`)
       const cached = cache.get<Usuario>(cacheKey)
       if(cached != undefined) {
         res.status(200).json(cached);
