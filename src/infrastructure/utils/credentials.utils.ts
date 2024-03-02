@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import Usuario from "../../core/models/usuario.model";
 import Cookie from "../models/cookie.model";
+import axios from "axios";
 
 export default class CredentialsUtils {
   public static isCookieExpired(token: string): boolean {
@@ -92,7 +93,53 @@ export default class CredentialsUtils {
     }
   }
 
-  public static isTokenExpired(token: string): boolean {
+  public static async isMiUTEMTokenExpired(token: string): Promise<boolean> {
+    if (token == null) {
+      return true;
+    }
+
+    let miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(token);
+    if(miUtemCookies.length === 0) {
+      return true;
+    }
+
+    try {
+      const request = await axios.get(`${process.env.MIUTEM_URL}/academicos/mi-perfil-estudiante`, {
+        headers: {
+          Cookie: Cookie.header(miUtemCookies),
+        },
+      });
+      return !(`${request?.data}`.includes('id="kc-form-login"')) && !(`${request?.data}`.includes('var keycloak = Keycloak')) && !(`${request?.data}`.includes('form-login')) && !(`${request?.data}`.includes('id_txt_usuario'));
+    } catch (_) {}
+
+    return true;
+  }
+
+  public static async isAcademiaTokenExpired(token: string): Promise<boolean> {
+    if (token == null) {
+      return true;
+    }
+
+    let academiaCookies: Cookie[] = CredentialsUtils.getAcademiaCookies(token);
+    if(academiaCookies.length === 0) {
+      return true;
+    }
+
+    try {
+      const perfilResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/libro_de_clases/bitacora_de_clases`, {
+        withCredentials: true,
+        headers: {
+          Cookie: Cookie.header(academiaCookies),
+        }
+      });
+
+      return !(`${perfilResponse.data}`.includes('Hola,'));
+    } catch (e) {}
+
+    return true;
+  }
+
+  public static isSigaTokenExpired(token: string): boolean {
     if (token == null) {
       return true;
     }

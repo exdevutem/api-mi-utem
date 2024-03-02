@@ -89,7 +89,6 @@ export class MiUtemAuthService {
       response.headers["set-cookie"].map(it => Cookie.parse(it)).forEach(it => cookies.push(it))
       return cookies
     }
-    return undefined
   }
 
   // Revisa que las cookies sean válidas
@@ -101,7 +100,7 @@ export class MiUtemAuthService {
         },
       })
 
-      return `${request?.data}`.includes('id="kc-form-login"') === false // Si es invalido, se redirige al login mostrando el formulario de autenticación
+      return !(`${request?.data}`.includes('id="kc-form-login"')) && !(`${request?.data}`.includes('var keycloak = Keycloak')) && !(`${request?.data}`.includes('form-login')) && !(`${request?.data}`.includes('id_txt_usuario')) // Si es invalido, se redirige al login mostrando el formulario de autenticación
     } catch (_) { }
     return false
   }

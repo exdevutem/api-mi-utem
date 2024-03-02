@@ -104,7 +104,8 @@ export class AuthController {
       let miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
       let academiaCookies: Cookie[] = CredentialsUtils.getAcademiaCookies(accessToken);
 
-      if (miUtemCookies.length === 0) {
+      let isMiUTEMTokenExpired = await CredentialsUtils.isMiUTEMTokenExpired(accessToken);
+      if (isMiUTEMTokenExpired) {
         try {
           miUtemCookies = await MiUtemAuthService.loginAndGetCookies(correo, contrasenia);
         } catch (error) {
@@ -112,7 +113,8 @@ export class AuthController {
         }
       }
 
-      if (academiaCookies.length === 0) {
+      let isAcademiaTokenExpired = await CredentialsUtils.isAcademiaTokenExpired(accessToken);
+      if (isAcademiaTokenExpired) {
         try {
           academiaCookies = await AcademiaUserService.loginAndGetCookies(correo, contrasenia);
         } catch (error) {
@@ -120,7 +122,7 @@ export class AuthController {
         }
       }
 
-      if (CredentialsUtils.isTokenExpired(sigaToken)) {
+      if (CredentialsUtils.isSigaTokenExpired(sigaToken)) {
         try {
           sigaToken = await SigaApiAuthService.loginAndGetToken(req.body.correo, req.body.contrasenia);
         } catch (error) {
