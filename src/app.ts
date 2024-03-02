@@ -11,6 +11,7 @@ import isBetween from 'dayjs/plugin/isBetween'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import NodeCache from "node-cache";
+import axios from "axios";
 
 dayjs.locale('es')
 dayjs.extend(utc)
@@ -36,6 +37,9 @@ const cache = new NodeCache({
   deleteOnExpire: true, // Eliminar elementos que expiraron
   errorOnMissing: false, // No lanzar error si no se encuentra un elemento
 })
+
+/* Set up axios */
+axios.defaults.headers.common['User-Agent'] = 'MiUTEM-API/1.0.0'
 
 /* Firebase */
 firebaseAdmin.initializeApp({

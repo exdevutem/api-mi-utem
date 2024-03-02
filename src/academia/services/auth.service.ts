@@ -71,8 +71,7 @@ export class AcademiaUserService {
     }
 
     try {
-      // Seguir redirección para validar
-      const perfilResponse = await axios.get(loginSsoResponse.headers.location, {
+      const perfilResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/usuario/perfil/editar`, {
         withCredentials: true,
         headers: {
           Cookie: Cookie.header(academiaSessionCookies),
