@@ -24,7 +24,6 @@ export class AcademiaUserService {
     const [loginResponse] = await KeycloakUserService.loginSSO({ oauthUri, correo, contrasenia }) // Inicia sesión en sso
 
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
-
     const tokenSet = await client.grant({ // Obtiene el token de autorización
       grant_type: 'authorization_code',
       code: urlParams.get('code'),
@@ -70,20 +69,20 @@ export class AcademiaUserService {
       throw GenericError.CREDENCIALES_INCORRECTAS
     }
 
+    let perfilResponse;
     try {
-      // Seguir redirección para validar
-      const perfilResponse = await axios.get(loginSsoResponse.headers.location, {
+      perfilResponse = await axios.get(`${process.env.ACADEMIA_UTEM_URL}/libro_de_clases/bitacora_de_clases`, {
         withCredentials: true,
         headers: {
           Cookie: Cookie.header(academiaSessionCookies),
         }
       });
-
-      if (`${perfilResponse.data}`.includes('Hola,') === false) { // Si no se logeó, se lanza un error
-        throw GenericError.CREDENCIALES_INCORRECTAS
-      }
     } catch (err) {
-      throw err;
+      perfilResponse = err.response
+    }
+
+    if (`${perfilResponse?.data}`.includes('Hola,') === false) { // Si no se logeó, se lanza un error
+      throw GenericError.CREDENCIALES_INCORRECTAS
     }
 
     return academiaSessionCookies

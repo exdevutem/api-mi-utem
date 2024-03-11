@@ -8,6 +8,8 @@ import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
 import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { SigaApiAuthService } from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
+import {cache} from "../../app";
+import {HashUtils} from "../../infrastructure/utils/hash.utils";
 
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -16,6 +18,14 @@ export class AuthController {
       const contrasenia: string = req.body.contrasenia || '';
       if (correo.length === 0 || contrasenia.length === 0) {
         throw GenericError.CREDENCIALES_INCORRECTAS
+      }
+
+      /* Busca inicio de sesión en cache */
+      const cacheKey = HashUtils.sha512(`login:${correo}:${contrasenia}`)
+      const cached = cache.get<Usuario>(cacheKey)
+      if(cached != undefined) {
+        res.status(200).json(cached);
+        return;
       }
 
       /* Inicia sesión en Siga */
@@ -73,6 +83,7 @@ export class AuthController {
         }
       }
 
+      cache.set(cacheKey, usuario, 300) // Guarda en cache por 5 minutos
       res.status(200).json(usuario);
     } catch (error) {
       next(error)
@@ -93,7 +104,8 @@ export class AuthController {
       let miUtemCookies: Cookie[] = CredentialsUtils.getMiUtemCookies(accessToken);
       let academiaCookies: Cookie[] = CredentialsUtils.getAcademiaCookies(accessToken);
 
-      if (miUtemCookies.length === 0) {
+      let isMiUTEMTokenExpired = await CredentialsUtils.isMiUTEMTokenExpired(accessToken);
+      if (isMiUTEMTokenExpired) {
         try {
           miUtemCookies = await MiUtemAuthService.loginAndGetCookies(correo, contrasenia);
         } catch (error) {
@@ -101,7 +113,8 @@ export class AuthController {
         }
       }
 
-      if (academiaCookies.length === 0) {
+      let isAcademiaTokenExpired = await CredentialsUtils.isAcademiaTokenExpired(accessToken);
+      if (isAcademiaTokenExpired) {
         try {
           academiaCookies = await AcademiaUserService.loginAndGetCookies(correo, contrasenia);
         } catch (error) {
@@ -109,7 +122,7 @@ export class AuthController {
         }
       }
 
-      if (CredentialsUtils.isTokenExpired(sigaToken)) {
+      if (CredentialsUtils.isSigaTokenExpired(sigaToken)) {
         try {
           sigaToken = await SigaApiAuthService.loginAndGetToken(req.body.correo, req.body.contrasenia);
         } catch (error) {
