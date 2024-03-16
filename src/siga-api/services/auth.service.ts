@@ -1,6 +1,7 @@
 import axios from "axios";
 import Usuario from "../../core/models/usuario.model";
 import GenericError from "../../infrastructure/models/error.model";
+import {HashUtils} from "../../infrastructure/utils/hash.utils";
 
 export class SigaApiAuthService {
   public static async loginAndGetToken(correo: string, contrasenia: string): Promise<string> {
@@ -17,9 +18,18 @@ export class SigaApiAuthService {
       if (err.response?.status === 401) {
         console.debug({
           message: "Credenciales incorrectas",
+          response: err?.response?.data,
           error: err,
         })
-        throw GenericError.CREDENCIALES_INCORRECTAS
+        const error = GenericError.CREDENCIALES_INCORRECTAS
+        error.internalCode = 1.1
+        error.metadata = {
+          uid: HashUtils.md5(correo),
+          statusCode: err.response?.status,
+          statusText: err.response?.statusText,
+          response: err.response?.data,
+        }
+        throw error
       }
 
       throw err
@@ -48,9 +58,18 @@ export class SigaApiAuthService {
       if (err.response?.status === 401) {
         console.debug({
           message: "Credenciales incorrectas",
+          response: err?.response?.data,
           error: err,
         })
-        throw GenericError.CREDENCIALES_INCORRECTAS
+        const error = GenericError.CREDENCIALES_INCORRECTAS
+        error.internalCode = 1.2
+        error.metadata = {
+          uid: HashUtils.md5(correo),
+          statusCode: err.response?.status,
+          statusText: err.response?.statusText,
+          response: err.response?.data,
+        }
+        throw error
       }
 
       throw err

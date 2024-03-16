@@ -24,11 +24,24 @@ export class AcademiaUserService {
     const [loginResponse] = await KeycloakUserService.loginSSO({ oauthUri, correo, contrasenia }) // Inicia sesión en sso
 
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
-    const tokenSet = await client.grant({ // Obtiene el token de autorización
-      grant_type: 'authorization_code',
-      code: urlParams.get('code'),
-      redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
-    })
+    let tokenSet;
+    try {
+      await client.grant({ // Obtiene el token de autorización
+        grant_type: 'authorization_code',
+        code: urlParams.get('code'),
+        redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
+      })
+    } catch (error) {
+      let err = GenericError.ACADEMIA_EXPIRO
+      err.metadata = {
+        place: 'AcademiaUserService.loginAndGetCookies',
+        message: 'Error al obtener el token de autorización de academia.',
+        uri: oauthUri,
+        loginResponse: loginResponse.headers.location,
+        error,
+      }
+      throw err
+    }
 
     // Primero generamos una sesión en la academia.
     let academiaSessionCookies = (await axios.get(process.env.ACADEMIA_UTEM_URL, { // Obtiene las cookies de la academia

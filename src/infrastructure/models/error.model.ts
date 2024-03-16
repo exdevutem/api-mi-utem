@@ -3,18 +3,21 @@ export default class GenericError extends Error {
   public publicMessage: string;
   public statusCode: number;
   public internalCode: number;
+  public metadata: object;
 
   constructor(
     message: string,
     publicMessage?: string,
     statusCode?: number,
-    internalCode?: number
+    internalCode?: number,
+    metaData?: object,
   ) {
     super(message ?? "Fallo en el servidor");
     this.message = message ?? "Fallo en el servidor";
     this.publicMessage = publicMessage ?? "Error inesperado";
     this.statusCode = statusCode ?? 500;
     this.internalCode = internalCode ?? 0;
+    this.metadata = metaData ?? {};
   }
 
   static CREDENCIALES_INCORRECTAS = new GenericError(
