@@ -42,7 +42,14 @@ export class KeycloakUserService {
     }
 
     if (response.status !== 302) {
-      throw GenericError.CREDENCIALES_INCORRECTAS
+      let err = GenericError.CREDENCIALES_INCORRECTAS
+      err.metadata = {
+        place: 'KeycloakUserService.loginSSO',
+        tries,
+        uri: oauthUri,
+        status: response.status,
+      }
+      throw err
     }
 
     if (response.headers.location) {

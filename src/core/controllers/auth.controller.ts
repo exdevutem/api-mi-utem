@@ -86,6 +86,13 @@ export class AuthController {
       cache.set(cacheKey, usuario, 300) // Guarda en cache por 5 minutos
       res.status(200).json(usuario);
     } catch (error) {
+      if(error instanceof GenericError) {
+        if(error.metadata['uid'] == undefined && req.body.correo != undefined) {
+          error.metadata = {
+            uid: HashUtils.md5(req.body.correo)
+          }
+        }
+      }
       next(error)
     }
   }
@@ -134,6 +141,13 @@ export class AuthController {
 
       res.status(200).json({ token });
     } catch (error) {
+      if(error instanceof GenericError) {
+        if(error.metadata['uid'] == undefined && req.body.correo != undefined) {
+          error.metadata = {
+            uid: HashUtils.md5(req.body.correo)
+          }
+        }
+      }
       next(error)
     }
   }

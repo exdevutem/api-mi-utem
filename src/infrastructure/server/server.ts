@@ -10,6 +10,7 @@ import stream from "stream";
 import CoreRouter from "../../core/routes/index.routes";
 import GenericError from "../models/error.model";
 import GenericLogger from "../utils/logger.utils";
+import {HashUtils} from "../utils/hash.utils";
 
 const winstonMorgarWriter = new stream.Writable();
 winstonMorgarWriter._write = function (chunk, encoding, done) {
@@ -78,6 +79,24 @@ export default class Server {
         message: err.stack,
       });
       if (err instanceof GenericError) {
+        let uid;
+        try {
+          uid = HashUtils.md5(req.body.correo || '')
+        } catch {
+          uid = `desconocido:${Math.random().toString(36).substring(7)}`
+        }
+
+        if(((err.metadata || {})['uid'] || '') == '') {
+          err.metadata = {
+            ...err.metadata,
+            uid,
+          }
+        }
+
+        console.error({
+          message: 'Obtuvimos un error de tipo "GenericError" en el servidor',
+          error: err,
+        })
         res.statusCode = err.statusCode;
         res.json({
           codigoHttp: err.statusCode ? err.statusCode : 500,
