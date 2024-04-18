@@ -6,7 +6,10 @@ import {HashUtils} from "../../infrastructure/utils/hash.utils";
 export class SigaApiAuthService {
   public static async loginAndGetToken(correo: string, contrasenia: string): Promise<string> {
     try {
-      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, `username=${correo}&password=${contrasenia}`, {
+      const form = new FormData;
+      form.set('username', correo);
+      form.set('password', contrasenia);
+      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, form, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Host: "siga.utem.cl",
@@ -38,7 +41,10 @@ export class SigaApiAuthService {
 
   public static async loginAndGetProfile(correo: string, contrasenia: string): Promise<Usuario> {
     try {
-      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, `username=${correo}&password=${contrasenia}`, {
+      const form = new FormData;
+      form.set('username', correo);
+      form.set('password', contrasenia);
+      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, form, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Host: "siga.utem.cl",
