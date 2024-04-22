@@ -33,6 +33,7 @@ const RAW_RUNTIME_STATE =
           ["@types/jsonwebtoken", "npm:9.0.6"],\
           ["@types/morgan", "npm:1.9.9"],\
           ["@types/random-useragent", "npm:0.3.3"],\
+          ["@types/supertest", "npm:6.0.2"],\
           ["atob", "npm:2.1.2"],\
           ["axios", "npm:1.6.7"],\
           ["body-parser", "npm:1.20.2"],\
@@ -4255,6 +4256,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/cookiejar", [\
+      ["npm:2.1.5", {\
+        "packageLocation": "./.yarn/cache/@types-cookiejar-npm-2.1.5-f36531e52d-04d5990e87.zip/node_modules/@types/cookiejar/",\
+        "packageDependencies": [\
+          ["@types/cookiejar", "npm:2.1.5"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/cors", [\
       ["npm:2.8.13", {\
         "packageLocation": "./.yarn/cache/@types-cors-npm-2.8.13-4b8ac1068f-7ef197ea19.zip/node_modules/@types/cors/",\
@@ -4427,6 +4437,15 @@ const RAW_RUNTIME_STATE =
         "linkType": "HARD"\
       }]\
     ]],\
+    ["@types/methods", [\
+      ["npm:1.1.4", {\
+        "packageLocation": "./.yarn/cache/@types-methods-npm-1.1.4-8565dc8af4-ad2a717848.zip/node_modules/@types/methods/",\
+        "packageDependencies": [\
+          ["@types/methods", "npm:1.1.4"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
     ["@types/mime", [\
       ["npm:1.3.2", {\
         "packageLocation": "./.yarn/cache/@types-mime-npm-1.3.2-ea71878ab3-0493368244.zip/node_modules/@types/mime/",\
@@ -4546,6 +4565,29 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/@types-stack-utils-npm-2.0.1-867718ab70-205fdbe332.zip/node_modules/@types/stack-utils/",\
         "packageDependencies": [\
           ["@types/stack-utils", "npm:2.0.1"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/superagent", [\
+      ["npm:8.1.6", {\
+        "packageLocation": "./.yarn/cache/@types-superagent-npm-8.1.6-263a072803-d21913bfe6.zip/node_modules/@types/superagent/",\
+        "packageDependencies": [\
+          ["@types/superagent", "npm:8.1.6"],\
+          ["@types/cookiejar", "npm:2.1.5"],\
+          ["@types/methods", "npm:1.1.4"],\
+          ["@types/node", "npm:20.4.0"]\
+        ],\
+        "linkType": "HARD"\
+      }]\
+    ]],\
+    ["@types/supertest", [\
+      ["npm:6.0.2", {\
+        "packageLocation": "./.yarn/cache/@types-supertest-npm-6.0.2-1f239669e4-4b67fb2d1b.zip/node_modules/@types/supertest/",\
+        "packageDependencies": [\
+          ["@types/supertest", "npm:6.0.2"],\
+          ["@types/methods", "npm:1.1.4"],\
+          ["@types/superagent", "npm:8.1.6"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -10284,6 +10326,7 @@ const RAW_RUNTIME_STATE =
           ["@types/jsonwebtoken", "npm:9.0.6"],\
           ["@types/morgan", "npm:1.9.9"],\
           ["@types/random-useragent", "npm:0.3.3"],\
+          ["@types/supertest", "npm:6.0.2"],\
           ["atob", "npm:2.1.2"],\
           ["axios", "npm:1.6.7"],\
           ["body-parser", "npm:1.20.2"],\

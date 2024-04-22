@@ -7,7 +7,7 @@ import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/utem`)
+    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/prod`)
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
@@ -38,7 +38,7 @@ export class AcademiaUserService {
         message: 'Error al obtener el token de autorización de academia.',
         uri: oauthUri,
         loginResponse: loginResponse.headers.location,
-        error,
+        error: error.response?.data || error.response || error,
       }
       throw err
     }
