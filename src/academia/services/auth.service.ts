@@ -7,7 +7,7 @@ import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/prod`)
+    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/${process.env.ACADEMIA_SSO_REALM}`)
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
