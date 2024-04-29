@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/app.ts",
   "scripts": {
-    "test": "jest",
+    "test": "PORT=0 jest",
     "start": "ts-node src/app.ts",
     "start-dev": "nodemon src/app.ts"
   },
