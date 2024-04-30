@@ -5,17 +5,6 @@ import {dayjs} from "../../app";
 import GenericError from "../../infrastructure/models/error.model";
 
 export class BecaAlimentacionController {
-  public static async getCodigoBecaAlimentacion(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const cookies = res.locals.loggedInUser.academiaCookies;
-
-      const codigos: CodigoBecaAlimentacion[] = await BecaAlimentacionService.obtenerCodigoAlimentacion(cookies)
-
-      res.status(200).json(codigos);
-    } catch (error) {
-      next(error);
-    }
-  }
 
   public static async solicitarCodigoBecaAlimentacion(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -34,8 +23,9 @@ export class BecaAlimentacionController {
       const ahora = dayjs().tz('America/Santiago') // Hoy a las 00:00
 
       const cookies = res.locals.loggedInUser.academiaCookies;
-      const desde = (dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago') || ahora).startOf('day');
-      const hasta = (dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago') || ahora).endOf('day');
+      const desde = (req.body.desde ? dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago') : ahora).startOf('day');
+      let hasta = (req.body.hasta ? dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago') : ahora).endOf('day');
+      hasta.isBefore(desde) && (hasta = desde.endOf('day'));
 
       // Si es desde sabado hasta domingo lanzar error
       if (dayjs(desde).tz('America/Santiago').day() === 6 && dayjs(hasta).tz('America/Santiago').day() === 0) {
@@ -55,7 +45,7 @@ export class BecaAlimentacionController {
         return next(error)
       }
 
-      const codigos = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desde.toISOString(), hasta.toISOString())
+      const codigos: CodigoBecaAlimentacion[] = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desde.toISOString(), hasta.toISOString())
 
       res.status(200).json(codigos);
     } catch (error) {

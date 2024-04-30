@@ -7,7 +7,7 @@ import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/${process.env.ACADEMIA_SSO_REALM}`)
+    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/${process.env.ACADEMIA_SSO_REALM || 'prod'}`)
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
@@ -26,7 +26,7 @@ export class AcademiaUserService {
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
     let tokenSet;
     try {
-      await client.grant({ // Obtiene el token de autorización
+      tokenSet = await client.grant({ // Obtiene el token de autorización
         grant_type: 'authorization_code',
         code: urlParams.get('code'),
         redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,

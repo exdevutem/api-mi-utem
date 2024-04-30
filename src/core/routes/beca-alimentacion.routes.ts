@@ -4,12 +4,6 @@ import {AcademiaCredentialsMiddleware} from "../../infrastructure/middlewares/cr
 
 const router: Router = Router();
 
-router.get(
-    "/beca-alimentacion",
-    AcademiaCredentialsMiddleware.isLoggedIn,
-    BecaAlimentacionController.getCodigoBecaAlimentacion
-);
-
 router.post(
   "/beca-alimentacion",
   AcademiaCredentialsMiddleware.isLoggedIn,
