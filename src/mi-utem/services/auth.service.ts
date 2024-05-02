@@ -7,8 +7,8 @@ import { KeycloakUserService } from "../../keycloak/services/user.service";
 export class MiUtemAuthService {
 
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const pasaporteCookies = await MiUtemAuthService.loginPasaporte(correo, contrasenia)
-    if (pasaporteCookies) {
+    const pasaporteCookies: Cookie[] | undefined = await MiUtemAuthService.loginPasaporte(correo, contrasenia)
+    if ((pasaporteCookies?.length || 0) > 0) {
       return pasaporteCookies
     }
 
