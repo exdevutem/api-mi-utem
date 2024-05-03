@@ -12,6 +12,7 @@ import GenericLogger from "../utils/logger.utils";
 import {HashUtils} from "../utils/hash.utils";
 import {nodeProfilingIntegration} from "@sentry/profiling-node";
 import * as process from "node:process";
+import CredentialsUtils from "../utils/credentials.utils";
 
 const winstonMorganWriter = new stream.Writable();
 winstonMorganWriter._write = function (chunk, encoding, done) {
@@ -89,6 +90,19 @@ export default class Server {
         try {
           uid = req.body.correo ? HashUtils.md5(req.body.correo) : ''
         } catch {}
+
+        if(uid.length == 0) {
+          if(req.headers['authorization'])  {
+            // Get siga token
+            const sigaToken = CredentialsUtils.getSigaToken(req.headers['authorization'] as string)
+            if(sigaToken?.length > 0) {
+              const sigaProfile = CredentialsUtils.getSigaUser(sigaToken);
+              try {
+                uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
+              } catch {}
+            }
+          }
+        }
 
         if(uid.length == 0) {
           uid = `desconocido:${Math.random().toString(36).substring(7)}`
