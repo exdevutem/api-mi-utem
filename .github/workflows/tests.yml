@@ -28,10 +28,8 @@ jobs:
           cache: 'yarn'
       - name: 'Yarn Install'
         run: yarn install
-      - name: 'Test'
-        run: |
-          echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
-          yarn test
+      - name: 'Yarn Test'
+        run: yarn test
         env:
           UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
           SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL || 'https://sso.utem.cl' }}
