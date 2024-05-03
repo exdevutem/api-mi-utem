@@ -45,13 +45,7 @@ export default class GenericLogger {
     ],
   });
 
-  public static log({
-                      level = "info",
-                      message = "",
-                    }: {
-    level?: string;
-    message?: string;
-  }) {
+  public static log({ level = "info", message = "" }: { level?: string; message?: string; }) {
     this.logger.log({level, message});
   }
 }

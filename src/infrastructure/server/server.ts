@@ -84,10 +84,6 @@ export default class Server {
       res: Response,
       next: NextFunction
     ) {
-      GenericLogger.log({
-        level: "error",
-        message: err.stack,
-      });
       if (err instanceof GenericError) {
         let uid: string;
         try {
@@ -103,10 +99,21 @@ export default class Server {
           }
         }
 
-        console.error({
+        Sentry.addBreadcrumb({
+          category: 'error',
           message: 'Obtuvimos un error de tipo "GenericError" en el servidor',
-          error: err,
+          level: 'error',
+          data: {
+            error: err,
+            uid,
+          }
         })
+
+
+        GenericLogger.log({
+          level: "error",
+          message: err.stack,
+        });
         res.statusCode = err.statusCode;
         res.json({
           codigoHttp: err.statusCode ? err.statusCode : 500,
@@ -115,6 +122,7 @@ export default class Server {
           error: err.message,
         });
       } else {
+        Sentry.captureException(err);
         res.statusCode = 500;
         res.json({
           codigoHttp: 500,
