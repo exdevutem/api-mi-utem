@@ -31,23 +31,27 @@ export default class Server {
   public constructor(port: number) {
     this.port = port;
     this.app = express();
-    if(process.env.SENTRY_URL) {
+    this.initSentry();
+
+    this.config();
+    this.listen();
+  }
+
+  private initSentry() {
+    if (process.env.SENTRY_URL) {
       Sentry.init({
         dsn: process.env.SENTRY_URL,
         integrations: [
           // enable HTTP calls tracing
-          new Sentry.Integrations.Http({ tracing: true }),
+          new Sentry.Integrations.Http({tracing: true}),
           // enable Express.js middleware tracing
-          new Sentry.Integrations.Express({ app: this.app }),
+          new Sentry.Integrations.Express({app: this.app}),
           nodeProfilingIntegration(),
         ],
         tracesSampleRate: 1.0,
         profilesSampleRate: 1.0,
       });
     }
-
-    this.config();
-    this.listen();
   }
 
   private config(): void {
