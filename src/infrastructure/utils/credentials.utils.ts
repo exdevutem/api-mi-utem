@@ -16,52 +16,40 @@ export default class CredentialsUtils {
     return expirationDate < now;
   }
 
-  public static getMiUtemToken(authToken: string): string | undefined {
+  public static getMiUtemCookies(authToken: string): Cookie[] {
     const authTokenComponents = authToken.split("|");
     if (authTokenComponents.length < 3) {
-      return;
+      return [];
     }
 
     const miUtemToken = authTokenComponents[0];
     if (!CredentialsUtils.isBase64(miUtemToken)) {
-      return;
-    }
-    return miUtemToken;
-  }
-
-  public static getMiUtemCookies(authToken: string): Cookie[] {
-    const token = CredentialsUtils.getMiUtemToken(authToken)
-    if (!token || token.length === 0) {
-      return [];
-    }
-    let data: string[] = atob(token).split("|"); // Formato: expira|cookie1|cookie2|cookie3...
-    data = data.filter(it => it && it.length > 0);
-    if (data.length <= 1) { // Valida el formato
       return [];
     }
 
-    if (CredentialsUtils.isCookieExpired(token)) { // Valida que no haya expirado
-      return [];
-    }
-
-
-    return data.slice(1).map(it => Cookie.parse(atob(it)));
-  }
-
-  public static getAcademiaToken(authToken: string): string | undefined {
-    const authTokenComponents = authToken.split("|");
-    if (authTokenComponents.length < 3) {
-      return;
-    }
-    const academiaToken = authTokenComponents[2];
-    if (!CredentialsUtils.isBase64(academiaToken)) {
-      return;
-    }
-    return academiaToken;
+    return CredentialsUtils.parseCookiesFromToken(miUtemToken);
   }
 
   public static getAcademiaCookies(authToken: string): Cookie[] {
-    const token = CredentialsUtils.getAcademiaToken(authToken);
+    const authTokenComponents = authToken.split("|"); // Separa el token en sus partes
+    if (authTokenComponents.length < 3) {
+      console.error({
+        authToken: 'Token no tiene las partes necesarias',
+      })
+      return [];
+    }
+    const academiaToken = authTokenComponents[2]; // Obtiene el token de academia
+    if (!CredentialsUtils.isBase64(academiaToken)) {
+      console.error({
+        academiaToken: 'Token de academia no es base64',
+      })
+      return [];
+    }
+
+    return CredentialsUtils.parseCookiesFromToken(academiaToken);
+  }
+
+  private static parseCookiesFromToken(token: string): Cookie[] {
     if (!token || token.length === 0) {
       return [];
     }
@@ -80,17 +68,19 @@ export default class CredentialsUtils {
   }
 
   public static getSigaUser(sigaBearerToken: string): Usuario | null {
-    if (sigaBearerToken != null) {
-      const sigaPayload: any = jwt.decode(sigaBearerToken);
-
-      return {
-        nombres: sigaPayload.given_name,
-        apellidos: sigaPayload.family_name,
-        nombreCompleto: sigaPayload.name,
-        correoUtem: sigaPayload.email,
-        username: sigaPayload.preferred_username,
-      };
+    if (sigaBearerToken == null) {
+      return null
     }
+
+    const sigaPayload: any = jwt.decode(sigaBearerToken);
+
+    return {
+      nombres: sigaPayload.given_name,
+      apellidos: sigaPayload.family_name,
+      nombreCompleto: sigaPayload.name,
+      correoUtem: sigaPayload.email,
+      username: sigaPayload.preferred_username,
+    };
   }
 
   public static async isMiUTEMTokenExpired(token: string): Promise<boolean> {
@@ -165,33 +155,6 @@ export default class CredentialsUtils {
     const academiaToken = btoa(`${expira}|${(academiaCookies || []).map(it => btoa(it.simple())).join('|')}`)
 
     return `${miutemToken}|${sigaBearerToken}|${academiaToken}`;
-  }
-
-  public static get emptyCookies(): object {
-    return [
-      {
-        name: "sessionid",
-        value: "",
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: -1,
-        httpOnly: true,
-        secure: false,
-        session: true,
-        sameSite: "Lax",
-      },
-      {
-        name: "csrftoken",
-        value: "",
-        domain: "mi.utem.cl",
-        path: "/",
-        expires: -1,
-        httpOnly: false,
-        secure: false,
-        session: false,
-        sameSite: "Lax",
-      },
-    ];
   }
 
   private static isBase64(str: string): boolean {
