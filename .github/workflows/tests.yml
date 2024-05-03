@@ -17,20 +17,20 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18, 20]
 
     steps:
       - uses: actions/checkout@v2
       - name: 'Setup Node.js'
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: 'Install yarn'
-        run: npm install -g yarn
-      - name: 'yarn install and test'
+          cache: 'yarn'
+      - name: 'Yarn Install'
+        run: yarn install
+      - name: 'Test'
         run: |
           echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
-          yarn
           yarn test
         env:
           UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
