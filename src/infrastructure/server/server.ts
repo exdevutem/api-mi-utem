@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import bodyParser from "body-parser";
 import express, { NextFunction, Request, Response } from "express";
 import { readFileSync } from "fs";
@@ -11,9 +10,11 @@ import CoreRouter from "../../core/routes/index.routes";
 import GenericError from "../models/error.model";
 import GenericLogger from "../utils/logger.utils";
 import {HashUtils} from "../utils/hash.utils";
+import {nodeProfilingIntegration} from "@sentry/profiling-node";
+import * as process from "node:process";
 
-const winstonMorgarWriter = new stream.Writable();
-winstonMorgarWriter._write = function (chunk, encoding, done) {
+const winstonMorganWriter = new stream.Writable();
+winstonMorganWriter._write = function (chunk, encoding, done) {
   GenericLogger.log({
     level: "http",
     message: chunk.toString(),
@@ -30,14 +31,20 @@ export default class Server {
   public constructor(port: number) {
     this.port = port;
     this.app = express();
-    Sentry.init({
-      dsn: process.env.SENTRY_URL,
-      integrations: [
-        new Sentry.Integrations.Http({tracing: true}),
-        new Tracing.Integrations.Express({app: this.app}),
-      ],
-      tracesSampleRate: 1.0,
-    });
+    if(process.env.SENTRY_URL) {
+      Sentry.init({
+        dsn: process.env.SENTRY_URL,
+        integrations: [
+          // enable HTTP calls tracing
+          new Sentry.Integrations.Http({ tracing: true }),
+          // enable Express.js middleware tracing
+          new Sentry.Integrations.Express({ app: this.app }),
+          nodeProfilingIntegration(),
+        ],
+        tracesSampleRate: 1.0,
+        profilesSampleRate: 1.0,
+      });
+    }
 
     this.config();
     this.listen();
@@ -51,7 +58,7 @@ export default class Server {
 
     this.app.use(
       morgan("short", {
-        stream: winstonMorgarWriter,
+        stream: winstonMorganWriter,
       })
     );
 
@@ -67,7 +74,6 @@ export default class Server {
     this.app.use("/v1", CoreRouter);
 
     this.app.use(Sentry.Handlers.errorHandler());
-
     this.app.use(function onError(
       err: any,
       req: Request,
@@ -79,7 +85,7 @@ export default class Server {
         message: err.stack,
       });
       if (err instanceof GenericError) {
-        let uid;
+        let uid: string;
         try {
           uid = HashUtils.md5(req.body.correo || '')
         } catch {

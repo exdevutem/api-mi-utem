@@ -31,6 +31,8 @@ jobs:
       - name: 'Yarn Test'
         run: yarn test
         env:
+          NODE_ENV: test
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
           UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
           SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL || 'https://sso.utem.cl' }}
           MI_UTEM_URL: ${{ vars.MI_UTEM_URL || 'https://mi.utem.cl' }}
