@@ -86,43 +86,48 @@ export default class Server {
       next: NextFunction
     ) {
       if (err instanceof GenericError) {
-        let uid: string = '';
+        let user = {
+          uid: '',
+          email: '',
+        }
         try {
-          uid = req.body.correo ? HashUtils.md5(req.body.correo) : ''
+          user.uid = req.body.correo ? HashUtils.md5(req.body.correo) : ''
+          user.email = req.body.correo || ''
         } catch {}
 
-        if(uid.length == 0) {
+        if(user.uid.length == 0) {
           if(req.headers['authorization'])  {
             // Get siga token
             const sigaToken = CredentialsUtils.getSigaToken(req.headers['authorization'] as string)
             if(sigaToken?.length > 0) {
               const sigaProfile = CredentialsUtils.getSigaUser(sigaToken);
               try {
-                uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
+                user.uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
+                user.email = sigaProfile.correoUtem
               } catch {}
             }
           }
         }
 
-        if(uid.length == 0) {
-          uid = `desconocido:${Math.random().toString(36).substring(7)}`
+        if(user.uid.length == 0) {
+          user.uid = `desconocido:${Math.random().toString(36).substring(7)}`
         }
 
         if(((err.metadata || {})['uid'] || '') == '') {
           err.metadata = {
             ...err.metadata,
-            uid,
+            uid: user.uid,
           }
         }
 
-        Sentry.setUser({ id: uid, email: req.body.correo || '' })
+        Sentry.setUser({ id: user.uid, email: user.email, ip_address: req.ip })
         Sentry.addBreadcrumb({
           category: 'error',
           message: 'Obtuvimos un error de tipo "GenericError" en el servidor',
           level: 'error',
           data: {
             error: err,
-            uid,
+            uid: user.uid,
           }
         })
 
