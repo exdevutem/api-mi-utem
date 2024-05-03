@@ -103,12 +103,6 @@ export default class Server {
 
         Sentry.setUser({ id: uid, email: req.body.correo || '' })
         Sentry.addBreadcrumb({
-          type: 'stacktrace',
-          category: 'stacktrace',
-          level: 'error',
-          message: err.stack,
-        })
-        Sentry.addBreadcrumb({
           category: 'error',
           message: 'Obtuvimos un error de tipo "GenericError" en el servidor',
           level: 'error',
@@ -121,19 +115,13 @@ export default class Server {
 
         GenericLogger.log({ level: "error", message: err.stack });
         res.statusCode = err.statusCode;
-        const error = {
+        res.json({
           codigoHttp: err.statusCode ? err.statusCode : 500,
           mensaje: err.publicMessage ? err.publicMessage : "Error inesperado",
           codigoInterno: err.internalCode ? err.internalCode : 0,
           error: err.message,
-        }
-        res.json(error);
-        Sentry.captureException({
-          ...error,
-          error: err,
-        })
+        });
       } else {
-        Sentry.captureException(err);
         res.statusCode = 500;
         res.json({
           codigoHttp: 500,
@@ -142,6 +130,7 @@ export default class Server {
           error: err.toString(),
         });
       }
+      Sentry.captureException(err);
     });
   }
 
