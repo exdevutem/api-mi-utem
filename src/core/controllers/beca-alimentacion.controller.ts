@@ -33,13 +33,13 @@ export class BecaAlimentacionController {
       }
 
       // Verifica si es entre hoy a las 00:00 y 40 días después
-      if (!dayjs(desde).isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
+      if (!dayjs(desde).tz('America/Santiago').isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.1
         return next(error)
       }
 
-      if (!dayjs(ahora).isSameOrBefore(dayjs().tz('America/Santiago').endOf('year'))) { // Si no está entre fin de año o antes
+      if (!dayjs(ahora).tz('America/Santiago').isSameOrBefore(dayjs().tz('America/Santiago').endOf('year'))) { // Si no está entre fin de año o antes
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.2
         return next(error)
