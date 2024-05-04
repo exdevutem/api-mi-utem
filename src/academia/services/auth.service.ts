@@ -11,7 +11,7 @@ export class AcademiaUserService {
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
-      redirect_uris: [`${process.env.ACADEMIA_UTEM_URL}/sso`],
+      redirect_uris: [`${process.env.ACADEMIA_UTEM_URL}/sso`.trim()],
       response_types: ['code'],
     });
 
@@ -29,7 +29,7 @@ export class AcademiaUserService {
       tokenSet = await client.grant({ // Obtiene el token de autorización
         grant_type: 'authorization_code',
         code: urlParams.get('code'),
-        redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
+        redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`.trim(),
       })
     } catch (error) {
       let err = GenericError.ACADEMIA_EXPIRO
