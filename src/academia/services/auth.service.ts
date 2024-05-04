@@ -11,12 +11,12 @@ export class AcademiaUserService {
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
+      redirect_uris: [`${process.env.ACADEMIA_UTEM_URL}/sso`],
+      response_types: ['code'],
     });
 
     let oauthUri = client.authorizationUrl({ // Genera el link de autorización sso
-      redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
       scope: 'openid',
-      response_type: 'code',
       response_mode: 'fragment',
       nonce: uuid(),
       state: uuid(),
