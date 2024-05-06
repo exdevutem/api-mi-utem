@@ -7,7 +7,7 @@ const correo = process.env.USER_EMAIL || "";
 const contrasenia = process.env.USER_PASSWORD || "";
 
 describe('Prueba de Academia', () => {
-  it('Solicitud de Beca de Alimentación (Día Especifico)', async () => {
+  test('Solicitud de Beca de Alimentación (Día Especifico)', async () => {
     let res = await request(server.app)
       .post('/v1/auth')
       .send({
@@ -36,7 +36,7 @@ describe('Prueba de Academia', () => {
     }
   }, 60000)
 
-  it('Solicitud de Beca de Alimentación (Toda la Semana)', async () => {
+  test('Solicitud de Beca de Alimentación (Toda la Semana)', async () => {
 
     let res = await request(server.app)
       .post('/v1/auth')
@@ -65,6 +65,52 @@ describe('Prueba de Academia', () => {
       // Esperar que contenga algun codigo que contenga la vigenca de la beca
       expect((res.body || []).find(it => dayjs(it.validoPara).tz('America/Santiago').isBetween(dayjs().tz('America/Santiago').format('YYYY-MM-DD'), dayjs().tz('America/Santiago').add(6, 'day').format('YYYY-MM-DD')))).toBeTruthy()
     }
+  });
+
+  test('Solicitud de Beca de Alimentación (Desde Fecha Pasada)', async () => {
+
+    let res = await request(server.app)
+      .post('/v1/auth')
+      .send({
+        correo: correo,
+        contrasenia: contrasenia
+      })
+    expect(res.statusCode).toEqual(200)
+
+    const token = res.body.token;
+
+    res = await request(server.app)
+      .post('/v1/beca-alimentacion')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        desde: dayjs().tz('America/Santiago').subtract(1, 'day').format('YYYY-MM-DD'),
+        hasta: dayjs().tz('America/Santiago').add(6, 'day').format('YYYY-MM-DD'),
+      })
+
+    expect(res.statusCode).toEqual(400)
+  });
+
+  test('Solicitud de Beca de Alimentación (Hasta Fecha Pasada a Desde)', async () => {
+
+    let res = await request(server.app)
+      .post('/v1/auth')
+      .send({
+        correo: correo,
+        contrasenia: contrasenia
+      })
+    expect(res.statusCode).toEqual(200)
+
+    const token = res.body.token;
+
+    res = await request(server.app)
+      .post('/v1/beca-alimentacion')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        desde: dayjs().tz('America/Santiago').format('YYYY-MM-DD'),
+        hasta: dayjs().tz('America/Santiago').subtract(3, 'day').format('YYYY-MM-DD'),
+      })
+
+    expect(res.statusCode).toEqual(200) // Aunque la fecha de término sea antes de la fecha de inicio, se generará el codigo para hoy
   });
 });
 
