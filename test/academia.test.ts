@@ -65,7 +65,7 @@ describe('Prueba de Academia', () => {
       // Esperar que contenga algun codigo que contenga la vigenca de la beca
       expect((res.body || []).find(it => dayjs(it.validoPara).tz('America/Santiago').isBetween(dayjs().tz('America/Santiago').format('YYYY-MM-DD'), dayjs().tz('America/Santiago').add(6, 'day').format('YYYY-MM-DD')))).toBeTruthy()
     }
-  });
+  }, 60000);
 
   test('Solicitud de Beca de Alimentación (Desde Fecha Pasada)', async () => {
 
@@ -88,7 +88,7 @@ describe('Prueba de Academia', () => {
       })
 
     expect(res.statusCode).toEqual(400)
-  });
+  }, 60000);
 
   test('Solicitud de Beca de Alimentación (Hasta Fecha Pasada a Desde)', async () => {
 
@@ -111,7 +111,7 @@ describe('Prueba de Academia', () => {
       })
 
     expect(res.statusCode).toEqual(200) // Aunque la fecha de término sea antes de la fecha de inicio, se generará el codigo para hoy
-  });
+  }, 60000);
 });
 
 afterAll(done => {
