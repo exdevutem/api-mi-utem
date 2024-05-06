@@ -95,17 +95,14 @@ export default class Server {
           user.email = req.body.correo || ''
         } catch {}
 
-        if(user.uid.length == 0) {
-          if(req.headers['authorization'])  {
-            // Get siga token
-            const sigaToken = CredentialsUtils.getSigaToken(req.headers['authorization'] as string)
-            if(sigaToken?.length > 0) {
-              const sigaProfile = CredentialsUtils.getSigaUser(sigaToken);
-              try {
-                user.uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
-                user.email = sigaProfile.correoUtem
-              } catch {}
-            }
+        if(user.uid.length == 0 && req.headers['authorization']) { // Agrega datos para identificar al usuario de la token de siga
+          const sigaToken = CredentialsUtils.getSigaToken(req.headers['authorization'] as string)
+          if(sigaToken?.length > 0) {
+            const sigaProfile = CredentialsUtils.getSigaUser(sigaToken);
+            try {
+              user.uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
+              user.email = sigaProfile.correoUtem
+            } catch {}
           }
         }
 

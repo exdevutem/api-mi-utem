@@ -52,8 +52,8 @@ describe('Prueba de Academia', () => {
       .post('/v1/beca-alimentacion')
       .set('Authorization', `Bearer ${token}`)
       .send({
-        desde: dayjs().format('YYYY-MM-DD'),
-        hasta: dayjs().add(6, 'day').format('YYYY-MM-DD'),
+        desde: dayjs().tz('America/Santiago').format('YYYY-MM-DD'),
+        hasta: dayjs().tz('America/Santiago').add(6, 'day').format('YYYY-MM-DD'),
       })
 
     expect(res.statusCode).toEqual(200)
@@ -63,7 +63,7 @@ describe('Prueba de Academia', () => {
     if ((currentMonth === 3 || currentMonth === 5) || (currentMonth >= 8 && currentMonth <= 11)) {
       expect(res.body.length).toBeGreaterThan(0)
       // Esperar que contenga algun codigo que contenga la vigenca de la beca
-      expect((res.body || []).find(it => dayjs(it.validoPara).isBetween(dayjs().format('YYYY-MM-DD'), dayjs().add(6, 'day').format('YYYY-MM-DD')))).toBeTruthy()
+      expect((res.body || []).find(it => dayjs(it.validoPara).tz('America/Santiago').isBetween(dayjs().tz('America/Santiago').format('YYYY-MM-DD'), dayjs().tz('America/Santiago').add(6, 'day').format('YYYY-MM-DD')))).toBeTruthy()
     }
   });
 });
