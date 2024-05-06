@@ -10,6 +10,8 @@ jobs:
   build:
     name: Tests
     environment: api-mi-utem
+    env:
+      TZ: America/Santiago
     runs-on: ubuntu-latest
 
     strategy:
