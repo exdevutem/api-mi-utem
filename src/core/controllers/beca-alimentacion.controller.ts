@@ -8,34 +8,39 @@ export class BecaAlimentacionController {
 
   public static async solicitarCodigoBecaAlimentacion(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      if (req.body.desde && !dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
+      const desde: string | undefined = req.body.desde;
+      if (desde && !dayjs(desde, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
         const error = GenericError.FORMATO_FECHA_INVALIDO
         error.internalCode = 18.1
         return next(error)
       }
 
-      if (req.body.hasta && !dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
+      const hasta: string | undefined = req.body.hasta;
+      if (hasta && !dayjs(hasta, 'YYYY-MM-DD').tz('America/Santiago').isValid()) {
         const error = GenericError.FORMATO_FECHA_INVALIDO
         error.internalCode = 18.2
         return next(error)
       }
 
       const ahora = dayjs().tz('America/Santiago')
-
-      const cookies = res.locals.loggedInUser.academiaCookies;
-      const desdeInicioCodigo = ((req.body.desde ? dayjs(req.body.desde, 'YYYY-MM-DD').tz('America/Santiago') : ahora).startOf('day'));
-      let hastaDiaCodigo = (req.body.hasta ? dayjs(req.body.hasta, 'YYYY-MM-DD').tz('America/Santiago') : ahora).endOf('day');
-      hastaDiaCodigo.isBefore(desdeInicioCodigo) && (hastaDiaCodigo = desdeInicioCodigo.endOf('day'));
+      const desdeDayJS = ((desde ? dayjs(desde, 'YYYY-MM-DD').tz('America/Santiago') : ahora).startOf('day'));
+      let hastaDayJS = (hasta ? dayjs(hasta, 'YYYY-MM-DD').tz('America/Santiago') : ahora).endOf('day');
+      hastaDayJS.isBefore(desdeDayJS) && (hastaDayJS = desdeDayJS.endOf('day'));
 
       // Si es desde Sábado hasta domingo lanzar error
-      if (desdeInicioCodigo.day() === 6 && hastaDiaCodigo.day() === 0) {
+      if (desdeDayJS.day() === 6 && hastaDayJS.day() === 0) {
         return next(GenericError.FUERA_DE_HORARIO_BECA_ALIMENTACION) // Si es Sábado o domingo, no se puede generar código.
       }
 
-      // Verifica si es entre hoy a las 00:00 y ahora
-      if (!desdeInicioCodigo.isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
+      if (!desdeDayJS.isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.1
+        error.metadata = {
+          ...error.metadata,
+          desde: desdeDayJS.toISOString(),
+          ahora: ahora.startOf('day').toISOString(),
+          sameOrAfter: desdeDayJS.isSameOrAfter(ahora.startOf('day'))
+        }
         return next(error)
       }
 
@@ -45,7 +50,8 @@ export class BecaAlimentacionController {
         return next(error)
       }
 
-      const codigos: CodigoBecaAlimentacion[] = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desdeInicioCodigo.toISOString(), hastaDiaCodigo.toISOString())
+      const cookies = res.locals.loggedInUser.academiaCookies;
+      const codigos: CodigoBecaAlimentacion[] = await BecaAlimentacionService.generarCodigoAlimentacion(cookies, desdeDayJS.toISOString(), hastaDayJS.toISOString())
 
       res.status(200).json(codigos);
     } catch (error) {
