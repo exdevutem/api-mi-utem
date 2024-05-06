@@ -33,7 +33,7 @@ export class BecaAlimentacionController {
       }
 
       // Verifica si es entre hoy a las 00:00 y ahora
-      if (!ahora.isSameOrAfter(desdeInicioCodigo)) { // Si no esta hoy o después
+      if (!desdeInicioCodigo.isSameOrAfter(ahora.startOf('day'))) { // Si no esta hoy o después
         const error = GenericError.FECHA_FUERA_DE_RANGO
         error.internalCode = 19.1
         return next(error)
