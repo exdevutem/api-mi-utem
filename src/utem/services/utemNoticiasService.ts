@@ -1,10 +1,23 @@
 import axios from "axios";
 import Noticia from "../models/noticia.model";
 import * as cheerio from 'cheerio'
+import {HashUtils} from "../../infrastructure/utils/hash.utils";
+import {cache} from "../../app";
+import randomUseragent from 'random-useragent';
 
 export class UtemNoticiasService {
   static async getNoticias(porPagina: number, desde: string, hasta: string){
-    const posts = await axios.get(`${process.env.UTEM_URL}/wp-json/wp/v2/posts?_embed&per_page=${porPagina}&before=${hasta}&after=${desde}`)
+    const cacheKey = HashUtils.sha512(`noticias:${porPagina}:${desde}:${hasta}`)
+    const cached = cache.get<Noticia[]>(cacheKey)
+    if(cached != undefined) {
+      return cached;
+    }
+
+    const posts = await axios.get(`${process.env.NOTICIAS_UTEM_URL}/wp-json/wp/v2/posts?_embed&per_page=${porPagina}&before=${hasta}&after=${desde}`, {
+      headers: {
+        'User-Agent': randomUseragent.getRandom(),
+      }
+    })
     const noticias: Noticia[] = []
 
     for (const post of posts.data) {
@@ -27,6 +40,7 @@ export class UtemNoticiasService {
       noticias.push(noticia)
     }
 
-    return noticias
+    cache.set(cacheKey, noticias, 900) // 15 minutos
+    return noticias;
   }
 }
