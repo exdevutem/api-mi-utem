@@ -70,7 +70,6 @@ const RAW_RUNTIME_STATE =
           ["ts-jest", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:29.1.2"],\
           ["ts-node", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
-          ["user-agents", "npm:1.1.127"],\
           ["uuid", "npm:9.0.1"],\
           ["winston", "npm:3.11.0"]\
         ],\
@@ -10495,7 +10494,6 @@ const RAW_RUNTIME_STATE =
           ["ts-jest", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:29.1.2"],\
           ["ts-node", "virtual:1849da143e39ef6d8de11437a0258f87ba57808890f99eb219773c9d4759e61f63665a1affcaf3c86086dd6b7868cb8a3540ff3e9b847b3d36cf70048e9bb909#npm:10.9.2"],\
           ["typescript", "patch:typescript@npm%3A5.3.3#optional!builtin<compat/typescript>::version=5.3.3&hash=e012d7"],\
-          ["user-agents", "npm:1.1.127"],\
           ["uuid", "npm:9.0.1"],\
           ["winston", "npm:3.11.0"]\
         ],\
@@ -13951,16 +13949,6 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/cache/use-npm-3.1.1-7ba643714c-08a130289f.zip/node_modules/use/",\
         "packageDependencies": [\
           ["use", "npm:3.1.1"]\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["user-agents", [\
-      ["npm:1.1.127", {\
-        "packageLocation": "./.yarn/cache/user-agents-npm-1.1.127-3a065810bd-630eed3c5d.zip/node_modules/user-agents/",\
-        "packageDependencies": [\
-          ["user-agents", "npm:1.1.127"],\
-          ["lodash.clonedeep", "npm:4.5.0"]\
         ],\
         "linkType": "HARD"\
       }]\

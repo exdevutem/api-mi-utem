@@ -32,6 +32,7 @@ jobs:
         env:
           NODE_ENV: test
           SENTRY_URL: ${{ secrets.SENTRY_URL }}
+          NOTICIAS_UTEM_URL: ${{ vars.NOTICIAS_UTEM_URL || 'https://noticias.utem.cl' }}
           UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
           SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL || 'https://sso.utem.cl' }}
           MI_UTEM_URL: ${{ vars.MI_UTEM_URL || 'https://mi.utem.cl' }}

@@ -8052,7 +8052,6 @@ __metadata:
     ts-jest: "npm:^29.1.2"
     ts-node: "npm:^10.9.2"
     typescript: "npm:^5.3.3"
-    user-agents: "npm:^1.1.127"
     uuid: "npm:^9.0.1"
     winston: "npm:^3.11.0"
   languageName: unknown
@@ -11128,15 +11127,6 @@ __metadata:
   version: 3.1.1
   resolution: "use@npm:3.1.1"
   checksum: 10/08a130289f5238fcbf8f59a18951286a6e660d17acccc9d58d9b69dfa0ee19aa038e8f95721b00b432c36d1629a9e32a464bf2e7e0ae6a244c42ddb30bdd8b33
-  languageName: node
-  linkType: hard
-
-"user-agents@npm:^1.1.127":
-  version: 1.1.127
-  resolution: "user-agents@npm:1.1.127"
-  dependencies:
-    lodash.clonedeep: "npm:^4.5.0"
-  checksum: 10/630eed3c5df62b4b5a21e323548f0070e72cd5dc97cd94a9131b46e5e0957f059e879a6654fcd409d600fb9c83a80cd808a09b5d4f9b99c28a9a5db4f08fc0d2
   languageName: node
   linkType: hard
 
