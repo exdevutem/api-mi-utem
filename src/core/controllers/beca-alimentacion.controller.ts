@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {BecaAlimentacionService} from "../../academia/services/beca-alimentacion.service";
-import CodigoBecaAlimentacion from "../models/codigo-beca-alimentacion.model";
+import CodigoBecaAlimentacion from "../../academia/models/codigo-beca-alimentacion.model";
 import {dayjs} from "../../app";
-import GenericError from "../../infrastructure/models/error.model";
+import GenericError from "../models/internal/error.model";
 
 export class BecaAlimentacionController {
 

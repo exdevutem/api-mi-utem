@@ -1,5 +1,5 @@
 import { Request } from "express";
-import GenericError from "../../models/error.model";
+import GenericError from "../../models/internal/error.model";
 
 /**
  * Esta clase representa la base de los middleware 'Credentials', permitiendo una validación de token.

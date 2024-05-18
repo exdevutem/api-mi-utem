@@ -1,8 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 import {SigaApiAsignaturaService} from "../../siga-api/services/asignatura.service";
 import SeccionAsignatura from "../models/seccion-asignatura.model";
-import Semestre from "../models/semestre.model";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Semestre from "../../mi-utem/models/semestre.model";
+import Cookie from "../models/internal/cookie.model";
 import {MiUtemNotaService} from "../../mi-utem/services/nota.service";
 import {MiUtemAsignaturaService} from "../../mi-utem/services/asignatura.service";
 
@@ -27,12 +27,7 @@ export class AsignaturaController {
       const carreraId: string = req.params.carreraId;
       const seccionId: string = req.params.seccionId;
 
-      const asignatura: SeccionAsignatura =
-        await SigaApiAsignaturaService.getNotasAsignatura(
-          sigaToken,
-          carreraId,
-          seccionId
-        );
+      const asignatura: SeccionAsignatura = await SigaApiAsignaturaService.getNotasAsignatura(sigaToken, carreraId, seccionId);
 
       res.status(200).json(asignatura);
     } catch (error) {

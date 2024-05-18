@@ -1,7 +1,7 @@
 import Evaluacion from "../../core/models/evaluacion.model";
 import SeccionAsignatura from "../../core/models/seccion-asignatura.model";
-import Semestre from "../../core/models/semestre.model";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Semestre from "../models/semestre.model";
+import Cookie from "../../core/models/internal/cookie.model";
 import {MiUtemAuthService} from "./auth.service";
 import axios from "axios";
 import * as cheerio from "cheerio";

@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {MiUtemPermisoService} from "../../mi-utem/services/permiso.service";
-import Permiso from "../models/permiso.model";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Permiso from "../../mi-utem/models/permiso.model";
+import Cookie from "../models/internal/cookie.model";
 
 export class PermisoController {
   public static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {

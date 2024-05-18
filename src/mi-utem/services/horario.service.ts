@@ -1,7 +1,7 @@
 import Horario from "../../core/models/horario.model";
-import GenericError from "../../infrastructure/models/error.model";
+import GenericError from "../../core/models/internal/error.model";
 import {MiUtemAuthService} from "./auth.service";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Cookie from "../../core/models/internal/cookie.model";
 import axios from "axios";
 import * as cheerio from "cheerio";
 

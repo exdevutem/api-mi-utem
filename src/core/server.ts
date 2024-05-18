@@ -6,13 +6,13 @@ import http from "http";
 import https from "https";
 import morgan from "morgan";
 import stream from "stream";
-import CoreRouter from "../../core/routes/index.routes";
-import GenericError from "../models/error.model";
-import GenericLogger from "../utils/logger.utils";
-import {HashUtils} from "../utils/hash.utils";
+import CoreRouter from "./routes/index.routes";
+import GenericError from "./models/internal/error.model";
+import GenericLogger from "./utils/logger.utils";
+import {HashUtils} from "./utils/hash.utils";
 import {nodeProfilingIntegration} from "@sentry/profiling-node";
 import * as process from "node:process";
-import CredentialsUtils from "../utils/credentials.utils";
+import CredentialsUtils from "./utils/credentials.utils";
 
 const winstonMorganWriter = new stream.Writable();
 winstonMorganWriter._write = function (chunk, encoding, done) {

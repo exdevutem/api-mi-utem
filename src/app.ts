@@ -1,5 +1,5 @@
 import * as firebaseAdmin from "firebase-admin";
-import Server from "./infrastructure/server/server";
+import Server from "./core/server";
 
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'

@@ -6,8 +6,8 @@ import {
   Firestore,
   getFirestore,
 } from "firebase-admin/firestore";
-import GenericError from "../../infrastructure/models/error.model";
-import FcmUtils from "../../infrastructure/utils/fcm.utils";
+import GenericError from "../models/internal/error.model";
+import FcmUtils from "../utils/fcm.utils";
 import Usuario from "../models/usuario.model";
 
 export class NotificacionController {

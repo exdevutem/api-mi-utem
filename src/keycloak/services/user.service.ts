@@ -1,7 +1,7 @@
-import GenericError from "../../infrastructure/models/error.model";
+import GenericError from "../../core/models/internal/error.model";
 import * as cheerio from 'cheerio'
 import axios, {AxiosResponse} from "axios";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Cookie from "../../core/models/internal/cookie.model";
 
 export class KeycloakUserService {
   public static async loginSSO({oauthUri, correo, contrasenia}: {

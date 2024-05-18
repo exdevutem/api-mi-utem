@@ -1,8 +1,8 @@
 import axios from "axios";
 import { Issuer } from "openid-client";
 import { v4 as uuid } from 'uuid';
-import Cookie from "../../infrastructure/models/cookie.model";
-import GenericError from "../../infrastructure/models/error.model";
+import Cookie from "../../core/models/internal/cookie.model";
+import GenericError from "../../core/models/internal/error.model";
 import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {

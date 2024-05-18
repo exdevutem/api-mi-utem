@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {BecaAlimentacionController} from "../controllers/beca-alimentacion.controller";
-import {AcademiaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/academia-credentials.middleware";
+import {AcademiaCredentialsMiddleware} from "../middlewares/credentials/academia-credentials.middleware";
 
 const router: Router = Router();
 

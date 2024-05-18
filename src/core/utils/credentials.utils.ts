@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import Usuario from "../../core/models/usuario.model";
-import Cookie from "../models/cookie.model";
+import Usuario from "../models/usuario.model";
+import Cookie from "../models/internal/cookie.model";
 import axios from "axios";
 
 export default class CredentialsUtils {

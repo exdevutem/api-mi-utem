@@ -4,10 +4,7 @@ import Evaluacion from "../../core/models/evaluacion.model";
 import SeccionAsignatura from "../../core/models/seccion-asignatura.model";
 
 export class SigaApiAsignaturaService {
-  public static async getAsignaturas(
-    token: string,
-    carreraId: string
-  ): Promise<SeccionAsignatura[]> {
+  public static async getAsignaturas(token: string, carreraId: string): Promise<SeccionAsignatura[]> {
     const uri: string = "/estudiante/asignaturas/";
     const url: string = `${process.env.SIGA_API_URL}${uri}`;
 
@@ -45,11 +42,7 @@ export class SigaApiAsignaturaService {
     return asignaturas;
   }
 
-  public static async getNotasAsignatura(
-    token: string,
-    carreraId: string,
-    asignaturaId: string
-  ): Promise<SeccionAsignatura> {
+  public static async getNotasAsignatura(token: string, carreraId: string, asignaturaId: string): Promise<SeccionAsignatura> {
     const uri: string = "/estudiante/asignaturas/notas/";
     const url: string = `${process.env.SIGA_API_URL}${uri}`;
 

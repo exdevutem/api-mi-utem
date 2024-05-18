@@ -1,8 +1,8 @@
 import axios from "axios";
 import Usuario from "../../core/models/usuario.model";
-import GenericError from "../../infrastructure/models/error.model";
-import {HashUtils} from "../../infrastructure/utils/hash.utils";
-import Cookie from "../../infrastructure/models/cookie.model";
+import GenericError from "../../core/models/internal/error.model";
+import {HashUtils} from "../../core/utils/hash.utils";
+import Cookie from "../../core/models/internal/cookie.model";
 
 export class SigaApiAuthService {
   public static async loginAndGetToken(correo: string, contrasenia: string): Promise<string> {

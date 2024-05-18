@@ -1,6 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {SigaApiCarreraService} from "../../siga-api/services/carrera.service";
-import Carrera from "../models/carrera.model";
+import Carrera from "../../siga-api/models/carrera.model";
 
 export class CarreraController {
   public static async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
