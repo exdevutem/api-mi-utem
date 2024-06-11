@@ -2,9 +2,9 @@ import axios, {AxiosResponse} from "axios";
 import FormData from "form-data";
 import moment from "moment";
 import pdf from "pdf-parse";
-import Permiso from "../../core/models/permiso.model";
-import GenericError from "../../infrastructure/models/error.model";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Permiso from "../models/permiso.model";
+import GenericError from "../../core/models/internal/error.model";
+import Cookie from "../../core/models/internal/cookie.model";
 import {MiUtemAuthService} from "./auth.service";
 
 export class MiUtemPermisoService {

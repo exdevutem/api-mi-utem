@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response} from "express";
-import GenericError from "../../infrastructure/models/error.model";
+import GenericError from "../models/internal/error.model";
 import {MiUtemAuthService} from "../../mi-utem/services/auth.service";
 import {MiUtemUserService} from "../../mi-utem/services/user.service";
 import {PasaportePasswordService} from "../../pasaporte/services/password.service";
-import Cookie from "../../infrastructure/models/cookie.model";
+import Cookie from "../models/internal/cookie.model";
 
 export class UsuarioController {
   public static async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {

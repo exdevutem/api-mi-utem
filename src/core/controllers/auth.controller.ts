@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { AcademiaUserService } from "../../academia/services/auth.service";
-import { CredentialsMiddleware } from "../../infrastructure/middlewares/credentials/credentials.middleware";
-import Cookie from "../../infrastructure/models/cookie.model";
-import GenericError from "../../infrastructure/models/error.model";
-import CredentialsUtils from "../../infrastructure/utils/credentials.utils";
+import { CredentialsMiddleware } from "../middlewares/credentials/credentials.middleware";
+import Cookie from "../models/internal/cookie.model";
+import GenericError from "../models/internal/error.model";
+import CredentialsUtils from "../utils/credentials.utils";
 import { MiUtemAuthService } from "../../mi-utem/services/auth.service";
 import { MiUtemUserService } from "../../mi-utem/services/user.service";
 import { SigaApiAuthService } from "../../siga-api/services/auth.service";
 import Usuario from "../models/usuario.model";
 import {cache} from "../../app";
-import {HashUtils} from "../../infrastructure/utils/hash.utils";
+import {HashUtils} from "../utils/hash.utils";
 
 export class AuthController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<void> {

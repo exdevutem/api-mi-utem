@@ -16,6 +16,45 @@ export default class Cookie {
     this.raw = `${name}=${value}`;
   }
 
+  static from(name: string, value: string) {
+    return new Cookie(name, value);
+  }
+
+  withExpires(expires: Date | string) {
+    this.expires = expires;
+    return this;
+  }
+
+  withMaxAge(maxAge: number) {
+    this.maxAge = maxAge;
+    return this;
+  }
+
+  withPath(path: string) {
+    this.path = path;
+    return this;
+  }
+
+  withDomain(domain: string) {
+    this.domain = domain;
+    return this;
+  }
+
+  withSecure() {
+    this.secure = true;
+    return this;
+  }
+
+  withHttpOnly() {
+    this.httpOnly = true;
+    return this;
+  }
+
+  withSameSite(sameSite: 'Strict' | 'Lax' | 'None') {
+    this.sameSite = sameSite;
+    return this;
+  }
+
   static parse(cookieString: string): Cookie {
     const cookieParts = cookieString.split(';');
     const [name, value] = cookieParts.shift()?.split('=') ?? ['', ''];
@@ -68,7 +107,7 @@ export default class Cookie {
     return newCookies
   }
 
-  static header(cookies: Cookie[]) {
-    return cookies.map(it => it.raw).join(';')
+  static header(cookies: Cookie | Cookie[]) {
+    return Array.isArray(cookies) ? cookies.map(it => it.raw).join(';') : this.header([cookies]);
   }
 }

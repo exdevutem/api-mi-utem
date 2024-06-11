@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import qs from "qs";
-import Carrera from "../../core/models/carrera.model";
+import Carrera from "../models/carrera.model";
 
 export class SigaApiCarreraService {
   public static async getCarreras(token: string): Promise<Carrera[]> {

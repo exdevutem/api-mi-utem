@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UsuarioController } from "../controllers/usuario.controller";
-import {MiUTEMCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/miutem-credentials.middleware";
+import {MiUTEMCredentialsMiddleware} from "../middlewares/credentials/miutem-credentials.middleware";
 
 const router: Router = Router();
 

@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node Tests
+name: Node Test
 
 on:
   push:
@@ -13,32 +10,35 @@ jobs:
   build:
     name: Tests
     environment: api-mi-utem
+    env:
+      TZ: America/Santiago
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18, 20]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: 'Setup Node.js'
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - name: 'Install yarn'
-        run: npm install -g yarn
-      - name: 'yarn install and test'
-        run: |
-          echo "${{ secrets.FIREBASE_ADMINSDK_PROJECT_ID }}"
-          yarn
-          yarn test
+          cache: 'yarn'
+      - name: 'Yarn Install'
+        run: yarn install
+      - name: 'Yarn Test'
+        run: yarn test
         env:
+          NODE_ENV: test
+          SENTRY_URL: ${{ secrets.SENTRY_URL }}
           NOTICIAS_UTEM_URL: ${{ vars.NOTICIAS_UTEM_URL || 'https://noticias.utem.cl' }}
           UTEM_URL: ${{ vars.UTEM_URL || 'https://www.utem.cl' }}
           SSO_UTEM_URL: ${{ vars.SSO_UTEM_URL || 'https://sso.utem.cl' }}
           MI_UTEM_URL: ${{ vars.MI_UTEM_URL || 'https://mi.utem.cl' }}
           PASAPORTE_UTEM_URL: ${{ vars.PASAPORTE_UTEM_URL || 'https://pasaporte.utem.cl' }}
           ACADEMIA_UTEM_URL: ${{ vars.ACADEMIA_UTEM_URL || 'https://academia.utem.cl' }}
+          ACADEMIA_SSO_REALM: ${{ vars.ACADEMIA_SSO_REALM || 'prod' }}
           SIGA_API_URL: ${{ vars.SIGA_API_URL || 'https://siga.utem.cl/servicios' }}
 
           FCM_SERVER_KEY: ${{ secrets.FCM_SERVER_KEY }}

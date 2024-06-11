@@ -1,14 +1,14 @@
 import axios from "axios";
 import * as cheerio from 'cheerio';
-import Cookie from "../../infrastructure/models/cookie.model";
-import GenericError from "../../infrastructure/models/error.model";
+import Cookie from "../../core/models/internal/cookie.model";
+import GenericError from "../../core/models/internal/error.model";
 import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class MiUtemAuthService {
 
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const pasaporteCookies = await MiUtemAuthService.loginPasaporte(correo, contrasenia)
-    if (pasaporteCookies) {
+    const pasaporteCookies: Cookie[] | undefined = await MiUtemAuthService.loginPasaporte(correo, contrasenia)
+    if ((pasaporteCookies?.length || 0) > 0) {
       return pasaporteCookies
     }
 

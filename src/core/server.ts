@@ -1,5 +1,4 @@
 import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 import bodyParser from "body-parser";
 import express, { NextFunction, Request, Response } from "express";
 import { readFileSync } from "fs";
@@ -7,13 +6,16 @@ import http from "http";
 import https from "https";
 import morgan from "morgan";
 import stream from "stream";
-import CoreRouter from "../../core/routes/index.routes";
-import GenericError from "../models/error.model";
-import GenericLogger from "../utils/logger.utils";
-import {HashUtils} from "../utils/hash.utils";
+import CoreRouter from "./routes/index.routes";
+import GenericError from "./models/internal/error.model";
+import GenericLogger from "./utils/logger.utils";
+import {HashUtils} from "./utils/hash.utils";
+import {nodeProfilingIntegration} from "@sentry/profiling-node";
+import * as process from "node:process";
+import CredentialsUtils from "./utils/credentials.utils";
 
-const winstonMorgarWriter = new stream.Writable();
-winstonMorgarWriter._write = function (chunk, encoding, done) {
+const winstonMorganWriter = new stream.Writable();
+winstonMorganWriter._write = function (chunk, encoding, done) {
   GenericLogger.log({
     level: "http",
     message: chunk.toString(),
@@ -30,17 +32,27 @@ export default class Server {
   public constructor(port: number) {
     this.port = port;
     this.app = express();
-    Sentry.init({
-      dsn: process.env.SENTRY_URL,
-      integrations: [
-        new Sentry.Integrations.Http({tracing: true}),
-        new Tracing.Integrations.Express({app: this.app}),
-      ],
-      tracesSampleRate: 1.0,
-    });
+    this.initSentry();
 
     this.config();
     this.listen();
+  }
+
+  private initSentry() {
+    if (process.env.SENTRY_URL) {
+      Sentry.init({
+        dsn: process.env.SENTRY_URL,
+        integrations: [
+          // enable HTTP calls tracing
+          new Sentry.Integrations.Http({tracing: true}),
+          // enable Express.js middleware tracing
+          new Sentry.Integrations.Express({app: this.app}),
+          nodeProfilingIntegration(),
+        ],
+        tracesSampleRate: 1.0,
+        profilesSampleRate: 1.0,
+      });
+    }
   }
 
   private config(): void {
@@ -51,7 +63,7 @@ export default class Server {
 
     this.app.use(
       morgan("short", {
-        stream: winstonMorgarWriter,
+        stream: winstonMorganWriter,
       })
     );
 
@@ -67,36 +79,57 @@ export default class Server {
     this.app.use("/v1", CoreRouter);
 
     this.app.use(Sentry.Handlers.errorHandler());
-
     this.app.use(function onError(
       err: any,
       req: Request,
       res: Response,
       next: NextFunction
     ) {
-      GenericLogger.log({
-        level: "error",
-        message: err.stack,
-      });
       if (err instanceof GenericError) {
-        let uid;
+        let user = {
+          uid: '',
+          email: '',
+        }
         try {
-          uid = HashUtils.md5(req.body.correo || '')
-        } catch {
-          uid = `desconocido:${Math.random().toString(36).substring(7)}`
+          user.uid = req.body.correo ? HashUtils.md5(req.body.correo) : ''
+          user.email = req.body.correo || ''
+        } catch {}
+
+        if(user.uid.length == 0 && req.headers['authorization']) { // Agrega datos para identificar al usuario de la token de siga
+          const sigaToken = CredentialsUtils.getSigaToken(req.headers['authorization'] as string)
+          if(sigaToken?.length > 0) {
+            const sigaProfile = CredentialsUtils.getSigaUser(sigaToken);
+            try {
+              user.uid = sigaProfile.correoUtem ? HashUtils.md5(sigaProfile.correoUtem) : '';
+              user.email = sigaProfile.correoUtem
+            } catch {}
+          }
+        }
+
+        if(user.uid.length == 0) {
+          user.uid = `desconocido:${Math.random().toString(36).substring(7)}`
         }
 
         if(((err.metadata || {})['uid'] || '') == '') {
           err.metadata = {
             ...err.metadata,
-            uid,
+            uid: user.uid,
           }
         }
 
-        console.error({
+        Sentry.setUser({ id: user.uid, email: user.email, ip_address: req.ip })
+        Sentry.addBreadcrumb({
+          category: 'error',
           message: 'Obtuvimos un error de tipo "GenericError" en el servidor',
-          error: err,
+          level: 'error',
+          data: {
+            error: err,
+            uid: user.uid,
+          }
         })
+
+
+        GenericLogger.log({ level: "error", message: err.stack });
         res.statusCode = err.statusCode;
         res.json({
           codigoHttp: err.statusCode ? err.statusCode : 500,
@@ -113,6 +146,7 @@ export default class Server {
           error: err.toString(),
         });
       }
+      Sentry.captureException(err);
     });
   }
 

@@ -1,34 +1,12 @@
 import SeccionAsignatura from "../../core/models/seccion-asignatura.model";
 import Usuario from "../../core/models/usuario.model";
-import GenericError from "../../infrastructure/models/error.model";
-import Cookie from "../../infrastructure/models/cookie.model";
+import GenericError from "../../core/models/internal/error.model";
+import Cookie from "../../core/models/internal/cookie.model";
 import {MiUtemAuthService} from "./auth.service";
 import axios from "axios";
 import * as cheerio from "cheerio";
 
 export class MiUtemAsignaturaService {
-  public static async getAsignaturas(cookies: Cookie[]): Promise<SeccionAsignatura[]> {
-    await MiUtemAuthService.cookiesValidas(cookies);
-
-    const page = await axios.get(process.env.MI_UTEM_URL, {
-      headers: {
-        Cookie: Cookie.header(cookies),
-      }
-    })
-
-    const $ = cheerio.load(page.data);
-    const asignaturas: SeccionAsignatura[] = [];
-
-    $('.card-utem #table_mdl_titulo tbody tr.no-border').each((_, el) => {
-      asignaturas.push({
-        codigo: $(el).find('td:nth-child(1) > span').text().split(' - ')[0].trim(),
-        nombre: $(el).find('td:nth-child(1) > span').text().split(' - ')[1].trim(),
-        tipoHora: $(el).find('td:nth-child(2)').text().trim(),
-      })
-    });
-
-    return asignaturas;
-  }
 
   /**
    * Obtiene el detalle de una asignatura del usuario
@@ -93,7 +71,7 @@ export class MiUtemAsignaturaService {
     const estudiantes: Usuario[] = [];
     $detalleAsignatura('#table-estudiantes > tbody > tr').each((_, el) => {
       const nombre = $detalleAsignatura(el).find('td:nth-child(2)').text().trim();
-      let nombreCompleto, nombres, apellidos: string
+      let nombreCompleto: string, nombres: string, apellidos: string
       if(nombre.includes(',')) {
         nombres = nombre.split(',')[1].trim();
         apellidos = nombre.split(',')[0].trim();

@@ -1,38 +1,17 @@
 import axios from "axios";
 import Usuario from "../../core/models/usuario.model";
-import GenericError from "../../infrastructure/models/error.model";
-import {HashUtils} from "../../infrastructure/utils/hash.utils";
+import GenericError from "../../core/models/internal/error.model";
+import {HashUtils} from "../../core/utils/hash.utils";
+import Cookie from "../../core/models/internal/cookie.model";
 
 export class SigaApiAuthService {
   public static async loginAndGetToken(correo: string, contrasenia: string): Promise<string> {
     try {
-      const form = new FormData;
-      form.set('username', correo);
-      form.set('password', contrasenia);
-      const res = await axios.post(`${process.env.SIGA_API_URL}/autenticacion/login/`, form, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Host: "siga.utem.cl",
-        },
-      });
-
-      return res.data.response.token;
+      const response = await this.loginAndGetProfile(correo, contrasenia);
+      return response.token;
     } catch (err) {
-      if (err.response?.status === 401) {
-        console.debug({
-          message: "Credenciales incorrectas",
-          response: err?.response?.data,
-          error: err,
-        })
-        const error = GenericError.CREDENCIALES_INCORRECTAS
-        error.internalCode = 1.1
-        error.metadata = {
-          uid: HashUtils.md5(correo),
-          statusCode: err.response?.status,
-          statusText: err.response?.statusText,
-          response: err.response?.data,
-        }
-        throw error
+      if(err.internalCode === 1.2) {
+        err.internalCode = 1.1
       }
 
       throw err
@@ -48,6 +27,7 @@ export class SigaApiAuthService {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           Host: "siga.utem.cl",
+          Cookie: Cookie.header(Cookie.from('SIGA', 'siga').withPath('/')),
         },
       });
 

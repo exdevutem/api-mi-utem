@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { CarreraController } from "../controllers/carrera.controller";
-import {SigaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/siga-credentials.middleware";
+import {SigaCredentialsMiddleware} from "../middlewares/credentials/siga-credentials.middleware";
 
 const router: Router = Router();
 

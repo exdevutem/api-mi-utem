@@ -1,22 +1,22 @@
 import axios from "axios";
 import { Issuer } from "openid-client";
 import { v4 as uuid } from 'uuid';
-import Cookie from "../../infrastructure/models/cookie.model";
-import GenericError from "../../infrastructure/models/error.model";
+import Cookie from "../../core/models/internal/cookie.model";
+import GenericError from "../../core/models/internal/error.model";
 import { KeycloakUserService } from "../../keycloak/services/user.service";
 
 export class AcademiaUserService {
   public static async loginAndGetCookies(correo: string, contrasenia: string): Promise<Cookie[]> {
-    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/utem`)
+    const academiaIssuer = await Issuer.discover(`${process.env.SSO_UTEM_URL}/auth/realms/${process.env.ACADEMIA_SSO_REALM || 'prod'}`)
     const client = new academiaIssuer.Client({ // Genera un link cliente para el flujo de autorización.
       client_id: 'academiaClient',
       client_secret: process.env.ACADEMIA_CLIENT_SECRET,
+      redirect_uris: [`${process.env.ACADEMIA_UTEM_URL}/sso`.trim()],
+      response_types: ['code'],
     });
 
     let oauthUri = client.authorizationUrl({ // Genera el link de autorización sso
-      redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
       scope: 'openid',
-      response_type: 'code',
       response_mode: 'fragment',
       nonce: uuid(),
       state: uuid(),
@@ -26,10 +26,10 @@ export class AcademiaUserService {
     const urlParams = new URLSearchParams(loginResponse.headers.location.split('/sso#')[1]) // Obtiene los parámetros de la url de redirección
     let tokenSet;
     try {
-      await client.grant({ // Obtiene el token de autorización
+      tokenSet = await client.grant({ // Obtiene el token de autorización
         grant_type: 'authorization_code',
         code: urlParams.get('code'),
-        redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`,
+        redirect_uri: `${process.env.ACADEMIA_UTEM_URL}/sso`.trim(),
       })
     } catch (error) {
       let err = GenericError.ACADEMIA_EXPIRO
@@ -38,7 +38,7 @@ export class AcademiaUserService {
         message: 'Error al obtener el token de autorización de academia.',
         uri: oauthUri,
         loginResponse: loginResponse.headers.location,
-        error,
+        error: error.response?.data || error.response || error,
       }
       throw err
     }

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import Usuario from "../../../core/models/usuario.model";
-import GenericError from "../../models/error.model";
+import Usuario from "../../models/usuario.model";
+import GenericError from "../../models/internal/error.model";
 import CredentialsUtils from "../../utils/credentials.utils";
 import { CredentialsMiddleware } from "./credentials.middleware";
 

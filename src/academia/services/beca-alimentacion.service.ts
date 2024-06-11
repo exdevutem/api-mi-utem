@@ -1,10 +1,11 @@
-import Cookie from "../../infrastructure/models/cookie.model";
+import Cookie from "../../core/models/internal/cookie.model";
 import {AcademiaUserService} from "./auth.service";
-import GenericError from "../../infrastructure/models/error.model";
+import GenericError from "../../core/models/internal/error.model";
 import axios from "axios";
 import * as cheerio from 'cheerio';
-import CodigoBecaAlimentacion from "../../core/models/codigo-beca-alimentacion.model";
+import CodigoBecaAlimentacion from "../models/codigo-beca-alimentacion.model";
 import {dayjs} from "../../app";
+import * as fs from "node:fs";
 
 export class BecaAlimentacionService {
 
@@ -17,7 +18,7 @@ export class BecaAlimentacionService {
       },
     })
 
-    if(becaAlimentacionResponse.data.includes('Actualmente, no posees la beca de alimentación UTEM, cualquier consulta, dirígete a bienestar estudiantil de tu sede.')) {
+    if(!BecaAlimentacionService.tieneBeca(becaAlimentacionResponse)) {
       throw GenericError.SIN_BECA_ALIMENTACION
     }
 
@@ -35,7 +36,17 @@ export class BecaAlimentacionService {
       } catch(_){}
     })
 
-    console.debug({ codigos })
+    const alerta = ($('div[class*="alert alert-danger col-sm-10 col-sm-offset-1"]')?.text() || '').replaceAll('\n', '').trim()
+    if(alerta.toLowerCase().includes('ya tienes generado el cupón de alimentación para el día')) {
+      const partes = alerta.split('el código es:')
+      if(partes.length == 2) {
+        codigos.push({
+          codigo: partes[1].trim(),
+          validoPara: dayjs().tz('America/Santiago').toISOString(),
+          estado: 'DESCONOCIDO'
+        })
+      }
+    }
 
     return codigos
   }
@@ -50,7 +61,7 @@ export class BecaAlimentacionService {
       },
     })
 
-    if(becaAlimentacionResponse.data.includes('Actualmente, no posees la beca de alimentación UTEM, cualquier consulta, dirígete a bienestar estudiantil de tu sede.')) {
+    if(!BecaAlimentacionService.tieneBeca(becaAlimentacionResponse)) {
       throw GenericError.SIN_BECA_ALIMENTACION
     }
 
@@ -79,5 +90,9 @@ export class BecaAlimentacionService {
     // Obtiene los codigos y los filtra por fecha
     const codigos = await BecaAlimentacionService.obtenerCodigoAlimentacion(cookies)
     return codigos.filter(it => dayjs(it.validoPara).tz('America/Santiago').isSameOrAfter(desde, 'day') && dayjs(it.validoPara).tz('America/Santiago').isSameOrBefore(hasta, 'day'))
+  }
+
+  private static tieneBeca(response) {
+    return !response.data.toLowerCase().includes('actualmente, no posees la beca de alimentación utem, cualquier consulta, dirígete a bienestar estudiantil de tu sede.')
   }
 }

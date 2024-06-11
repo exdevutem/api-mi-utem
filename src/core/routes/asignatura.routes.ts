@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { AsignaturaController } from "../controllers/asignatura.controller";
 import { NotificacionController } from "../controllers/notificacion.controller";
-import {SigaCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/siga-credentials.middleware";
-import {MiUTEMCredentialsMiddleware} from "../../infrastructure/middlewares/credentials/miutem-credentials.middleware";
+import {SigaCredentialsMiddleware} from "../middlewares/credentials/siga-credentials.middleware";
+import {MiUTEMCredentialsMiddleware} from "../middlewares/credentials/miutem-credentials.middleware";
 
 const router: Router = Router();
 

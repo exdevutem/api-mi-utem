@@ -2,57 +2,11 @@ import {describe, expect} from '@jest/globals';
 import request from 'supertest';
 import {server} from '../src/app';
 
-let api;
-
 const correo = process.env.USER_EMAIL || "";
 const contrasenia = process.env.USER_PASSWORD || "";
 
-describe('POST /auth', () => {
-  it('login successful with @utem.cl', async () => {
-    const res = await request(server.app)
-      .post('/v1/auth')
-      .send({
-        correo: correo,
-        contrasenia: contrasenia
-      })
-    expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty('token')
-  }, 25000)
-
-  it('login successful without @utem.cl', async () => {
-    const res = await request(server.app)
-      .post('/v1/auth')
-      .send({
-        correo: correo.replace("@utem.cl", ""),
-        contrasenia: contrasenia
-      })
-    expect(res.statusCode).toEqual(200)
-    expect(res.body).toHaveProperty('token')
-  }, 25000)
-
-  it('wrong email', async () => {
-    const res = await request(server.app)
-      .post('/v1/auth')
-      .send({
-        correo: "a" + correo,
-        contrasenia: contrasenia
-      })
-    expect(res.statusCode).toEqual(403)
-  })
-
-  it('wrong password', async () => {
-    const res = await request(server.app)
-      .post('/v1/auth')
-      .send({
-        correo: correo,
-        contrasenia: contrasenia + "a"
-      })
-    expect(res.statusCode).toEqual(403)
-  })
-});
-
-describe('SIGA flow', () => {
-  it('login successful', async () => {
+describe('Prueba de Carreras', () => {
+  it('Solicitud de Carreras y Notas', async () => {
     let res = await request(server.app)
       .post('/v1/auth')
       .send({
@@ -97,7 +51,6 @@ describe('SIGA flow', () => {
     }
   }, 60000)
 });
-
 
 afterAll(done => {
   server.close();

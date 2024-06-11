@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { MiUtemAuthService } from "../../../mi-utem/services/auth.service";
-import Cookie from "../../models/cookie.model";
-import GenericError from "../../models/error.model";
+import Cookie from "../../models/internal/cookie.model";
+import GenericError from "../../models/internal/error.model";
 import CredentialsUtils from "../../utils/credentials.utils";
 import { CredentialsMiddleware } from "./credentials.middleware";
 

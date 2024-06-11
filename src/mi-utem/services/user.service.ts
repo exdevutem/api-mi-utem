@@ -2,8 +2,8 @@ import axios, { AxiosResponse } from "axios";
 import * as cheerio from 'cheerio';
 import FormData from "form-data";
 import Usuario from "../../core/models/usuario.model";
-import Cookie from "../../infrastructure/models/cookie.model";
-import FilesUtils from "../../infrastructure/utils/files.utils";
+import Cookie from "../../core/models/internal/cookie.model";
+import FilesUtils from "../../core/utils/files.utils";
 import { MiUtemAuthService } from "./auth.service";
 
 export class MiUtemUserService {
